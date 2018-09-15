@@ -1,15 +1,32 @@
-var demo = {};
+var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, cloud, speed = 7;
 demo.state0 = function(){};
 demo.state0.prototype = {
-    preload: function(){},
+    preload: function(){
+        game.load.image('cloud', 'assets/sprites/Cloud.png');
+    },
     create: function(){
         game.stage.backgroundColor = '#DDDDDD';
         console.log('state0');
         addChangeStateEventListeners();
-       /* game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(changeState, null, null, 1);
-       */
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        
+        cloud = game.add.sprite(centerX, centerY, 'cloud');
+        cloud.anchor.setTo(0.5,0.5);
     },
-    update: function(){}
+    update: function(){
+        if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+            cloud.x += speed;
+        }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+            cloud.x -= speed;
+        }
+        if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+            cloud.y -= speed;
+        }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+            cloud.y += speed;
+        }
+    }
 };
 
 function changeState(i, stateNum){
