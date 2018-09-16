@@ -2,23 +2,44 @@ var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, cloud, speed = 7;
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
-        game.load.image('cloud', 'assets/sprites/Cloud.png');
+        game.load.spritesheet('cloud', 'assets/spritesheets/Cloud spritesheet.png', 320, 320);
+        game.load.image('city', 'assets/backgrounds/city.png');
+        game.load.image('road', 'assets/backgrounds/road.png');
     },
     create: function(){
-        game.stage.backgroundColor = '#DDDDDD';
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.stage.backgroundColor = '#ffffff';
         console.log('state0');
         addChangeStateEventListeners();
+        game.world.setBounds(0, 0, 1600, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        
+        var city = game.add.sprite(0, 0, 'city');
+        var road = game.add.sprite(0, 900, 'road');
         cloud = game.add.sprite(centerX, centerY, 'cloud');
         cloud.anchor.setTo(0.5,0.5);
+        cloud.scale.setTo(0.7, 0.7);
+        game.physics.enable(cloud);
+        cloud.body.collideWorldBounds = true;
+        cloud.animations.add('walk', [0,1,2]);
+        
+        
+        game.camera.follow(cloud);
+        game.camera.deadzone = new Phaser.Rectangle(centerX - 300, 0, 300, 1000);
     },
     update: function(){
         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+            cloud.scale.setTo(-0.7, 0.7);
             cloud.x += speed;
+            cloud.animations.play('walk', 14, true);
         }
         else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+            cloud.scale.setTo(0.7, 0.7);
             cloud.x -= speed;
+            cloud.animations.play('walk', 14, true);
+        }
+        else{
+            cloud.animations.stop('walk');
+            cloud.frame = 0;
         }
         if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
             cloud.y -= speed;
