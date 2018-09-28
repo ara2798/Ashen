@@ -1,5 +1,4 @@
-var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, mc, speed = 30, road, Materia, score=0, scoreText;
-mc.stats = []
+var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, mc, speed = 30, road, Materia, score=0, scoreText, mcStats = {HP:500, Attack:50,Defense:30,Magic:10,MagicDefense:15,Mana:60}, mcLevel=5,mcSkillsL = ["Slash","Fire"];
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){

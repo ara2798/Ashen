@@ -37,8 +37,6 @@ demo.state1.prototype = {
         mc.body.collideWorldBounds = true;
         mc.animations.add('walk', [0,1,2]);
         
-        mc.skills = ["Slash","Cyclone","Fire"]
-        
         Materia = game.add.group();
         Materia.enableBody = true;
         
@@ -164,9 +162,9 @@ demo.state1.prototype = {
         //Select actions
         if(cursors.z.isDown && fighting && !press[4]){
             press[4] = true;
-            if (currentMenu == "mainBM" && cursor.y == 705){
-                currentMenu = "attackM";
-                text.destroy();
+            if (currentMenu == "mainBM" && cursor.y == 805){
+                currentMenu = "skillsM";
+                textOS.destroy();
                 createMenu();
             }
         }
@@ -175,9 +173,9 @@ demo.state1.prototype = {
         }
         if(cursors.x.isDown && fighting && !press[5]){
             press[5] = true;
-            if (currentMenu == "attackM" && cursor.y == 705){
+            if (currentMenu == "skillsM"){
                 currentMenu = "mainBM";
-                text.destroy();
+                textOS.destroy();
                 createMenu();
             }
         }
@@ -215,30 +213,22 @@ function createMenu(){
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
-            text += "Magic                       ";
+            text += "Skills                      ";
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
             text += "Item                        ";
         }
         text += "\n\n\n";
-        text = game.add.text(120,700,text);
+        textOS = game.add.text(120,700,text);
         
     }
     else if (currentMenu == "skillsM"){
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Attack                      ";
+        for (var i = 0; i < mcSkillsL.length; i++){
+            text += mcSkillsL[i];
+            text += "         ";
         }
-        text += "\n\n\n";
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Magic                       ";
-        }
-        text += "\n\n\n";
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Item                        ";
-        }
-        text += "\n\n\n";
-        text = game.add.text(120,700,text);
+        textOS = game.add.text(120,700,text);
     }
 }
 
