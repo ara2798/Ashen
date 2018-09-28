@@ -1,4 +1,4 @@
-var platforms, fighting=false, currentCpos = [68,705], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1, text="";
+var platforms, fighting=false, currentCpos = [68,705], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1;
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
@@ -12,8 +12,6 @@ demo.state1.prototype = {
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
         addChangeStateEventListeners();
-        
-        dummy=4;
         
         game.world.setBounds(0, 0, 1600, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -37,20 +35,16 @@ demo.state1.prototype = {
         mc.body.collideWorldBounds = true;
         mc.animations.add('walk', [0,1,2]);
         
-        mc.skills = ["Slash","Cyclone","Fire"]
-        
-        Materia = game.add.group();
-        Materia.enableBody = true;
+        EnemyGroup1 = game.add.group();
+        EnemyGroup1.enableBody = true;
         
         for (var i = 0; i < 6; i++){
-            var materia = Materia.create(150+i*250, 200,'materia');
+            var materia = EnemyGroup1.create(150+i*250, 200,'materia');
             materia.scale.setTo(0.5, 0.5);
         }
         
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(centerX - 300, 0, 300, 1000);
-        
-        scoreText = game.add.text(50,50, 'XP: '+ score, {fontSize: '32px', fill: '#fff' });
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X
@@ -58,15 +52,47 @@ demo.state1.prototype = {
     },
     update: function(){
         game.physics.arcade.collide(mc, platforms);
-        game.physics.arcade.collide(Materia, platforms);
-        var encounter = game.physics.arcade.overlap(mc, Materia, fight, null, this);
+        game.physics.arcade.collide(EnemyGroup1, platforms);
+        var encounter = game.physics.arcade.overlap(mc, EnemyGroup1, fight, null, this);
         
         if (encounter){
             fighting = true;
-            fight(mc, Materia, 254, 347.5);
+            fight(mc, EnemyGroup1, 254, 347.5);
         }
         
         //Move main character
+        moveMC();
+        
+        //Move cursor in  battle mode
+        moveCursorBM();
+        
+        //Select actions
+        if(cursors.z.isDown && fighting && !press[4]){
+            press[4] = true;
+            if (currentMenu == "mainBM" && cursor.y == 805){
+                currentMenu = "skillsM";
+                textOS.destroy();
+                createMenu();
+            }
+        }
+        else if (cursors.z.isUp && fighting){
+            press[4] =false;
+        }
+        if(cursors.x.isDown && fighting && !press[5]){
+            press[5] = true;
+            if (currentMenu == "skillsM"){
+                currentMenu = "mainBM";
+                textOS.destroy();
+                createMenu();
+            }
+        }
+        else if (cursors.z.isUp && fighting){
+            press[5] =false;
+        }
+    }
+};
+
+function moveMC(){
         if(cursors.right.isDown && !fighting){
             mc.scale.setTo(-0.7, 0.7);
             mc.body.velocity.x = 550;
@@ -94,8 +120,9 @@ demo.state1.prototype = {
         else{
             mc.body.velocity.y = 0;
         }
-        
-        //Move cursor in  battle mode
+}
+
+function moveCursorBM(){
         if(cursors.right.isDown && fighting && !press[0]){
             press[0] = true;
             if (currentCpos[0] < 268){
@@ -160,34 +187,9 @@ demo.state1.prototype = {
         else if (cursors.down.isUp && fighting){
             press[3] = false;
         }
-        
-        //Select actions
-        if(cursors.z.isDown && fighting && !press[4]){
-            press[4] = true;
-            if (currentMenu == "mainBM" && cursor.y == 705){
-                currentMenu = "attackM";
-                text.destroy();
-                createMenu();
-            }
-        }
-        else if (cursors.z.isUp && fighting){
-            press[4] =false;
-        }
-        if(cursors.x.isDown && fighting && !press[5]){
-            press[5] = true;
-            if (currentMenu == "attackM" && cursor.y == 705){
-                currentMenu = "mainBM";
-                text.destroy();
-                createMenu();
-            }
-        }
-        else if (cursors.z.isUp && fighting){
-            press[5] =false;
-        }
-    }
-};
+}
 
-function fight (mc, Materia, xpos, ypos) {
+function fight (mc, EnemyGroup1, xpos, ypos) {
     
     currentPosition = [mc.x, mc.y];
     dx = xpos - currentPosition[0];
@@ -215,30 +217,22 @@ function createMenu(){
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
-            text += "Magic                       ";
+            text += "Skills                      ";
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
             text += "Item                        ";
         }
         text += "\n\n\n";
-        text = game.add.text(120,700,text);
+        textOS = game.add.text(120,700,text);
         
     }
     else if (currentMenu == "skillsM"){
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Attack                      ";
+        for (var i = 0; i < mcSkillsL.length; i++){
+            text += mcSkillsL[i];
+            text += "         ";
         }
-        text += "\n\n\n";
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Magic                       ";
-        }
-        text += "\n\n\n";
-        for (var i = 0; i < nOfAllies; i++){
-            text += "Item                        ";
-        }
-        text += "\n\n\n";
-        text = game.add.text(120,700,text);
+        textOS = game.add.text(120,700,text);
     }
 }
 
