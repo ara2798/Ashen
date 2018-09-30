@@ -160,3 +160,37 @@ function moveTo (character,xpos,ypos){
     
     //mc.x = EnemyGroup.alliesPos[0][0];
     //mc.y = EnemyGroup.alliesPos[0][1];
+
+//inside moveCursorBM (after changing currentCpos[0])
+/*if(cursors.right.isDown && fighting && !press[0]){
+            press[0] = true;
+            if (currentCpos[0] < maxCBpos){
+                cursor.kill();
+                currentCpos[0] += 200;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[0] = 68;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.right.isUp && fighting){
+            press[0] = false;
+        }
+        if(cursors.left.isDown && fighting && !press[1]){
+            press[1] = true;
+            if (currentCpos[0] > 68){
+                cursor.kill();
+                currentCpos[0] -= 200;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[0] = maxCBpos;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.left.isUp && fighting){
+            press[1] = false;
+        }*/

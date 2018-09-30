@@ -1,4 +1,4 @@
-var platforms, fighting=false, currentCpos = [68,705], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1, turn = 1, inTransition = false, maxCBpos, BattleActionStack = [];
+var platforms, fighting=false, inTransition = false, pickingEnemy = false, enemyInBattle, enemyPicked = 0, currentCpos = [68,705], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1, turn = 1, actionBuilder = [], BattleActionStack = [];
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
@@ -43,6 +43,7 @@ demo.state1.prototype = {
         for (var i = 0; i < 3; i++){
             var materia = EnemyGroup1.create(150+i*250, 200,'materia');
             materia.scale.setTo(0.5, 0.5);
+            materia.animations.add('walk',[0]);
             EnemyGroup1.battlePos[i] = [900,200+i*200];
         }
         
@@ -62,7 +63,11 @@ demo.state1.prototype = {
             console.log("Hello");
             fighting = true;
             moveTo(mc,EnemyGroup1.alliesPos[0][0],EnemyGroup1.alliesPos[0][1]);
+            for (var i = 0; i < EnemyGroup1.children.length; i++){
+                moveTo(EnemyGroup1.children[i],EnemyGroup1.battlePos[i][0],EnemyGroup1.battlePos[i][1]);
+            }
             setFightStage(mc, EnemyGroup1);
+            enemyInBattle = EnemyGroup1;
         }
         
         //Move main character
@@ -70,6 +75,12 @@ demo.state1.prototype = {
         
         //Move cursor in  battle mode
         moveCursorBM();
+
+        //Move cursor in skills menu
+        //moveCursorSM();
+        
+        //Pick enemy
+        pickEnemy(enemyInBattle);
         
         //Select actions
         selectBattleActions();
@@ -110,39 +121,7 @@ function moveMC(){
 
 function moveCursorBM(){
     if (currentMenu == "mainBM"){
-        currentCpos[0] = 68 + (turn - 1) * 200
-        /*if(cursors.right.isDown && fighting && !press[0]){
-            press[0] = true;
-            if (currentCpos[0] < maxCBpos){
-                cursor.kill();
-                currentCpos[0] += 200;
-                createCursor(currentCpos[0],currentCpos[1]);
-            }
-            else{
-                cursor.kill();
-                currentCpos[0] = 68;
-                createCursor(currentCpos[0],currentCpos[1]);
-            }
-        }
-        else if (cursors.right.isUp && fighting){
-            press[0] = false;
-        }
-        if(cursors.left.isDown && fighting && !press[1]){
-            press[1] = true;
-            if (currentCpos[0] > 68){
-                cursor.kill();
-                currentCpos[0] -= 200;
-                createCursor(currentCpos[0],currentCpos[1]);
-            }
-            else{
-                cursor.kill();
-                currentCpos[0] = maxCBpos;
-                createCursor(currentCpos[0],currentCpos[1]);
-            }
-        }
-        else if (cursors.left.isUp && fighting){
-            press[1] = false;
-        }*/
+        currentCpos[0] = 68 + (turn - 1) * 250
         if(cursors.up.isDown && fighting && !press[2]){
             press[2] = true;
             if (currentCpos[1] > 705){
@@ -178,6 +157,10 @@ function moveCursorBM(){
     }
 }
 
+function moveCursorSM (){
+    
+}
+
 function setFightStage (mc, EnemyGroup) {
 
     textBox = game.add.sprite(0, 600, 'text box');
@@ -194,11 +177,20 @@ function selectBattleActions () {
         press[4] = true;
         if (currentMenu == "mainBM" && cursor.y == 705){
             if (cursor.x == 68) {
-                addBattleAction(mc, Ash);
+                console.log("Ay");
+                actionBuilder.push(mc);
+                actionBuilder.push(Ash);
             }
             else if (cursor.x == 268){
-                addBattleAction(ally1,Cinderella);
+                actionBuilder.push(ally1);
+                actionBuilder.push(Cinderella);
             }
+            pickingEnemy = true;
+            currentMenu = "pickEnemy";
+            cursor.kill();
+            currentCpos[0] = enemyInBattle.battlePos[0][0];
+            currentCpos[1] = enemyInBattle.battlePos[0][1] - 50;
+            createCursor(currentCpos[0],currentCpos[1]);
         }
         else if (currentMenu == "mainBM" && cursor.y == 805){
             if (cursor.x == 68){
@@ -207,10 +199,24 @@ function selectBattleActions () {
                 createMenu();
             }
             else if (cursor.x == 268){
-                currentMenu = "skillsMCindy";
+                currentMenu = "skillsMAlly1";
                 textOS.destroy();
                 createMenu();
             }
+        }
+        else if (currentMenu == "skillsMAsh"){
+            console.log("ByeBye");
+        }
+        else if (currentMenu == "pickEnemy"){
+            console.log([currentCpos[0],currentCpos[1]+50]);
+            for (var i = 0; i < enemyInBattle.battlePos.length; i++){
+                if ((currentCpos[0] == enemyInBattle.battlePos[i][0]) && (currentCpos[1] + 50 == enemyInBattle.battlePos[i][1])){
+                    actionBuilder.push(enemyInBattle.battlePos[i]);
+                    break;
+                }
+            }
+            pickingEnemy = false;
+            addBattleAction(actionBuilder[0],actionBuilder[1],actionBuilder[2]);
         }
     }
     else if (cursors.z.isUp && fighting){
@@ -229,9 +235,71 @@ function selectBattleActions () {
     }
 }
 
-function addBattleAction(character,attack) {
-    BattleActionStack.push([character,attack]);
+function pickEnemy(EnemyGroup){
+    if (pickingEnemy){
+        if(cursors.up.isDown && !press[2]){
+            press[2] = true;
+            if (enemyPicked == 0){
+                enemyPicked = EnemyGroup.children.length - 1;
+                cursor.kill();
+                currentCpos[0] = EnemyGroup.battlePos[enemyPicked][0];
+                currentCpos[1] = EnemyGroup.battlePos[enemyPicked][1] - 50;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                enemyPicked -= 1;
+                cursor.kill();
+                currentCpos[0] = EnemyGroup.battlePos[enemyPicked][0];
+                currentCpos[1] = EnemyGroup.battlePos[enemyPicked][1] - 50;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.up.isUp){
+            press[2] = false;
+        }
+        if(cursors.down.isDown && !press[3]){
+            press[3] = true;
+            if (enemyPicked == EnemyGroup.children.length - 1){
+                enemyPicked = 0;
+                cursor.kill();
+                currentCpos[0] = EnemyGroup.battlePos[enemyPicked][0];
+                currentCpos[1] = EnemyGroup.battlePos[enemyPicked][1] - 50;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                enemyPicked += 1;
+                cursor.kill();
+                currentCpos[0] = EnemyGroup.battlePos[enemyPicked][0];
+                currentCpos[1] = EnemyGroup.battlePos[enemyPicked][1] - 50;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.down.isUp){
+            press[3] = false;
+        }
+    }
+}
+
+function addBattleAction(character,attack,enemy) {
+    BattleActionStack.push([character,attack,enemy]);
     turn += 1;
+    if (turn > nOfAllies){
+        performBattleActions();
+    }
+    else {
+        currentMenu = "mainBM";
+        currentCpos[0] += 250;
+        currentCpos[1] = 705;
+        cursor.kill();
+        createCursor(currentCpos[0],currentCpos[1]);
+        createMenu();
+    }
+}
+
+function performBattleActions(){
+    for (var i = 0; i < BattleActionStack.length; i++){
+        moveTo(BattleActionStack[i][0],BattleActionStack[i][2][0],BattleActionStack[i][2][1]);
+    }
 }
 
 function moveTo (character,xpos,ypos){
@@ -275,11 +343,11 @@ function createMenu(){
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
-            text += "Skills                      ";
+            text += "Skills                       ";
         }
         text += "\n\n\n";
         for (var i = 0; i < nOfAllies; i++){
-            text += "Item                        ";
+            text += "Item                         ";
         }
         text += "\n\n\n";
         textOS = game.add.text(120,700,text);
