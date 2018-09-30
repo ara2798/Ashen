@@ -1,4 +1,22 @@
-var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, mc, speed = 30, road, Materia, text, mcStats = {HP:500, Attack:50,Defense:30,Magic:10,MagicDefense:15,Mana:60}, mcLevel=5,mcSkillsL = ["Slash","Fire"];
+var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, mc, road, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text;
+var Slash = {Name: "Slash", PhysAttack : 20, MagAttack : 0, Element: "None", AreaOfEffect: "1"};
+var Fire = {Name: "Fire", PhysAttack : 0, MagAttack : 20, Element: "Fire", AreaOfEffect: "1"};
+var Cyclone = {Name: "Cyclone", PhysAttack : 15, MagAttack : 0, Element: "None", AreaOfEffect: "all"};
+var Explosion = {Name: "Explosion", PhysAttack : 0, MagAttack : 50, Element: "Fire", AreaOfEffect: "all"};
+var Ash = {
+    Stats : {HP:500, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Mana:60},
+    Level : 5,
+    ExpCurve : 5,
+    SkillsLearned : [Slash,Fire],
+    SkillsToLearn : [Cyclone,Explosion]
+}
+var Cinderella = {
+    Stats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Mana:100},
+    Level : 5,
+    ExpCurve : 5,
+    SkillsLearned : [Slash,Fire],
+    SkillsToLearn : [Cyclone,Explosion]
+}
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}
 };*/
@@ -41,6 +59,5 @@ function addKeyCallback(key, fn, args){
 }
 
 function addChangeStateEventListeners(){
-    addKeyCallback(Phaser.Keyboard.ZERO, changeState, "0");
-    addKeyCallback(Phaser.Keyboard.ONE, changeState, "graveyard");
+    addKeyCallback(Phaser.Keyboard.ENTER, changeState, "graveyard");
 }
