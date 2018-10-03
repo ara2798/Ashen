@@ -1,14 +1,20 @@
-var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, mc, road, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text;
-var Slash = {Name: "Slash", PhysAttack : 20, MagAttack : 0, Element: "None", AreaOfEffect: "1"};
-var Fire = {Name: "Fire", PhysAttack : 0, MagAttack : 20, Element: "Fire", AreaOfEffect: "1"};
-var Cyclone = {Name: "Cyclone", PhysAttack : 15, MagAttack : 0, Element: "None", AreaOfEffect: "all"};
-var Explosion = {Name: "Explosion", PhysAttack : 0, MagAttack : 50, Element: "Fire", AreaOfEffect: "all"};
+var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, road, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text;
+var Slash = {Name: "Slash", PhysAttack : 20, MagAttack : 0, Element: "None", AreaOfEffect: "single"};
+var Fire = {Name: "Fire", Stats:{PhysAttack : 0, MagAttack : 20}, Element: "Fire", AreaOfEffect: "single"};
+var Cyclone = {Name: "Cyclone", Stats:{PhysAttack : 15, MagAttack : 0}, Element: "None", AreaOfEffect: "all"};
+var Explosion = {Name: "Explosion", Stats:{PhysAttack : 0, MagAttack : 50}, Element: "Fire", AreaOfEffect: "all"};
 var Ash = {
     Stats : {HP:500, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Mana:60},
+    Element : "Fire",
+    AreaOfEffect: "single",
     Level : 5,
     ExpCurve : 5,
     SkillsLearned : [Slash,Fire],
     SkillsToLearn : [Cyclone,Explosion]
+}
+function Zombie(enemyObject,level) {
+    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+5*level,PhysDefense:1,MagAttack:1,MagDefense:1,Mana:3};
+    enemyObject.Level = level;
 }
 var Cinderella = {
     Stats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Mana:100},
@@ -31,14 +37,14 @@ demo.state0.prototype = {
         game.stage.backgroundColor = '#000000';
         console.log('state0');
         addChangeStateEventListeners();
-        game.world.setBounds(0, 0, 1600, 1000);
+        game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
-        logo = game.add.sprite(centerX,centerY-100,"logo");
-        logo.scale.setTo(3);
+        logo = game.add.sprite(centerX,centerY,"logo");
+        logo.scale.setTo(1.5);
         logo.anchor.setTo(0.5,0.5);
         team = game.add.sprite(centerX,centerY+100,"team name");
-        team.scale.setTo(3);
+        team.scale.setTo(1.2);
         team.anchor.setTo(0.5,0.5);
         
         //text = "8-bitz Studioz"
