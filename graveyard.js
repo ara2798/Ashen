@@ -1,4 +1,4 @@
-var platforms, fighting=false, inTransition = false, pickingEnemy = false, attacking = false, enemyInBattle, enemyPicked = 0, currentCpos = [], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1, turn = 1, actionBuilder = [], BattleActionStack = [];
+var platforms, fighting=false, inTransition = false, pickingEnemy = false, attacking = false, enemyInBattle, enemyPicked = 0, currentCpos = [], press = [true,true,true,true,true,true],/*[right,left,up,down,z,x]*/ cursors, currentMenu, nOfAllies = 1, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, originalPosX, originalPosY, Damage, BattleXP = 0, Allies=[Ash];
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
@@ -35,11 +35,11 @@ demo.state1.prototype = {
         
         mc = game.add.sprite(100, centerY, 'mc');
         mc.anchor.setTo(0.5,0.5);
-        mc.scale.setTo(-1.1, 1.1);
+        mc.scale.setTo(1.1, 1.1);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
-        mc.animations.add('walkleft', [9,10,11]);
-        mc.animations.add('walkright', [6,7,8]);
+        mc.animations.add('walkleft', [6,7,8]);
+        mc.animations.add('walkright', [9,10,11]);
         mc.animations.add('walkdown', [0,1,2]);
         mc.animations.add('walkup', [3,4,5]);
         
@@ -70,7 +70,6 @@ demo.state1.prototype = {
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
 
         if (encounter1 && !inTransition && !attacking){
-            console.log("Hello");
             fighting = true;
             moveTo(mc,game.camera.x+150,game.camera.y+200);
             for (var i = 0; i < EnemyGroup1.children.length; i++){
@@ -90,7 +89,7 @@ demo.state1.prototype = {
         //moveCursorSM();
         
         //Pick enemy
-        pickEnemy(enemyInBattle);
+        moveCursorEP(enemyInBattle);
         
         //Select actions
         selectBattleActions();
@@ -175,7 +174,7 @@ function moveCursorSM (){
     
 }
 
-function pickEnemy(EnemyGroup){
+function moveCursorEP(EnemyGroup){
     if (pickingEnemy){
         if(cursors.up.isDown && !press[2]){
             press[2] = true;
@@ -265,7 +264,7 @@ function selectBattleActions () {
             }
         }
         else if (currentMenu == "skillsMAsh"){
-            console.log("ByeBye");
+            
         }
         else if (currentMenu == "pickEnemy"){
             for (var i = 0; i < enemyInBattle.children.length; i++){
@@ -294,12 +293,13 @@ function selectBattleActions () {
     }
 }
 
-function addBattleAction(character,attack,enemy) {
-    BattleActionStack.push([character,attack,enemy]);
+function addBattleAction(character,action,enemy) {
+    BattleActionStack.push([character,action,enemy]);
     turn += 1;
-    console.log(currentCpos);
     if (turn > nOfAllies){
+        cursor.kill()
         performBattleActions();
+        turn -= 1;
     }
     else {
         currentMenu = "mainBM";
@@ -314,18 +314,71 @@ function addBattleAction(character,attack,enemy) {
 function performBattleActions(){
     for (var i = 0; i < BattleActionStack.length; i++){
         attacking = true;
-        moveTo(BattleActionStack[i][0],BattleActionStack[i][2].x - 20,BattleActionStack[i][2].y);
-        makeDamage(BattleActionStack[i][1],BattleActionStack[i][2]);
+        if (BattleActionStack[i][1]==Ash || BattleActionStack[i][1]==Cinderella){
+            originalPosX = BattleActionStack[i][0].x;
+            originalPosY = BattleActionStack[i][0].y;
+            console.log(originalPosX);
+            moveToAttack(BattleActionStack[i][0],BattleActionStack[i][2].x - 30,BattleActionStack[i][2].y);
+            makeBscDamage(BattleActionStack[i][1],BattleActionStack[i][2]);
+            console.log("Next");
+            console.log(BattleActionStack[i][2].Stats.HP);
+            if (BattleActionStack[i][2].Stats.HP <= 0){
+                BattleXP += BattleActionStack[i][2].XP;
+                BattleActionStack[i][2].kill();
+                if (enemyInBattle.countLiving == 0){
+                    break;
+                }
+            }
+        }
+        else if (BattleActionStack[i][2] != 0){
+            console.log("Use skill");
+        }
+        else {console.log("Use inventory")}
+    }
+    if (enemyInBattle.countLiving == 0){
+        currentMenu = "BattleEnd";
+    }
+    else if (Ash.HP == 0){
+        
+    }
+    else {
+        for (var i = 0; i < EnemyGroup1.children.length; i++){
+            
+        }
+        actionBuilder=[];
+        BattleActionStack=[];
+        currentMenu = "mainBM";
+        textOS.kill();
+        createMenu();
+        currentCpos = [textBox.x+122,textBox.y+31];
+        createCursor(currentCpos[0],currentCpos[1]);
+    }
+    
+}
+
+function makeBscDamage(character,enemy){
+    checkElementalWkn(character,enemy);
+    if (character.Weapon.WeapType == "Physical"){
+        console.log(DamageMultiplier*(character.Stats.PhysAttack + character.Weapon.Stats.PhysAttack) - enemy.Stats.PhysDefense);
+        Damage = Math.round(DamageMultiplier*(character.Stats.PhysAttack + character.Weapon.Stats.PhysAttack) - enemy.Stats.PhysDefense);
+        enemy.Stats.HP -= Damage;
+    }
+    else if (character.Weapon.WeapType == "Magical"){
+        Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + character.Weapon.Stats.MagAttack) - enemy.Stats.MagDefense);
+        enemy.Stats.HP -= Damage;
     }
 }
 
-function makeDamage(attack,enemy){
-    if (attack.PhysAttack != 0){
-        console.log(enemy.Stats.HP);
-        console.log(attack);
-        enemy.Stats.HP -= attack.Stats.PhysAttack;
+function checkElementalWkn(character,enemy){
+    if (character.Element == "None" || enemy.Element == "None"){
+        DamageMultiplier = 1;
     }
-    console.log(enemy.Stats.HP);
+    else if ((character.Element == "Fire" && enemy.Element == "Ice") || (character.Element == "Ice" && enemy.Element == "Lightning") || (character.Element == "Lightning" && enemy.Element == "Fire")){
+        DamageMultiplierMultiplier = 1.5;
+    }
+    else if ((character.Element == "Ice" && enemy.Element == "Fire") || (character.Element == "Fire" && enemy.Element == "Lightning") || (character.Element == "Lightning" && enemy.Element == "Ice")){
+        DamageMultiplierMultiplier = 0.5;
+    }
 }
 
 function moveTo (character,xpos,ypos){
@@ -333,7 +386,6 @@ function moveTo (character,xpos,ypos){
     inTransition = true;
     var currentPos = [character.x,character.y]
     var dx = xpos - currentPos[0];
-    var dy = ypos - currentPos[1];
     character.animations.play('walk',14,true);
     
     if (dx < 0){
@@ -345,17 +397,65 @@ function moveTo (character,xpos,ypos){
         character.animations.play("walkright",14,true);
         var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
         moveTween.onComplete.add(killMoveTween,this,0,character);
-    }
-    
+    }   
 }
 
 function killMoveTween(character) {
-    console.log("Bye");
     character.animations.stop();
-    character.frame = 10;
     character.body.velocity.x = 0;
     character.body.velocity.y = 0;
+    if (character.x < game.camera.x + 400){
+        console.log("endframe10");
+        character.frame = 10;
+    }
+    else {
+        console.log("endframe0");
+        character.frame = 0;
+    }
     inTransition = false;
+}
+
+function moveToAttack (character,xpos,ypos){
+    
+    inTransition = true;
+    var currentPos = [character.x,character.y]
+    var dx = xpos - currentPos[0];
+    
+    if (dx < 0){
+        character.animations.play('walkleft',14,true);
+        console.log("MTAL");
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(function() {contAtkAnimation(character,currentPos[0],currentPos[1]);},this);
+    }
+    else if (dx > 0){ 
+        character.animations.play("walkright",14,true);
+        console.log("MTAR");
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(function() {contAtkAnimation(character,currentPos[0],currentPos[1]);},this);
+    }   
+}
+
+function contAtkAnimation(character,xpos,ypos){
+    console.log("insideCAA");
+    console.log(xpos);
+    character.animations.play('attack',20,true);
+    character.animations.stop()
+    
+    var currentPos = [character.x,character.y]
+    var dx = xpos - currentPos[0];
+    
+    if (dx < 0){
+        character.animations.play('walkleft',14,true);
+        console.log("CAAL");
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(killMoveTween,this,0,character);
+    }
+    else if (dx > 0){ 
+        character.animations.play("walkright",14,true);
+        console.log("CAAR");
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(killMoveTween,this,0,character);
+    }   
 }
 
 function createMenu(){
