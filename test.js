@@ -105,3 +105,92 @@ function addChangeStateEventListeners(){
         game.input.keyboard.addKey(keys[i]).onDown.add(changeState, null, null, i);
     }*/
 }
+
+function moveTo (character,xpos,ypos){
+    
+    var currentPos = [character.x,character.y]
+    var dx = xpos - currentPos[0];
+    var dy = ypos - currentPos[1];
+    console.log(dx);
+    console.log(dy);
+    if (dx < 0){
+        character.scale.setTo(0.7, 0.7);
+        character.animations.play('walk', 14, true);
+        character.body.velocity.x = -100;
+        while (character.x > xpos){
+            console.log("moving left");
+            console.log(mc.body.velocity.x);
+        } 
+        character.body.velocity.x = 0;
+        character.animations.stop('walk');
+        character.frame = 0;
+    }
+    else if (dx > 0){
+        while (character.x < xpos){
+            character.scale.setTo(-0.7, 0.7);
+            character.x += 1;
+            character.animations.play('walk', 14, true);
+        }
+        character.animations.stop('walk');
+        character.frame = 0;
+        character.body.velocity.x = 0;
+    }
+    if(dy < 0){
+        while (character.y > ypos){
+            console.log("moving up");
+            character.scale.setTo(0.7, 0.7);
+            character.y -= 1;
+        } 
+        character.body.velocity.y = 0;
+    }
+    else if(dy > 0){
+        while (character.y < xpos){
+            console.log("moving down")
+            character.scale.setTo(-0.7, 0.7);
+            character.y += 1;
+        }
+        character.body.velocity.y = 0;
+    }
+    
+}
+//inside fight function (beginning)
+//currentPosition = [mc.x, mc.y];
+    //dx = EnemyGroup.alliesPos[0][0] - currentPosition[0];
+    //dy = EnemyGroup.alliesPos[0][1] - currentPosition[1];
+    
+    //mc.x = EnemyGroup.alliesPos[0][0];
+    //mc.y = EnemyGroup.alliesPos[0][1];
+
+//inside moveCursorBM (after changing currentCpos[0])
+/*if(cursors.right.isDown && fighting && !press[0]){
+            press[0] = true;
+            if (currentCpos[0] < maxCBpos){
+                cursor.kill();
+                currentCpos[0] += 200;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[0] = 68;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.right.isUp && fighting){
+            press[0] = false;
+        }
+        if(cursors.left.isDown && fighting && !press[1]){
+            press[1] = true;
+            if (currentCpos[0] > 68){
+                cursor.kill();
+                currentCpos[0] -= 200;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[0] = maxCBpos;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.left.isUp && fighting){
+            press[1] = false;
+        }*/
