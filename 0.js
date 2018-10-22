@@ -1,17 +1,42 @@
-var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text;
-var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"single", Distance:"C"};
-var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"single", Distance:"R"};
-var Cyclone = {Name:"Cyclone", Stats:{PhysAttack:15, MagAttack:0, MP:20}, SkillType:"Attack", Element:"None", AreaOfEffect:"all", Distance:"C"};
-var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"all", Distance:"R"};
+var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text, previousState = "intro";
+var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"single", AnimKey: "slash",
+            SkillAnimation: function SkillAnimation(target){
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
+            }};
+var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"single",
+            SkillAnimation: function SkillAnimation(target){
+                var fire1 = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fire1");
+                Ash.chSprite.animations.play("firespell",2,false);
+                moveToSkill(Ash,Fire,fire1,target);
+            }};
+var Cyclone = {Name:"Cyclone",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"all",AnimKey: "cyclone",
+            SkillAnimation: function SkillAnimation(target){
+                moveToAttack(Ash,500,300,target,Cyclone);
+            }};
+var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"all",
+            SkillAnimation: function SkillAnimation(target){
+                var fire3 = game.add.sprite(500,300,"fire3");
+                Ash.chSprite.animations.play("firespell",2,false);
+                moveToSkill(Ash,Explosion,fire3,target);
+            }};
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Physical", Element:"None"};
 var Staff = {Name:"Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Magical",Element:"None"};
+var Potion = {Name:"Potion",Description:"Restores 25 HP", Quantity: 2, Price: 10,
+             Use: function Use(character){
+                 Potion.Quantity -= 1;
+                 character.Stats.HP += 25;
+                 if (character.MaxStats.HP < character.Stats.HP){
+                     character.Stats.HP = character.MaxStats.HP;
+                 }
+             }};
 var Inventory = {
     Weapons : [WoodSword],
-    Items : [],
+    Items : [Potion],
     Coins : 0
 }
 var Ash = {
     Name : "Ash",
+    PortraitKey : "ashportrait1",
     Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
     MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
     UpdtStats : function UpdtStats(){
@@ -27,6 +52,10 @@ var Ash = {
         }
     },
     Lvl : 1,
+    currentHPRatio : 1,
+    currentMPRatio : 1,
+    HPRatio: function(){return Ash.Stats.HP/Ash.MaxStats.HP},
+    MPRatio: function(){return Ash.Stats.MP/Ash.MaxStats.MP},
     XPObtained : 0,
     XPNeeded : 0,
     XPCurve : function XPCurve(){
@@ -98,13 +127,43 @@ var Cinderella = {
     Weapon : Staff
 }
 
-function Zombie(enemyObject,level) {
-    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+5*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
+function Ghoul(enemyObject,level) {
+    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+6*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
     enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+5*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
     enemyObject.Level = level;
     enemyObject.XP = level*5;
     enemyObject.Coins = level*20;
     enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
+function Swamplady(enemyObject,level) {
+    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+10*level};
+    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+10*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*8;
+    enemyObject.Coins = level*15;
+    enemyObject.Element = "Ice";
+    enemyObject.SkillsLearned = [];
+}
+
+function Flasher(enemyObject,level) {
+    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*10;
+    enemyObject.Coins = level*15;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
+function Swampboss(enemyObject,level) {
+    enemyObject.Stats = {HP:10+30*level, PhysAttack:3+20*level, PhysDefense:1+10*level, MagAttack:1+3*level, MagDefense:1+10*level, Speed:1+8*level, MP:3+20*level};
+    enemyObject.MaxStats = {HP:10+50*level, PhysAttack:3+20*level, PhysDefense:1+10*level, MagAttack:1+3*level, MagDefense:1+10*level, Speed:1+8*level, MP:3+20*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*30;
+    enemyObject.Coins = level*30;
+    enemyObject.Element = "Ice";
     enemyObject.SkillsLearned = [];
 }
 /*WebFontConfig= {
@@ -149,5 +208,5 @@ function addKeyCallback(key, fn, args){
 }
 
 function addChangeStateEventListeners(){
-    addKeyCallback(Phaser.Keyboard.ENTER, changeState, "graveyard");
+    addKeyCallback(Phaser.Keyboard.ENTER, changeState, 'graveyard');
 }
