@@ -116,6 +116,7 @@ demo.state0.prototype = {
         //game.load.script('webfont','//fonts.googleapis.com/css?family=Press+Start+2P')
         game.load.image('logo', 'assets/sprites/logo.png');
         game.load.image('team name', 'assets/sprites/team name.png');
+        game.load.image('title', 'assets/backgrounds/title.png')
     },
     create: function(){
         game.stage.backgroundColor = '#000000';
@@ -134,6 +135,7 @@ demo.state0.prototype = {
         //text = "8-bitz Studioz"
         //game.add.text(450,550, text, {fontSize: '100px', fill: '#ffffff', font: 'Press Start 2P' });
     },
+    
     update: function(){
         
         
