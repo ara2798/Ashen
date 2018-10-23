@@ -55,6 +55,7 @@ demo.state998.prototype = {
         }
         
         if (goToLake && mc.x < 400){
+            music.destroy();
             previousState = "overworldL";
             changeState(null,'lake');
         }

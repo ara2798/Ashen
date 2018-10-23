@@ -56,6 +56,7 @@ demo.state1.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
+        mc.animations.add('cyclone',[10,12,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();
@@ -125,25 +126,31 @@ demo.state1.prototype = {
         //Create pause menu
         createPauseM();
         
+        //Move cursor in main pause menu
+        moveCursorPM();
+        
+        //Select pause menu actions
+        selectPauseMActions();
+        
         //Move main character
         moveMC();
         
         //Move cursor in  battle mode
         moveCursorBM();
 
-        //Move cursor in skills menu
+        //Move cursor in skills menu (battle)
         moveCursorSM();
         
-        //Move cursor in items menu
+        //Move cursor in items menu (battle)
         moveCursorIM();
         
-        //Pick enemy
+        //Pick enemy (battle)
         moveCursorEP(enemyInBattle);
         
-        //Pick ally
+        //Pick ally (battle)
         moveCursorAP();
         
-        //Select actions
+        //Select actions (battle)
         selectBattleActions();
     }
 };
@@ -192,7 +199,7 @@ function createPauseM(){
             pause = true;
             currentMenu = "pauseM";
             pauseM = game.add.sprite(game.camera.x,game.camera.y,'pause menu');
-            pauseMtext = game.add.text(game.camera.x+610,game.camera.y+40,"Stats\nInventory\nSkills");
+            pauseMtext = game.add.text(game.camera.x+610,game.camera.y+40,"Stats\nSkills\nItems\nWeapons");
             currentCpos = [game.camera.x+570,game.camera.y+43]
             createCursor(currentCpos[0],currentCpos[1]);
             currentSubmenu = "Stats";
@@ -206,7 +213,13 @@ function createPauseM(){
             pauseMtext.kill();
             textOS.kill();
             cursor.kill();
-            Ash.portrait.kill();
+            if (currentSubmenu == "Stats"){
+                for (var i = 0; i < Allies.length; i++){
+                    Allies[i].portrait.kill();
+                    //Allies[i].hpBar.kill();
+                    //Allies[i].mpBar.kill();
+                }
+            }
         }
         else if (cursors.p.isUp){
             press[6] = false;
@@ -215,37 +228,297 @@ function createPauseM(){
 }
 
 function createSubmenu(){
+    text = "";
     if (currentSubmenu == "Stats"){
-        text = "";
         for (var i = 0; i < Allies.length; i++){
             Allies[i].portrait = game.add.sprite(game.camera.x+50,game.camera.y+50+200*i,Allies[i].PortraitKey);
             Allies[i].portrait.scale.setTo(0.7);
             text += "Lvl. " + Allies[i].Lvl + "\n";
             text += "HP: " + Allies[i].Stats.HP + "/" + Allies[i].MaxStats.HP + "\n";
             text += "MP: " + Allies[i].Stats.MP + "/" + Allies[i].MaxStats.MP + "\n";
-            text += "Phys. Attack: " + Allies[i].Stats.PhysAttack + "\n";
+            text += "Phys. Attack: " + Allies[i].Stats.PhysAttack;
+            var SpaceBetwn = 6 - Allies[i].Stats.PhysAttack.toString().length;
+            for (var j = 0; j < SpaceBetwn; j++){
+                text += " ";
+            }
             text += "Phys. Defense: " + Allies[i].Stats.PhysDefense + "\n";
-            text += "Mag. Attack: " + Allies[i].Stats.MagAttack + "\n";
+            text += "Mag. Attack: " + Allies[i].Stats.MagAttack;
+            var SpaceBetwn = 7 - Allies[i].Stats.MagAttack.toString().length;
+            for (var j = 0; j < SpaceBetwn; j++){
+                text += " ";
+            }
             text += "Mag. Defense: " + Allies[i].Stats.MagDefense + "\n";
             text += "Speed: " + Allies[i].Stats.Speed + "\n";
             Allies[i].XPCurve();
             text += "Exp. Points: " + Allies[i].XPObtained + "/" + Allies[i].XPNeeded;
-            textOS = game.add.text(Allies[i].portrait.x + 160, Allies[i].portrait.y,text,{fontSize:15});
+            text += "\n\n";
         }
+        textOS = game.add.text(game.camera.x+210, game.camera.y+50,text,{fontSize:15});
+    }
+    else if (currentSubmenu == "Skills"){
+        for (var i = 0; i < Allies.length; i++){
+            text += Allies[i].Name + ":\n";
+            for (var j = 0; j < Allies[i].SkillsLearned.length; j++){
+                text += Allies[i].SkillsLearned[j].Name;
+                var SpaceBetwn = 15 - Allies[i].SkillsLearned[j].Name.length;
+                for (var k = 0; k < SpaceBetwn; k++){
+                    text += " ";
+                }
+                if (Allies[i].SkillsLearned[j].Stats.PhysAttack != 0){
+                    text += "+" + Allies[i].SkillsLearned[j].Stats.PhysAttack + " Phys. Attack";
+                    var SpaceBetwn = 7 - Allies[i].SkillsLearned[j].Stats.PhysAttack.toString().length;
+                    for (var k = 0; k < SpaceBetwn; k++){
+                        text += " ";
+                    }
+                }
+                else{
+                    text += "+" + Allies[i].SkillsLearned[j].Stats.MagAttack + " Mag. Attack";
+                    var SpaceBetwn = 8 - Allies[i].SkillsLearned[j].Stats.PhysAttack.toString().length;
+                    for (var k = 0; k < SpaceBetwn; k++){
+                        text += " ";
+                    }
+                }
+                text += Allies[i].SkillsLearned[j].Stats.MP + "MP";
+                var SpaceBetwn = 5 - Allies[i].SkillsLearned[j].Stats.MP.toString().length;
+                for (var k = 0; k < SpaceBetwn; k++){
+                    text += " ";
+                }
+                text += Allies[i].SkillsLearned[j].Element;
+                text += "\n"
+            }
+            textOS = game.add.text(game.camera.x+50,game.camera.y+55,text,{fontSize:20});
+        }
+    }
+    else if (currentSubmenu == "Items"){
+        text += "Name            Price       Quantity\n";
+        for (var i = 0; i < Inventory.Items.length; i++){
+            text += Inventory.Items[i].Name;
+            var SpaceBetwn = 16 - Inventory.Items[i].Name.length;
+            for (var j = 0; j < SpaceBetwn; j++){
+                text += " ";
+            }
+            text += Inventory.Items[i].Price;
+            var SpaceBetwn = 14 - Inventory.Items[i].Price.toString().length;
+            for (var j = 0; j < SpaceBetwn; j++){
+                text += " ";
+            }
+            text += "x" + Inventory.Items[i].Quantity + "\n";
+        }
+        textOS = game.add.text(game.camera.x+50,game.camera.y+150,text,{fontSize:20});
+    }
+    else if (currentSubmenu == "Weapons"){
+        text += "Name                     Stats                        Element\n";
+        for (var i = 0; i < Inventory.Weapons.length; i++){
+            text += Inventory.Weapons[i].Name;
+            var SpaceBetwn = 19 - Inventory.Weapons[i].Name.length;
+            for (var j = 0; j < SpaceBetwn; j++){
+                text += " ";
+            }
+            if (Inventory.Weapons[i].Stats.PhysAttack != 0){
+                text += "+" + Inventory.Weapons[i].Stats.PhysAttack + " Phys. Attack";
+                var SpaceBetwn = 7 - Inventory.Weapons[i].Stats.PhysAttack.toString().length;
+                for (var j = 0; j < SpaceBetwn; j++){
+                    text += " ";
+                }
+            }
+            else{
+                text += "+" + Inventory.Weapons[i].Stats.MagAttack + " Mag. Attack";
+                var SpaceBetwn = 8 - Inventory.Weapons[i].Stats.PhysAttack.toString().length;
+                for (var j = 0; j < SpaceBetwn; j++){
+                    text += " ";
+                }
+            }
+            text += Inventory.Weapons[i].Element + "\n";
+        }
+        textOS = game.add.text(game.camera.x+50,game.camera.y+150,text,{fontSize:20});
+    }
+}
+
+function moveCursorPM(){
+    if (currentMenu == "pauseM"){
+        //currentCpos[0] = textBox.x + 122 + (turn - 1) * 250;
+        if(cursors.up.isDown && !press[2]){
+            press[2] = true;
+            if (currentCpos[1] > game.camera.y+43){
+                cursor.kill();
+                currentCpos[1] -= 36;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[1] += 108;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.up.isUp){
+            press[2] = false;
+        }
+        if(cursors.down.isDown && !press[3]){
+            press[3] = true;
+            console.log("pressing down");
+            if (currentCpos[1] < game.camera.y+151){
+                cursor.kill();
+                currentCpos[1] += 36;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else{
+                cursor.kill();
+                currentCpos[1] -= 108;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (cursors.down.isUp){
+            press[3] = false;
+        }
+    }
+}
+
+function selectPauseMActions(){
+    if(cursors.z.isDown && !press[4]){
+        press[4] = true;
+        if (currentMenu == "pauseM" && cursor.y == game.camera.y + 43){
+            textOS.kill();
+            currentSubmenu = "Stats";
+            createSubmenu();
+        }
+        else if (currentMenu == "pauseM" && cursor.y == game.camera.y + 79){
+            textOS.kill();
+            currentSubmenu = "Skills";
+            createSubmenu();
+            for (var i = 0; i < Allies.length; i++){
+                Allies[i].portrait.kill();
+                //Allies[i].hpBar.kill();
+                //Allies[i].mpBar.kill();
+            }
+        }
+        else if (currentMenu == "pauseM" && cursor.y == game.camera.y + 115){
+            textOS.kill();
+            currentSubmenu = "Items";
+            createSubmenu();
+            for (var i = 0; i < Allies.length; i++){
+                Allies[i].portrait.kill();
+                //Allies[i].hpBar.kill();
+                //Allies[i].mpBar.kill();
+            }
+            //currentCpos[0] = textBox.x + 85;
+            //currentCpos[1] = textBox.y + 31;
+            //createCursor(currentCpos[0],currentCpos[1]);
+        }
+        else if (currentMenu == "pauseM" && cursor.y == game.camera.y + 151){
+            textOS.kill();
+            currentSubmenu = "Weapons";
+            createSubmenu();
+            for (var i = 0; i < Allies.length; i++){
+                Allies[i].portrait.kill();
+                //Allies[i].hpBar.kill();
+                //Allies[i].mpBar.kill();
+            }
+            //currentCpos[0] = textBox.x + 85;
+            //currentCpos[1] = textBox.y + 31;
+            //createCursor(currentCpos[0],currentCpos[1]);
+        }
+        else if (currentMenu == "itemsSM"){
+            if (Inventory.Items[itemPicked].Quantity > 0){
+                actionBuilder.push(Allies[turn-1]);
+                actionBuilder.push(Inventory.Items[itemPicked]);
+                currentMenu = "pickAlly";
+                cursor.kill();
+                currentCpos[0] = Allies[0].chSprite.x - 70;
+                currentCpos[1] = Allies[0].chSprite.y - 30;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (currentMenu == "weaponsSM"){
+            if (Allies[turn-1].SkillsLearned[skillPicked].Stats.MP <= Allies[turn-1].Stats.MP){
+                actionBuilder.push(Allies[turn-1]);
+                actionBuilder.push(Allies[turn-1].SkillsLearned[skillPicked]);
+                if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Attack"){
+                    currentMenu = "pickEnemy";
+                    cursor.kill();
+                    for (var i = 0; i < enemyInBattle.children.length; i++){
+                        if (enemyInBattle.children[i].alive){
+                            currentCpos[0] = enemyInBattle.children[i].x - 30;
+                            currentCpos[1] = enemyInBattle.children[i].y;
+                            enemyPicked = i;
+                            firstEnemy = i;
+                            break;
+                        }
+                    }
+                    lastEnemy = enemyInBattle.children.length - 1;
+                    while (!enemyInBattle.children[lastEnemy].alive){
+                        lastEnemy -= 1;
+                    }
+                    createCursor(currentCpos[0],currentCpos[1]);
+                }
+                else if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Boost"){
+                    //select ally
+                }
+            }       
+        }
+        else if (currentMenu == "pickAlly"){
+            if (Allies[allyPicked].Stats.HP > 0){
+                actionBuilder.push(Allies[allyPicked]);
+                currentMenu = "None";
+                addBattleAction(actionBuilder);
+            }
+            else if ([Revive].indexOf(actionBuilder[1]) != -1){
+                actionBuilder.push(Allies[allyPicked]);
+                currentMenu = "None";
+                addBattleAction(actionBuilder);
+            }
+        }
+    }
+    else if (cursors.z.isUp){
+        press[4] =false;
+    }
+    if(cursors.x.isDown && !press[5]){
+        press[5] = true;
+        if (currentMenu == "pickEnemy"){
+            if (actionBuilder[1] == 0){
+                currentMenu = "mainBM";
+                cursor.kill();
+                actionBuilder = [];
+                currentCpos[0] = textBox.x + 85 + (turn - 1) * 100;;
+                currentCpos[1] = textBox.y + 31;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+            else {
+                currentMenu = "skillsM";
+                cursor.kill();
+                skillPicked = 0;
+                actionBuilder.splice(1,1);
+                currentCpos[0] = textBox.x + 85;
+                currentCpos[1] = textBox.y + 31;
+                createCursor(currentCpos[0],currentCpos[1]);
+            }
+        }
+        else if (currentMenu == "skillsM" || currentMenu == "itemsM"){
+            currentMenu = "mainBM";
+            textOS.destroy();
+            cursor.kill();
+            actionBuilder = [];
+            currentCpos[0] = textBox.x + 85;
+            currentCpos[1] = textBox.y + 31;
+            createCursor(currentCpos[0],currentCpos[1]);
+            createMenu();
+        }
+    }
+    else if (cursors.x.isUp){
+        press[5] =false;
     }
 }
 
 function moveMC(){
     if (!fighting && !storyMode && !pause){   
         if(cursors.right.isDown && mc.body.velocity.y == 0){
-            mc.body.velocity.x = 550;
+            mc.body.velocity.x = 350;
             mc.animations.play('walkright', 14, true);
             /*if(mc.x >= 1547.5){
                 changeState(null,"0");
             }*/
         }
         else if(cursors.left.isDown && mc.body.velocity.y == 0){
-            mc.body.velocity.x = -550;
+            mc.body.velocity.x = -350;
             mc.animations.play('walkleft', 14, true);
         }
         /*else{
@@ -254,11 +527,11 @@ function moveMC(){
             mc.body.velocity.x = 0;
         }*/
         else if(cursors.up.isDown){
-            mc.body.velocity.y = -450;
+            mc.body.velocity.y = -250;
             mc.animations.play('walkup', 14, true);
         }
         else if(cursors.down.isDown){
-            mc.body.velocity.y = 450;
+            mc.body.velocity.y = 250;
             mc.animations.play('walkdown', 14, true);
         }
         else{

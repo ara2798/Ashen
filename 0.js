@@ -1,19 +1,19 @@
 var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, text, previousState = "intro";
-var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"single", AnimKey: "slash",
+var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey: "slash",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
             }};
-var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"single",
+var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
                 var fire1 = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fire1");
                 Ash.chSprite.animations.play("firespell",2,false);
                 moveToSkill(Ash,Fire,fire1,target);
             }};
-var Cyclone = {Name:"Cyclone",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"all",AnimKey: "cyclone",
+var Cyclone = {Name:"Cyclone",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,500,300,target,Cyclone);
             }};
-var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"all",
+var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
                 var fire3 = game.add.sprite(500,300,"fire3");
                 Ash.chSprite.animations.play("firespell",2,false);

@@ -15,10 +15,16 @@ demo.state2.prototype = {
         game.load.image('fire1', 'assets/sprites/skillfire1.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         
+        //background music
+        game.load.audio('background_music', ['assets/audio/lake_music.ogg', 'assets/audio/lake_music.mp3']);      
+        
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        addChangeStateEventListeners();
+        
+        //plays background music
+        music = game.add.audio('background_music');
+        music.play('', 0, 1, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -48,6 +54,7 @@ demo.state2.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
+        mc.animations.add('cyclone',[10,12,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();
