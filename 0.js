@@ -85,6 +85,7 @@ var Ash = {
 
 var Cinderella = {
     Name : "Cinderella",
+    PortraitKey : "ashportrait1",
     Stats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
     MaxStats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
     UpdtStats : function UpdtStats(){
@@ -100,6 +101,10 @@ var Cinderella = {
         }
     },
     Lvl : 1,
+    currentHPRatio : 1,
+    currentMPRatio : 1,
+    HPRatio: function(){return Cinderella.Stats.HP/Cinderella.MaxStats.HP},
+    MPRatio: function(){return Cinderella.Stats.MP/Cinderella.MaxStats.MP},
     XPObtained : 0,
     XPNeeded : 0,
     XPCurve : function XPCurve(){
@@ -122,7 +127,7 @@ var Cinderella = {
         return [Cinderella.leveledUp,Cinderella.learnedSkill];
     },
     SkillLvl: [5,40],
-    SkillsLearned : [Slash,Fire],
+    SkillsLearned : [Slash],
     SkillsToLearn : [Cyclone,Explosion],
     Weapon : Staff
 }
