@@ -15,6 +15,9 @@ demo.state1.prototype = {
         game.load.image('fire1', 'assets/sprites/skillfire1.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         
+        //image for boundries 
+        game.load.image('square', 'assets/sprites/square.png');
+        
         //background music
         game.load.audio('background_music', ['assets/audio/graveyard_background_music.ogg', 'assets/audio/graveyard_background_music.mp3']);
     },
@@ -59,6 +62,13 @@ demo.state1.prototype = {
         mc.animations.add('cyclone',[10,12,10]);
         Ash.chSprite = mc;
         
+        //bounds
+        square = game.add.sprite(5,815,'square');
+        square.scale.setTo(1.5,3.5);
+        game.physics.enable(square);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
@@ -92,6 +102,8 @@ demo.state1.prototype = {
         });
     },
     update: function(){
+        
+        game.physics.arcade.collide(mc, square);
         //game.physics.arcade.collide(mc, platforms);
         //game.physics.arcade.collide(EnemyGroup1, platforms);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
@@ -108,6 +120,7 @@ demo.state1.prototype = {
         }
         
         if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210){
+            music.destroy();
             previousState = "graveyard";
             changeState(null,'Overworld');
         }

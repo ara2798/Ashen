@@ -5,6 +5,9 @@ demo.state998.prototype = {
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
         game.load.image('square', 'assets/sprites/square.png');
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        
+        //image for boundries 
+        game.load.image('square1', 'assets/sprites/square2.png');
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -12,6 +15,7 @@ demo.state998.prototype = {
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'overworld');
+        
         
         if (previousState == "graveyard"){
             mc = game.add.sprite(200, 230, 'mc');
@@ -27,9 +31,14 @@ demo.state998.prototype = {
         mc.animations.add('walkup', [3,4,5]);
         Ash.chSprite = mc;
         
+        
+        
+        
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
+        //bounds
+
         graveyard = game.add.sprite(0,0,'square');
         graveyard.scale.setTo(1.8);
         game.physics.enable(graveyard);
@@ -39,6 +48,7 @@ demo.state998.prototype = {
         lake.scale.setTo(2.3,1.1);
         game.physics.enable(lake);
         lake.body.immovable = true;
+        
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
