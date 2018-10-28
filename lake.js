@@ -15,7 +15,8 @@ demo.state2.prototype = {
         game.load.image('fire1', 'assets/sprites/skillfire1.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         
-        //image for boundries 
+        //image for boundries
+        var bounds
         game.load.image('square', 'assets/sprites/square.png');
         
         //background music
@@ -94,20 +95,63 @@ demo.state2.prototype = {
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
         //bounds
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+        
+        //bottom lake
+        var square = bounds.create(600, 700,'square');
+        square.scale.setTo(7,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        //top lake
+        var square = bounds.create(556, 8,'square');
+        square.scale.setTo(7,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(467, 850,'square');
+        square.scale.setTo(1,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(390, 940,'square');
+        square.scale.setTo(1,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(240, 1000,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        //trees
+        var square = bounds.create(0, 0,'square');
+        square.scale.setTo(4,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(404, 276,'square');
+        square.scale.setTo(.3,.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(520, 276,'square');
+        square.scale.setTo(.3,.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         
         //bottom lake bound
-        square1 = game.add.sprite(600,700,'square');
-        square1.scale.setTo(7,7);
-        game.physics.enable(square1);
-        square1.body.immovable = true;
-        square1.body.moves = false;
+        //square1 = game.add.sprite(600,700,'square');
+        //square1.scale.setTo(7,7);
+        //bounds.add(square1);
+        //game.physics.enable(square1);
+        //square1.body.immovable = true;
+        //square1.body.moves = false;
         
         //top lake bound
-        square2 = game.add.sprite(556,8,'square');
-        square2.scale.setTo(7,5);
-        game.physics.enable(square2);
-        square2.body.immovable = true;
-        square2.body.moves = false;
+        //square2 = game.add.sprite(556,8,'square');
+        //square2.scale.setTo(7,5);
+        //game.physics.enable(square2);
+        //square2.body.immovable = true;
+        //square2.body.moves = false;
+        
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
@@ -120,8 +164,8 @@ demo.state2.prototype = {
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
         
         //mc cant go pass bounds
-        game.physics.arcade.collide(Ash.chSprite, square1);
-        game.physics.arcade.collide(Ash.chSprite, square2);
+        game.physics.arcade.collide(Ash.chSprite, bounds);
+        //game.physics.arcade.collide(Ash.chSprite, square2);
 
         if (encounter1 && !inTransition){
             fighting = true;
