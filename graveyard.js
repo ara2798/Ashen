@@ -130,7 +130,7 @@ demo.state1.prototype = {
         moveCursorPSM();
         
         //Select pause menu actions (bug might be here)
-        //selectPauseMActions();
+        selectPauseMActions();
         
         //Move main character
         moveMC();

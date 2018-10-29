@@ -163,25 +163,37 @@ demo.state2.prototype = {
         //Progress through the story
         continueStory();
         
+        //Create pause menu
+        createPauseM();
+        
+        //Move cursor in main pause menu
+        moveCursorPM();
+        
+        //Move cursor in pause submenus
+        moveCursorPSM();
+        
+        //Select pause menu actions (bug might be here)
+        selectPauseMActions();
+        
         //Move main character
         moveMC();
         
         //Move cursor in  battle mode
         moveCursorBM();
 
-        //Move cursor in skills menu
+        //Move cursor in skills menu (battle)
         moveCursorSM();
         
-        //Move cursor in items menu
+        //Move cursor in items menu (battle)
         moveCursorIM();
         
-        //Pick enemy
+        //Pick enemy (battle)
         moveCursorEP(enemyInBattle);
         
-        //Pick ally
+        //Pick ally (battle)
         moveCursorAP();
         
-        //Select actions
+        //Select actions (battle)
         selectBattleActions();
     }
 };

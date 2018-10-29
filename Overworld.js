@@ -75,6 +75,16 @@ demo.state998.prototype = {
         //Move main character
         moveMC();
         
+        //Create pause menu
+        createPauseM();
         
+        //Move cursor in main pause menu
+        moveCursorPM();
+        
+        //Move cursor in pause submenus
+        moveCursorPSM();
+        
+        //Select pause menu actions (bug might be here)
+        selectPauseMActions();
     }
 };
