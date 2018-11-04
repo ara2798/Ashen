@@ -1,22 +1,18 @@
-var story2Completed = false, swampMiniBoss = false;
+var story2Completed = false, swampMiniBoss = false, bounds;
 demo.state2 = function(){};
 demo.state2.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.image('lake', 'assets/backgrounds/lake.png');
-        game.load.image('immovbl1', 'assets/backgrounds/lake_imm1.png');
-        game.load.image('immovbl2', 'assets/backgrounds/lake_imm2.png');
-        game.load.image('battle menu', 'assets/sprites/battle.png');
-        game.load.image('hud', 'assets/sprites/hud.png');
-        game.load.image('cursor', 'assets/sprites/cursor.png');
-        game.load.spritesheet('swampboss', 'assets/sprites/swampboss.png', 260, 130);
-        game.load.spritesheet('swamplady', 'assets/sprites/swamplady.png', 65, 130);
-        game.load.spritesheet('flasher', 'assets/sprites/the flasher.png', 65, 130);
-        game.load.image('fire1', 'assets/sprites/skillfire1.png');
-        game.load.image('sword1', 'assets/sprites/skillsword1.png');
+        game.load.spritesheet('swampboss', 'assets/spritesheets/swampbosssprites.png', 280, 160);
+        game.load.spritesheet('swamplady', 'assets/spritesheets/swampladysprites.png', 100, 130);
+        game.load.spritesheet('flasher', 'assets/spritesheets/theflashersprites.png', 140, 130);
+        game.load.image('icespikes', 'assets/sprites/icespikes.png');
+        game.load.image('shadowbeam', 'assets/sprites/beam.png');
+        game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square2.png');
+        game.load.image('square', 'assets/sprites/square.png');
         
         //background music
         game.load.audio('background_music', ['assets/audio/lake_music.ogg', 'assets/audio/lake_music.mp3']);      
@@ -68,15 +64,17 @@ demo.state2.prototype = {
         
         var swamplady = EnemyGroup1.create(253, 373,'swamplady');
         swamplady.scale.setTo(0.9);
-        swamplady.animations.add('walkleft',[0]);
-        swamplady.animations.add('walkright',[0]);
-        swamplady.animations.add('attack',[0]);
+        swamplady.animations.add('walkleft',[0,1]);
+        swamplady.animations.add('walkright',[2,3]);
+        swamplady.animations.add('attack',[0,5]);
+        swamplady.animations.add('icespikes',[4,5,0]);
         Swamplady(swamplady,5);
         var swamplady = EnemyGroup1.create(446, 466,'swamplady');
         swamplady.scale.setTo(0.9);
-        swamplady.animations.add('walkleft',[0]);
-        swamplady.animations.add('walkright',[0]);
-        swamplady.animations.add('attack',[0]);
+        swamplady.animations.add('walkleft',[0,1]);
+        swamplady.animations.add('walkright',[2,3]);
+        swamplady.animations.add('attack',[0,5]);
+        swamplady.animations.add('icespikes',[4,5,0]);
         Swamplady(swamplady,5);
         
         EnemyGroup2 = game.add.group();
@@ -85,8 +83,9 @@ demo.state2.prototype = {
         var flasher = EnemyGroup2.create(320, 1110,'flasher');
         flasher.scale.setTo(0.9);
         flasher.animations.add('walkleft',[0]);
-        flasher.animations.add('walkright',[0]);
-        flasher.animations.add('attack',[0]);
+        flasher.animations.add('walkright',[1]);
+        flasher.animations.add('attack',[0,2,4]);
+        flasher.animations.add('shadowbeam',[2,3,0]);
         Flasher(flasher,5);
         
         EnemyGroup3 = game.add.group();
@@ -95,12 +94,55 @@ demo.state2.prototype = {
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
+        //****BOUNDS*****
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+
+        //bottom lake
+        var square = bounds.create(600, 700,'square');
+        square.scale.setTo(7,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+
+        //top lake
+        var square = bounds.create(556, 8,'square');
+        square.scale.setTo(7,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(467, 850,'square');
+        square.scale.setTo(1,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(390, 940,'square');
+        square.scale.setTo(1,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(240, 1000,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;        
+
+        //trees
+        var square = bounds.create(0, 0,'square');
+        square.scale.setTo(4,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(404, 276,'square');
+        square.scale.setTo(.3,.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(520, 276,'square');
+        square.scale.setTo(.3,.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
     },
     update: function(){
-        //collision = game.physics.arcade.collide(Ash.chSprite,immovableObjs);
+        //mc cant go pass bounds
+        game.physics.arcade.collide(Ash.chSprite, bounds);
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
@@ -143,9 +185,10 @@ demo.state2.prototype = {
             swampMiniBoss = true;
             var swampboss = EnemyGroup3.create(1400, 420,'swampboss');
             swampboss.scale.setTo(1.8);
-            swampboss.animations.add('walkleft',[0]);
-            swampboss.animations.add('walkright',[0]);
+            swampboss.animations.add('walkleft',[0,1,2,3]);
+            swampboss.animations.add('walkright',[4,5,6,7]);
             swampboss.animations.add('attack',[0]);
+            swampboss.animations.add('tidalwave',[8,9,0]);
             Swampboss(swampboss,10);
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
             moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);

@@ -1,4 +1,6 @@
 var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro";
+
+//ALLY SKILLS
 var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey:"slash",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
@@ -11,7 +13,7 @@ var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"A
             }};
 var Cyclone = {Name:"Cyclone",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
             SkillAnimation: function SkillAnimation(target){
-                moveToAttack(Ash,500,300,target,Cyclone);
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Cyclone);
             }};
 var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
@@ -19,6 +21,29 @@ var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, Sk
                 Ash.chSprite.animations.play("firespell",2,false);
                 moveToSkill(Ash,Explosion,fire3,target);
             }};
+
+//ENEMY SKILLS
+var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(character,target){
+                var icespikes1 = game.add.sprite(character.x-30,character.y,"icespikes");
+                character.animations.play("icespikes",3,false);
+                moveToSkill(character,IceSpikes,icespikes1,target);
+            }};
+var ShadowBeam = {Name:"Shadow Beam", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(character,target){
+                var shadowbeam1 = game.add.sprite(character.x-30,character.y,"shadowbeam");
+                character.animations.play("shadowbeam",3,false);
+                moveToSkill(character,ShadowBeam,shadowbeam1,target);
+            }};
+var TidalWave = {Name:"Tidal Wave", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(character,target){
+                var tidalwave1 = game.add.sprite(character.x-30,game.camera.y,"tidalwave");
+                tidalwave1.scale.setTo(2,4);
+                character.animations.play("tidalwave",3,false);
+                moveToSkill(character,TidalWave,tidalwave1,target);
+            }};
+
+//ITEM OBJECTS
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None"};
 var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None"};
 var Potion = {Name:"Potion",Description:"Restores 25 HP", Quantity: 2, Price: 10, imageKey:"item",
@@ -43,11 +68,13 @@ var Inventory = {
     Items : [Potion],
     Coins : 0
 }
+
+//CHARACTER OBJECTS
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
-    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
+    Stats : {HP:200, PhysAttack:50000,PhysDefense:3000,MagAttack:10,MagDefense:1500,Speed:20,MP:60},
+    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:3000,MagAttack:10,MagDefense:1500,Speed:20,MP:60},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -92,48 +119,48 @@ var Ash = {
     Weapon : WoodSword
 }
 
-var Cinderella = {
-    Name : "Cinderella",
+var Kori = {
+    Name : "Kori",
     PortraitKey : "ashportrait1",
     Stats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
     MaxStats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
     UpdtStats : function UpdtStats(){
-        Cinderella.MaxStats.HP += Math.round(Math.random()*(90-80)+80);
-        Cinderella.MaxStats.PhysAttack += Math.round(Math.random()*(4-2)+2);
-        Cinderella.MaxStats.PhysDefense += Math.round(Math.random()*(5-3)+3);
-        Cinderella.MaxStats.MagAttack += Math.round(Math.random()*(10-8)+8);
-        Cinderella.MaxStats.MagDefense += Math.round(Math.random()*(8-5)+5);
-        Cinderella.MaxStats.Speed += Math.round(Math.random()*(7-5)+5);
-        Cinderella.MaxStats.MP += Math.round(Math.random()*(30-25)+25);
-        for (var i in Cinderella.MaxStats){
-            Cinderella.Stats[i] = Cinderella.MaxStats[i];
+        Kori.MaxStats.HP += Math.round(Math.random()*(90-80)+80);
+        Kori.MaxStats.PhysAttack += Math.round(Math.random()*(4-2)+2);
+        Kori.MaxStats.PhysDefense += Math.round(Math.random()*(5-3)+3);
+        Kori.MaxStats.MagAttack += Math.round(Math.random()*(10-8)+8);
+        Kori.MaxStats.MagDefense += Math.round(Math.random()*(8-5)+5);
+        Kori.MaxStats.Speed += Math.round(Math.random()*(7-5)+5);
+        Kori.MaxStats.MP += Math.round(Math.random()*(30-25)+25);
+        for (var i in Kori.MaxStats){
+            Kori.Stats[i] = Kori.MaxStats[i];
         }
     },
     Lvl : 1,
     currentHPRatio : 1,
     currentMPRatio : 1,
-    HPRatio: function(){return Cinderella.Stats.HP/Cinderella.MaxStats.HP},
-    MPRatio: function(){return Cinderella.Stats.MP/Cinderella.MaxStats.MP},
+    HPRatio: function(){return Kori.Stats.HP/Kori.MaxStats.HP},
+    MPRatio: function(){return Kori.Stats.MP/Kori.MaxStats.MP},
     XPObtained : 0,
     XPNeeded : 0,
     XPCurve : function XPCurve(){
-        Cinderella.XPNeeded = Math.round(1.1*Math.exp(Cinderella.Lvl)+4);
+        Kori.XPNeeded = Math.round(1.1*Math.exp(Kori.Lvl)+4);
     },
     LvlUp : function LvlUp() {
-        Cinderella.XPCurve();
-        Cinderella.leveledUp = false;
-        Cinderella.learnedSkill = false;
-        while (Cinderella.XPObtained >= Cinderella.XPNeeded){
-            Cinderella.Lvl += 1;
-            if (Cinderella.SkillLvl.indexOf(Cinderella.Lvl) != -1){
-                Cinderella.SkillsLearned.push(Cinderella.SkillsToLearn[Cinderella.SkillLvl.indexOf(Cinderella.Lvl)]);
-                Cinderella.learnedSkill = true;
+        Kori.XPCurve();
+        Kori.leveledUp = false;
+        Kori.learnedSkill = false;
+        while (Kori.XPObtained >= Kori.XPNeeded){
+            Kori.Lvl += 1;
+            if (Kori.SkillLvl.indexOf(Kori.Lvl) != -1){
+                Kori.SkillsLearned.push(Kori.SkillsToLearn[Kori.SkillLvl.indexOf(Kori.Lvl)]);
+                Kori.learnedSkill = true;
             }
-            Cinderella.UpdtStats();
-            Cinderella.XPCurve();
-            Cinderella.leveledUp = true;
+            Kori.UpdtStats();
+            Kori.XPCurve();
+            Kori.leveledUp = true;
         }
-        return [Cinderella.leveledUp,Cinderella.learnedSkill];
+        return [Kori.leveledUp,Kori.learnedSkill];
     },
     SkillLvl: [5,40],
     SkillsLearned : [Slash],
@@ -141,9 +168,10 @@ var Cinderella = {
     Weapon : WoodStaff
 }
 
+//ENEMY OBJECTS (MODIFIER FUNCTIONS)
 function Ghoul(enemyObject,level) {
     enemyObject.Stats = {HP:10+20*level, PhysAttack:3+6*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
-    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+5*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
+    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+6*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+2*level, MP:3+5*level};
     enemyObject.Level = level;
     enemyObject.XP = level*5;
     enemyObject.Coins = level*20;
@@ -152,32 +180,52 @@ function Ghoul(enemyObject,level) {
 }
 
 function Swamplady(enemyObject,level) {
-    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+10*level};
-    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+10*level};
+    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
     enemyObject.Level = level;
     enemyObject.XP = level*8;
     enemyObject.Coins = level*15;
     enemyObject.Element = "Ice";
-    enemyObject.SkillsLearned = [];
+    enemyObject.SkillsLearned = [IceSpikes];
 }
 
 function Flasher(enemyObject,level) {
-    enemyObject.Stats = {HP:10+20*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
-    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
     enemyObject.Level = level;
     enemyObject.XP = level*10;
     enemyObject.Coins = level*15;
     enemyObject.Element = "None";
-    enemyObject.SkillsLearned = [];
+    enemyObject.SkillsLearned = [ShadowBeam];
 }
 
 function Swampboss(enemyObject,level) {
-    enemyObject.Stats = {HP:10+30*level, PhysAttack:3+20*level, PhysDefense:1+10*level, MagAttack:1+3*level, MagDefense:1+10*level, Speed:1+8*level, MP:3+20*level};
-    enemyObject.MaxStats = {HP:10+50*level, PhysAttack:3+20*level, PhysDefense:1+10*level, MagAttack:1+3*level, MagDefense:1+10*level, Speed:1+8*level, MP:3+20*level};
+    enemyObject.Stats = {HP:10+30*level, PhysAttack:3+10*level, PhysDefense:1+3*level, MagAttack:1+5*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
+    enemyObject.MaxStats = {HP:10+30*level, PhysAttack:3+10*level, PhysDefense:1+3*level, MagAttack:1+5*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
     enemyObject.Level = level;
     enemyObject.XP = level*30;
     enemyObject.Coins = level*30;
     enemyObject.Element = "Ice";
+    enemyObject.SkillsLearned = [TidalWave];
+}
+
+function Weasel(enemyObject,level) {
+    enemyObject.Stats = {HP:10+22*level, PhysAttack:3+7*level, PhysDefense:1+5*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+15*level, MP:3+10*level};
+    enemyObject.MaxStats = {HP:10+20*level, PhysAttack:3+7*level, PhysDefense:1+5*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+15*level, MP:3+10*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*10;
+    enemyObject.Coins = level*25;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
+function Harpie(enemyObject,level) {
+    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+6*level, PhysDefense:1+5*level, MagAttack:1+10*level, MagDefense:1+13*level, Speed:1+10*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+6*level, PhysDefense:1+5*level, MagAttack:1+10*level, MagDefense:1+13*level, Speed:1+10*level, MP:3+15*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*25;
+    enemyObject.Coins = level*5;
+    enemyObject.Element = "Storm";
     enemyObject.SkillsLearned = [];
 }
 /*WebFontConfig= {

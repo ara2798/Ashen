@@ -1,4 +1,7 @@
-var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, portraitL=["ashportrait1"], fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
+var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = true, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
+
+var portraitL=["ashportrait1","ashportraitmad","ashportraitsad","ashportraitthink"];
+
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
@@ -9,12 +12,18 @@ demo.state1.prototype = {
         game.load.image('hud', 'assets/sprites/hud.png');
         game.load.image('cursor', 'assets/sprites/cursor.png');
         game.load.image('ashportrait1','assets/sprites/ashportrait.png');
+        game.load.image('ashportraitmad','assets/sprites/ashportmad.png');
+        game.load.image('ashportraitsad','assets/sprites/ashportsad.png');
+        game.load.image('ashportraitthink','assets/sprites/ashportthink.png');
         game.load.image('hpBar','assets/sprites/hp.png');
         game.load.image('mpBar','assets/sprites/mp.png');
-        game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 100, 45);
+        game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 89, 45);
         game.load.image('fire1', 'assets/sprites/skillfire1.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
+        
+        //image for boundries 
+        game.load.image('square', 'assets/sprites/square.png');
         
         //background music
         game.load.audio('background_music', ['assets/audio/graveyard_background_music.ogg', 'assets/audio/graveyard_background_music.mp3']);
@@ -57,20 +66,27 @@ demo.state1.prototype = {
         mc.animations.add('cyclone',[10,12,10]);
         Ash.chSprite = mc;
         
+        //bounds
+        square = game.add.sprite(5,815,'square');
+        square.scale.setTo(1.5,3.5);
+        game.physics.enable(square);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
         var ghoul = EnemyGroup1.create(212, 232,'ghoul');
         ghoul.scale.setTo(1.2);
         ghoul.animations.add('walkleft',[0]);
-        ghoul.animations.add('walkright',[0]);
-        ghoul.animations.add('attack',[0,1]);
+        ghoul.animations.add('walkright',[1]);
+        ghoul.animations.add('attack',[0,2]);
         Ghoul(ghoul,5);
         var ghoul = EnemyGroup1.create(1100, 375,'ghoul');
         ghoul.scale.setTo(1.2);
         ghoul.animations.add('walkleft',[0]);
-        ghoul.animations.add('walkright',[0]);
-        ghoul.animations.add('attack',[0,1]);
+        ghoul.animations.add('walkright',[1]);
+        ghoul.animations.add('attack',[0,2]);
         Ghoul(ghoul,5);
         //var move3 = game.add.tween(ghoul).to({x:315,y:550},4500,null,true,0);
         //move3.onRepeat.add(function(){ghoul.scale.setTo(1.2);console.log("fort");});
@@ -89,10 +105,15 @@ demo.state1.prototype = {
     },
     update: function(){
         
+        game.physics.arcade.collide(mc, square);
         //game.physics.arcade.collide(mc, platforms);
         //game.physics.arcade.collide(EnemyGroup1, platforms);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
-
+        
+        if (EnemyGroup1.countLiving() == 0){
+            unlockGYExit = true;
+        }
+        
         if (encounter1 && !inTransition){
             fighting = true;
             game.camera.unfollow();
@@ -104,9 +125,14 @@ demo.state1.prototype = {
             enemyInBattle = EnemyGroup1;
         }
         
-        if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210){
+        if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && unlockGYExit){
             previousState = "graveyard";
             changeState(null,'Overworld');
+        }
+        else if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && !unlockGYExit && !storyMode){
+            storyMode = true;
+            moveTo(mc,1438,998);
+            setStory(["ashportrait1","I should kill all the monsters nearby.", "I don't want them anywhere near my sister's\ngrave."]);
         }
         
         //Intro to story
@@ -424,7 +450,7 @@ function moveCursorPSM(){
             press[1] = false;
         }
     }
-    if (currentMenu == "pickItem"){
+    if (currentMenu == "pickItem" && Inventory.Items.length > 0){
         if(cursors.up.isDown && !press[2]){
             press[2] = true;
             if (itemPicked > 0){
@@ -580,26 +606,28 @@ function selectPauseMActions(){
             createSubmenu();
         }
         else if (currentSubmenu == "Items" && currentMenu == "pickItem"){
-            if (Inventory.Items[itemPicked].Quantity > 0){
-                for (var i = 0; i < textOS.length; i++){
+            if (Inventory.Items.length > 0){
+                if (Inventory.Items[itemPicked].Quantity > 0){
+                    for (var i = 0; i < textOS.length; i++){
                     textOS[i].kill();
+                    }
+                    for (var i = 0; i < Allies.length; i++){
+                        Allies[i].portrait.kill();
+                        //Allies[i].hpBar.kill();
+                        //Allies[i].mpBar.kill();
+                    }
+                    cursor.kill();
+                    currentSubmenu = "Items";
+                    currentMenu = "useItem";
+                    createSubmenu();
+                    createCursor(game.camera.x+380,game.camera.y+118);
+                    itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+                    itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:19});
+                    itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:19});
+                    textOS.push(itemImage);
+                    textOS.push(itemDescr);
+                    textOS.push(itemUse);
                 }
-                for (var i = 0; i < Allies.length; i++){
-                    Allies[i].portrait.kill();
-                    //Allies[i].hpBar.kill();
-                    //Allies[i].mpBar.kill();
-                }
-                cursor.kill();
-                currentSubmenu = "Items";
-                currentMenu = "useItem";
-                createSubmenu();
-                createCursor(game.camera.x+380,game.camera.y+118);
-                itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
-                itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:19});
-                itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:19});
-                textOS.push(itemImage);
-                textOS.push(itemDescr);
-                textOS.push(itemUse);
             }
         }
         else if (currentSubmenu == "Items" && currentMenu == "useItem"){
@@ -623,7 +651,6 @@ function selectPauseMActions(){
             }
             else{
                 Inventory.Items[itemPicked].Use(Allies[allyPicked]);
-                
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].portrait.kill();
                     //Allies[i].hpBar.kill();
@@ -653,9 +680,9 @@ function selectPauseMActions(){
                 text = "Current weapon: " + Ash.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
             }
             else if (Inventory.Weapons[weaponPicked].WeapType == "Staff"){
-                Cinderella.portrait = game.add.sprite(game.camera.x+80,game.camera.y+50,Cinderella.PortraitKey);
-                Cinderella.portrait.scale.setTo(0.4);
-                text = "Current weapon: " + Cinderella.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
+                Kori.portrait = game.add.sprite(game.camera.x+80,game.camera.y+50,Kori.PortraitKey);
+                Kori.portrait.scale.setTo(0.4);
+                text = "Current weapon: " + Kori.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
             }
             text = game.add.text(game.camera.x+180, game.camera.y+70,text,{fontSize:20})
             textOS.push(text);
@@ -668,7 +695,7 @@ function selectPauseMActions(){
                 Ash.Weapon = Inventory.Weapons[weaponPicked];
             }
             else if (Inventory.Weapons[weaponPicked].WeapType == "Staff"){
-                Cinderella.Weapon = Inventory.Weapons[weaponPicked];
+                Kori.Weapon = Inventory.Weapons[weaponPicked];
             }
             for (var i = 0; i < textOS.length; i++){
                 textOS[i].kill();
@@ -704,11 +731,53 @@ function selectPauseMActions(){
             createCursor(currentCpos[0],currentCpos[1]);
             currentMenu = "pauseM";
         }
+        else if (currentSubmenu == "Items" && currentMenu == "useItem"){
+            cursor.kill();
+            currentCpos = [game.camera.x+45,game.camera.y+178+(itemPicked*29)];
+            createCursor(currentCpos[0],currentCpos[1]);
+            currentMenu = "pickItem";
+        }
+        else if (currentSubmenu == "Items" && currentMenu == "pickAlly"){
+            for (var i = 0; i < textOS.length; i++){
+                textOS[i].kill();
+            }
+            for (var i = 0; i < Allies.length; i++){
+                Allies[i].portrait.kill();
+                //Allies[i].hpBar.kill();
+                //Allies[i].mpBar.kill();
+            }
+            cursor.kill();
+            currentSubmenu = "Items";
+            currentMenu = "useItem";
+            createSubmenu();
+            createCursor(game.camera.x+380,game.camera.y+118);
+            itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+            itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:19});
+            itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:19});
+            textOS.push(itemImage);
+            textOS.push(itemDescr);
+            textOS.push(itemUse);
+        }
         else if (currentSubmenu == "Weapons" && currentMenu == "pickWeapon"){
             cursor.kill()
             currentCpos = [game.camera.x+570,game.camera.y+151];
             createCursor(currentCpos[0],currentCpos[1]);
             currentMenu = "pauseM";
+        }
+        else if (currentSubmenu == "Weapons" && currentMenu == "assignWeapon"){
+            for (var i = 0; i < textOS.length; i++){
+                textOS[i].kill();
+            }
+            for (var i = 0; i < Allies.length; i++){
+                Allies[i].portrait.kill();
+                //Allies[i].hpBar.kill();
+                //Allies[i].mpBar.kill();
+            }
+            cursor.kill();
+            currentSubmenu = "Weapons";
+            currentMenu = "pickWeapon";
+            createSubmenu();
+            createCursor(currentCpos[0],currentCpos[1]);
         }
     }
     else if (cursors.x.isUp && pause){
@@ -1209,14 +1278,16 @@ function selectBattleActions() {
             }       
         }
         else if (currentMenu == "itemsM"){
-            if (Inventory.Items[itemPicked].Quantity > 0){
-                actionBuilder.push(Allies[turn-1]);
-                actionBuilder.push(Inventory.Items[itemPicked]);
-                currentMenu = "pickAlly";
-                cursor.kill();
-                currentCpos[0] = Allies[0].chSprite.x - 70;
-                currentCpos[1] = Allies[0].chSprite.y - 30;
-                createCursor(currentCpos[0],currentCpos[1]);
+            if (Inventory.Items.length > 0){
+                if (Inventory.Items[itemPicked].Quantity > 0){
+                    actionBuilder.push(Allies[turn-1]);
+                    actionBuilder.push(Inventory.Items[itemPicked]);
+                    currentMenu = "pickAlly";
+                    cursor.kill();
+                    currentCpos[0] = Allies[0].chSprite.x - 70;
+                    currentCpos[1] = Allies[0].chSprite.y - 30;
+                    createCursor(currentCpos[0],currentCpos[1]);
+                }
             }
         }
         else if (currentMenu == "pickEnemy"){
@@ -1247,6 +1318,7 @@ function selectBattleActions() {
                 BattleResults = [];
                 BattleCoins = 0;
                 BattleXP = 0;
+                currentMenu = "";
                 textOS.kill();
                 textHUD.kill();
                 textBox.kill();
@@ -1348,6 +1420,7 @@ function addBattleAction(action) {
             }
         }
         sortStack(BattleActionStack);
+        console.log(BattleActionStack);
         performBattleActions();
         turn = 1;
     }
@@ -1389,8 +1462,8 @@ function performBattleActions(){
                 moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].x-200,BattleActionStack[i][0].y,BattleActionStack[i][2],0); 
             }
             //in progress
-            else if (Allies.indexOf(BattleActionStack[i][2]) == -1){
-                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
+            else if (Allies.indexOf(BattleActionStack[i][2]) != -1){
+                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
             }
         }        
     }
@@ -1424,15 +1497,19 @@ function makeBscDamage(character,target){
         checkElementalWkn(character.Weapon,target);
         if (character.Weapon.Stats.PhysAttack != 0){
             Damage = Math.round(DamageMultiplier*(character.Stats.PhysAttack + character.Weapon.Stats.PhysAttack) - target.Stats.PhysDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }            
         }
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + character.Weapon.Stats.MagAttack) - target.Stats.MagDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
+        }
+        if (Damage > 0){
+            target.Stats.HP -= Damage;
+            damageText = "-" + Damage;
+            damageText = game.add.text(target.x,target.y - 20,damageText,{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        else {
+            damageText = game.add.text(target.x,target.y - 20,"0",{fontSize:20});
+            damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
@@ -1452,15 +1529,19 @@ function makeBscDamage(character,target){
         checkElementalWkn(character,target);
         if (character.Stats.PhysAttack > character.Stats.MagAttack){
             Damage = Math.round(DamageMultiplier*(character.Stats.PhysAttack) - target.Stats.PhysDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
         }
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack) - target.Stats.MagDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
+        }
+        if (Damage > 0){
+            target.Stats.HP -= Damage;
+            damageText = "-" + Damage;
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        else {
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20});
+            damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
             target.Stats.HP = 0;
@@ -1488,18 +1569,21 @@ function makeSkillDamage(character,skill,target){
     if (Allies.indexOf(character) != -1){
         if (skill.Stats.PhysAttack != 0){
             Damage = Math.round(DamageMultiplier*(character.Stats.PhysAttack + character.Weapon.Stats.PhysAttack + skill.Stats.PhysAttack) - target.Stats.PhysDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
-            character.Stats.MP -= skill.Stats.MP;
         }
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + character.Weapon.Stats.MagAttack + skill.Stats.MagAttack) - target.Stats.MagDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
-            character.Stats.MP -= skill.Stats.MP;
         }
+        if (Damage > 0){
+            target.Stats.HP -= Damage;
+            damageText = "-" + Damage;
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20,damageText,{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        else {
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20,"0",{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        character.Stats.MP -= skill.Stats.MP;
         if (character.currentMPRatio != character.MPRatio()){
             character.currentMPRatio = character.MPRatio();
             game.add.tween(character.mpBar.scale).to({x:0.6*character.currentMPRatio},500,null,true);
@@ -1521,20 +1605,23 @@ function makeSkillDamage(character,skill,target){
     else {
         if (skill.Stats.PhysAttack != 0){
             Damage = Math.round(DamageMultiplier*(character.Stats.PhysAttack + skill.Stats.PhysAttack) - target.Stats.PhysDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
-            character.Stats.MP -= skill.Stats.MP;
         }
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + skill.Stats.MagAttack) - target.Stats.MagDefense);
-            if (Damage > 0){
-                target.Stats.HP -= Damage;
-            }
-            character.Stats.MP -= skill.Stats.MP;
         }
+        if (Damage > 0){
+            target.Stats.HP -= Damage;
+            damageText = "-" + Damage;
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        else {
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20});
+            damageText.lifespan = 1000;
+        }
+        character.Stats.MP -= skill.Stats.MP;
         if (target.Stats.HP <= 0){
-            target[i][2].Stats.HP = 0;
+            target.Stats.HP = 0;
             LostBattle = true;
             for (var i = 0; i < Allies.length; i++){
                 if (Allies[i].Stats.HP > 0){
@@ -1558,10 +1645,10 @@ function checkElementalWkn(character,enemy){
     if (character.Element == "None" || enemy.Element == "None"){
         DamageMultiplier = 1;
     }
-    else if ((character.Element == "Fire" && enemy.Element == "Ice") || (character.Element == "Ice" && enemy.Element == "Lightning") || (character.Element == "Lightning" && enemy.Element == "Fire")){
+    else if ((character.Element == "Fire" && enemy.Element == "Ice") || (character.Element == "Ice" && enemy.Element == "Storm") || (character.Element == "Storm" && enemy.Element == "Fire")){
         DamageMultiplierMultiplier = 1.5;
     }
-    else if ((character.Element == "Ice" && enemy.Element == "Fire") || (character.Element == "Fire" && enemy.Element == "Lightning") || (character.Element == "Lightning" && enemy.Element == "Ice")){
+    else if ((character.Element == "Ice" && enemy.Element == "Fire") || (character.Element == "Fire" && enemy.Element == "Storm") || (character.Element == "Storm" && enemy.Element == "Ice")){
         DamageMultiplierMultiplier = 0.5;
     }
 }
@@ -1573,14 +1660,13 @@ function moveTo (character,xpos,ypos){
     inTransition = true;
     var currentPos = [character.x,character.y]
     var dx = xpos - currentPos[0];
-    character.animations.play('walk',14,true);
     
     if (dx < 0){
         character.animations.play('walkleft',14,true);
         var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
         moveTween.onComplete.add(killMoveTween,this,0,character);
     }
-    else if (dx > 0){ 
+    else if (dx >= 0){ 
         character.animations.play("walkright",14,true);
         var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
         moveTween.onComplete.add(killMoveTween,this,0,character);
@@ -1672,13 +1758,18 @@ function contAtkAnimation(character,xpos,ypos,target,skill){
 
 function moveToSkill (character,skill,skillSprite,target){
     
-    if (Allies.indexOf(character) >= 0){
+    if (Allies.indexOf(character) != -1){
         var targetx = character.chSprite.x + 300;
         var targety = target.y;
     }
     else{
         var targetx = character.x - 300;
-        var targety = target.y;
+        if (skill.AreaOfEffect == "Single"){
+            var targety = target.chSprite.y;
+        }
+        else if (skill.AreaOfEffect == "All"){
+            var targety = skillSprite.y;
+        }
     }
     var currentPos = [skillSprite.x,skillSprite.y]
     var dx = targetx - currentPos[0];

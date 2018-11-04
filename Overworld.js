@@ -3,7 +3,7 @@ demo.state998 = function(){};
 demo.state998.prototype = {
     preload: function(){
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
-        game.load.image('square', 'assets/sprites/square.png');
+        game.load.image('square', 'assets/sprites/square2.png');
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
     },
     create: function(){
@@ -21,6 +21,15 @@ demo.state998.prototype = {
         }
         else if (previousState == "lakeR"){
             mc = game.add.sprite(570, 360, 'mc');
+        }
+        else if (previousState == "forest"){
+            mc = game.add.sprite(700, 376, 'mc');
+        }
+        else if (previousState == "cave"){
+            mc = game.add.sprite(1238, 576, 'mc');
+        }
+        else if (previousState == "castle"){
+            mc = game.add.sprite(1460, 1010, 'mc');
         }
         
         
@@ -47,6 +56,21 @@ demo.state998.prototype = {
         game.physics.enable(lake);
         lake.body.immovable = true;
         
+        forest = game.add.sprite(730,340,'square');
+        forest.scale.setTo(2,1.5);
+        game.physics.enable(forest);
+        forest.body.immovable = true;
+        
+        cave = game.add.sprite(1170,430,'square');
+        cave.scale.setTo(1.3,1);
+        game.physics.enable(cave);
+        cave.body.immovable = true;
+        
+        castle = game.add.sprite(1370,890,'square');
+        castle.scale.setTo(1.3,0.7);
+        game.physics.enable(castle);
+        castle.body.immovable = true;
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
@@ -55,6 +79,9 @@ demo.state998.prototype = {
         
         var goToGraveyard = game.physics.arcade.overlap(mc, graveyard, null, null, this);
         var goToLake = game.physics.arcade.overlap(mc, lake, null, null, this);
+        var goToForest = game.physics.arcade.overlap(mc, forest, null, null, this);
+        var goToCave = game.physics.arcade.overlap(mc, cave, null, null, this);
+        var goToCastle = game.physics.arcade.overlap(mc, castle, null, null, this);
         
         if (goToGraveyard){
             previousState = "overworld";
@@ -70,6 +97,21 @@ demo.state998.prototype = {
             music.destroy();
             previousState = "overworldR";
             changeState(null,'lake');
+        }
+        
+        if (goToForest){
+            previousState = "overworld";
+            changeState(null,'forest');
+        }
+        
+        if (goToCave){
+            previousState = "overworld";
+            changeState(null,'forest');
+        }
+        
+        if (goToCastle){
+            previousState = "overworld";
+            changeState(null,'castle');
         }
         
         //Move main character
