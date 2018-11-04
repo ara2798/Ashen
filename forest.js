@@ -1,10 +1,17 @@
-var story3Completed = false, forestMiniBoss = false, bounds;
+var story3Completed = false, story4Completed = false, forestMiniBoss = false, bounds;
 demo.state3 = function(){};
 demo.state3.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.image('forest', 'assets/backgrounds/forest.png');
+        game.load.image('koriportrait1','assets/sprites/ashportrait.png');
+        game.load.image('koriportmad','assets/sprites/ashportmad.png');
+        game.load.image('koriportsad','assets/sprites/ashportsad.png');
+        game.load.image('koriportthink','assets/sprites/ashportrait.png');
+        game.load.image('koriportsmile','assets/sprites/ashportsmile.png');
+        game.load.image('koriportfsmile','assets/sprites/ashportsmile.png');
+        game.load.image('koriportsigh','assets/sprites/ashportsmile.png');
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
@@ -53,7 +60,7 @@ demo.state3.prototype = {
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
-        var weasel = EnemyGroup1.create(446, 466,'weasel');
+        var weasel = EnemyGroup1.create(530, 490,'weasel');
         weasel.scale.setTo(0.9);
         weasel.animations.add('walkleft',[0]);
         weasel.animations.add('walkright',[0]);
@@ -64,14 +71,14 @@ demo.state3.prototype = {
         EnemyGroup2 = game.add.group();
         EnemyGroup2.enableBody = true;     
         
-        var harpie = EnemyGroup2.create(253, 373,'harpie');
+        var harpie = EnemyGroup2.create(1030, 315,'harpie');
         harpie.scale.setTo(0.9);
         harpie.animations.add('walkleft',[0]);
         harpie.animations.add('walkright',[0]);
         harpie.animations.add('attack',[0]);
         //harpie.animations.add('icespikes',[0]);
         Harpie(harpie,8);
-        var weasel = EnemyGroup2.create(320, 1110,'weasel');
+        var weasel = EnemyGroup2.create(1290, 435,'weasel');
         weasel.scale.setTo(0.9);
         weasel.animations.add('walkleft',[0]);
         weasel.animations.add('walkright',[0]);
@@ -79,22 +86,39 @@ demo.state3.prototype = {
         //weasel.animations.add('shadowbeam',[0]);
         Weasel(weasel,8);
         
-        EnemyGroup3 = game.add.group();
-        EnemyGroup3.enableBody = true;
-        var kori = EnemyGroup3.create(320,1110,'kori');
-        kori.anchor.setTo(0.5,0.5);
-        kori.scale.setTo(1.1, 1.1);
-        game.physics.enable(kori);
-        kori.body.collideWorldBounds = true;
-        kori.animations.add('walkleft', [6,7,8]);
-        kori.animations.add('walkright', [9,10,11]);
-        kori.animations.add('walkdown', [0,1,2]);
-        kori.animations.add('walkup', [3,4,5]);
-        kori.animations.add('attack', [10,12,10]);
-        kori.animations.add('firespell', [13,10]);
-        kori.animations.add('slash',[10,12,10]);
-        kori.animations.add('cyclone',[10,12,10]);
-        Kori.chSprite = kori;
+        if (!story3Completed){
+            EnemyGroup3 = game.add.group();
+            EnemyGroup3.enableBody = true;
+            kori = EnemyGroup3.create(1470,817,'kori');
+            kori.anchor.setTo(0.5,0.5);
+            kori.scale.setTo(1.1);
+            kori.frame = 7;
+            kori.animations.add('walkleft', [6,7,8]);
+            kori.animations.add('walkright', [9,10,11]);
+            kori.animations.add('walkdown', [0,1,2]);
+            kori.animations.add('walkup', [3,4,5]);
+            kori.animations.add('attack', [10,12,10]);
+            kori.animations.add('firespell', [13,10]);
+            kori.animations.add('slash',[10,12,10]);
+            kori.animations.add('cyclone',[10,12,10]);
+            Koriboss(kori,8);
+        }
+        else {
+            kori = game.add.sprite(mc.x,mc.y,'kori');
+            kori.anchor.setTo(0.5,0.5);
+            kori.scale.setTo(1.1, 1.1);
+            game.physics.enable(kori);
+            kori.body.collideWorldBounds = true;
+            kori.animations.add('walkleft', [6,7,8]);
+            kori.animations.add('walkright', [9,10,11]);
+            kori.animations.add('walkdown', [0,1,2]);
+            kori.animations.add('walkup', [3,4,5]);
+            kori.animations.add('attack', [10,12,10]);
+            kori.animations.add('firespell', [13,10]);
+            kori.animations.add('slash',[10,12,10]);
+            kori.animations.add('cyclone',[10,12,10]);
+            Kori.chSprite = kori;
+        }
         
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
@@ -110,10 +134,12 @@ demo.state3.prototype = {
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
 
-        if (encounter1 && !inTransition){
+        if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
+            for (var i = 0; i < Allies.length; i++){
+                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            }
             for (var i = 0; i < EnemyGroup1.children.length; i++){
                 moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
             }
@@ -121,42 +147,52 @@ demo.state3.prototype = {
             enemyInBattle = EnemyGroup1;
         }
         
-        if (encounter2 && !inTransition){
+        if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
+            for (var i = 0; i < Allies.length; i++){
+                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            }
             for (var i = 0; i < EnemyGroup2.children.length; i++){
                 moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
             }
             setFightStage();
             enemyInBattle = EnemyGroup2;
         }
-        /*
-        if (mc.x > 1170 && mc.y > 7300 && !story3Completed){
+        
+        if (mc.x >= 845 && !story3Completed){
             story3Completed = true;
             storyMode = true;
             fighting = true;
             game.camera.unfollow();
-            mc.body.velocity.x = 0;
-            mc.body.velocity.y = 0;
-            mc.animations.stop();
-            mc.frame = 10;
-            setStory(["ashportrait1","(Huh?)","(I hear something...)","(Sounds like it's coming this way)"]);
+            moveTo(mc,970,817);
+            moveCamera = game.add.tween(game.camera).to({x:820,y:546},500,null,true);
+            moveCamera.onComplete.add(function(){setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong to defeat him.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+            
         }
         
-        if (story3Completed && !storyMode && !swampMiniBoss){
+        if (story3Completed && !storyMode && !forestMiniBoss){
             forestMiniBoss = true;
-            moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
-            moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
-        }*/
+            setFightStage();
+            enemyInBattle = EnemyGroup3;
+        }
+        
+        if (story3Completed && forestMiniBoss && !story4Completed && !fighting){
+            story4Completed = true;
+            storyMode = true;
+            setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat %^&* together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
+            Allies.push(Kori);
+        }
         
         if (Ash.chSprite.x <= 44){
+            music.destroy();
             previousState = "forest";
             changeState(null,'Overworld');
         }
-        else if (Ash.chSprite.x >= 1576){
+        else if (Ash.chSprite.x >= 1576 && Ash.chSprite.y > 725){
+            music.destroy();
             previousState = "cave";
-            changeState(null,'Overworld');
+            changeState(null,'cave');
         }
         
         //Progress through the story

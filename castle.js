@@ -152,6 +152,7 @@ demo.state5.prototype = {
         }*/
         
         if (Ash.chSprite.x <= 44){
+            music.destroy();
             previousState = "castle";
             changeState(null,'Overworld');
         }

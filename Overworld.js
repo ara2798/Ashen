@@ -84,6 +84,7 @@ demo.state998.prototype = {
         var goToCastle = game.physics.arcade.overlap(mc, castle, null, null, this);
         
         if (goToGraveyard){
+            music.destroy();
             previousState = "overworld";
             changeState(null,'graveyard');
         }
@@ -100,16 +101,19 @@ demo.state998.prototype = {
         }
         
         if (goToForest){
+            music.destroy();
             previousState = "overworld";
             changeState(null,'forest');
         }
         
         if (goToCave){
+            music.destroy();
             previousState = "overworld";
-            changeState(null,'forest');
+            changeState(null,'cave');
         }
         
         if (goToCastle){
+            music.destroy();
             previousState = "overworld";
             changeState(null,'castle');
         }

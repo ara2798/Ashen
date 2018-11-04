@@ -1,6 +1,6 @@
 var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = true, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
-var portraitL=["ashportrait1","ashportraitmad","ashportraitsad","ashportraitthink"];
+var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh"];
 
 demo.state1 = function(){};
 demo.state1.prototype = {
@@ -12,9 +12,11 @@ demo.state1.prototype = {
         game.load.image('hud', 'assets/sprites/hud.png');
         game.load.image('cursor', 'assets/sprites/cursor.png');
         game.load.image('ashportrait1','assets/sprites/ashportrait.png');
-        game.load.image('ashportraitmad','assets/sprites/ashportmad.png');
-        game.load.image('ashportraitsad','assets/sprites/ashportsad.png');
-        game.load.image('ashportraitthink','assets/sprites/ashportthink.png');
+        game.load.image('ashportmad','assets/sprites/ashportmad.png');
+        game.load.image('ashportsad','assets/sprites/ashportsad.png');
+        game.load.image('ashportsmile','assets/sprites/ashportsmile.png');
+        game.load.image('ashportsmug','assets/sprites/ashportsmile.png');
+        game.load.image('ashportthink','assets/sprites/ashportrait.png');
         game.load.image('hpBar','assets/sprites/hp.png');
         game.load.image('mpBar','assets/sprites/mp.png');
         game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 89, 45);
@@ -74,20 +76,22 @@ demo.state1.prototype = {
         square.body.moves = false;
         
         EnemyGroup1 = game.add.group();
-        EnemyGroup1.enableBody = true;     
+        EnemyGroup1.enableBody = true;  
+        if (!unlockGYExit){
+            var ghoul = EnemyGroup1.create(212, 232,'ghoul');
+            ghoul.scale.setTo(1.2);
+            ghoul.animations.add('walkleft',[0]);
+            ghoul.animations.add('walkright',[1]);
+            ghoul.animations.add('attack',[0,2]);
+            Ghoul(ghoul,5);
+            var ghoul = EnemyGroup1.create(1100, 375,'ghoul');
+            ghoul.scale.setTo(1.2);
+            ghoul.animations.add('walkleft',[0]);
+            ghoul.animations.add('walkright',[1]);
+            ghoul.animations.add('attack',[0,2]);
+            Ghoul(ghoul,5);
+        }
         
-        var ghoul = EnemyGroup1.create(212, 232,'ghoul');
-        ghoul.scale.setTo(1.2);
-        ghoul.animations.add('walkleft',[0]);
-        ghoul.animations.add('walkright',[1]);
-        ghoul.animations.add('attack',[0,2]);
-        Ghoul(ghoul,5);
-        var ghoul = EnemyGroup1.create(1100, 375,'ghoul');
-        ghoul.scale.setTo(1.2);
-        ghoul.animations.add('walkleft',[0]);
-        ghoul.animations.add('walkright',[1]);
-        ghoul.animations.add('attack',[0,2]);
-        Ghoul(ghoul,5);
         //var move3 = game.add.tween(ghoul).to({x:315,y:550},4500,null,true,0);
         //move3.onRepeat.add(function(){ghoul.scale.setTo(1.2);console.log("fort");});
         //var move4 = game.add.tween(ghoul).from({x:315,y:550},4500,null,true,0);
@@ -126,6 +130,7 @@ demo.state1.prototype = {
         }
         
         if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && unlockGYExit){
+            music.destroy();
             previousState = "graveyard";
             changeState(null,'Overworld');
         }
@@ -185,7 +190,7 @@ function setStory(storyL){
     dialogueBox = game.add.sprite(game.camera.x,game.camera.y,'hud');
     dialogueBox.scale.setTo(1,1.5);
     portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,storyL[0]);
-    portrait.scale.setTo(0.5,0.5);
+    portrait.scale.setTo(0.5);
     text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,storyL[1]);
     story = storyL;
     storyElement = 2;
@@ -198,6 +203,7 @@ function continueStory(){
             if(portraitL.indexOf(story[storyElement]) != -1){
                 portrait.kill();
                 portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,story[storyElement]);
+                portrait.scale.setTo(0.5);
                 storyElement += 1;
             }
             text.kill();
@@ -1162,7 +1168,7 @@ function setFightStage () {
     createMenu();
     currentCpos = [textBox.x+85,textBox.y+31];
     while (Allies[turn - 1].Stats.HP <= 0){
-        currentCpos[0] += 100;
+        currentCpos[0] += 185;
         turn += 1;
     }
     createCursor(currentCpos[0],currentCpos[1]);
@@ -1172,7 +1178,6 @@ function setFightStage () {
 function selectBattleActions() {
     if(cursors.z.isDown && fighting && !inTransition && !press[4]){
         press[4] = true;
-        console.log("selecting");
         if (currentMenu == "mainBM" && cursor.y == textBox.y + 31){
             actionBuilder.push(Allies[turn-1]);
             actionBuilder.push(0);
@@ -1343,7 +1348,7 @@ function selectBattleActions() {
                 currentMenu = "mainBM";
                 cursor.kill();
                 actionBuilder = [];
-                currentCpos[0] = textBox.x + 85 + (turn - 1) * 100;;
+                currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
                 currentCpos[1] = textBox.y + 31;
                 createCursor(currentCpos[0],currentCpos[1]);
             }
@@ -1362,7 +1367,7 @@ function selectBattleActions() {
             textOS.destroy();
             cursor.kill();
             actionBuilder = [];
-            currentCpos[0] = textBox.x + 85;
+            currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
             currentCpos[1] = textBox.y + 31;
             createCursor(currentCpos[0],currentCpos[1]);
             createMenu();
@@ -1425,8 +1430,14 @@ function addBattleAction(action) {
         turn = 1;
     }
     else {
+        textOS.kill();
+        for (var i = 0; i < Allies.length; i++){
+            Allies[i].portrait.kill();
+            Allies[i].hpBar.kill();
+            Allies[i].mpBar.kill();
+        }
         currentMenu = "mainBM";
-        currentCpos[0] = textBox.x + 85 + (turn - 1) * 100;
+        currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
         currentCpos[1] = textBox.y + 31;
         cursor.kill();
         createCursor(currentCpos[0],currentCpos[1]);
@@ -1515,6 +1526,26 @@ function makeBscDamage(character,target){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
             target.kill();
+            if (target == kori){
+                kori = game.add.sprite(target.x,target.y,'kori');
+                kori.frame = 7;
+                kori.anchor.setTo(0.5,0.5);
+                kori.scale.setTo(1.1, 1.1);
+                game.physics.enable(kori);
+                kori.body.collideWorldBounds = true;
+                kori.animations.add('walkleft', [6,7,8]);
+                kori.animations.add('walkright', [9,10,11]);
+                kori.animations.add('walkdown', [0,1,2]);
+                kori.animations.add('walkup', [3,4,5]);
+                kori.animations.add('attack', [10,12,10]);
+                kori.animations.add('firespell', [13,10]);
+                kori.animations.add('slash',[10,12,10]);
+                kori.animations.add('cyclone',[10,12,10]);
+                Kori.chSprite = kori;
+            }
+            else if (target == fboss){
+                
+            }
             if (enemyInBattle.countLiving() == 0){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
@@ -1591,7 +1622,9 @@ function makeSkillDamage(character,skill,target){
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
-            target.kill();
+            if (target != kori && target != fboss){
+                target.kill();
+            }
             if (enemyInBattle.countLiving() == 0){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;

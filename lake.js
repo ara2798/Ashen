@@ -147,10 +147,12 @@ demo.state2.prototype = {
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
 
-        if (encounter1 && !inTransition){
+        if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
+            for (var i = 0; i < Allies.length; i++){
+                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            }
             for (var i = 0; i < EnemyGroup1.children.length; i++){
                 moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
             }
@@ -158,10 +160,12 @@ demo.state2.prototype = {
             enemyInBattle = EnemyGroup1;
         }
         
-        if (encounter2 && !inTransition){
+        if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
+            for (var i = 0; i < Allies.length; i++){
+                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            }
             for (var i = 0; i < EnemyGroup2.children.length; i++){
                 moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
             }
@@ -195,10 +199,12 @@ demo.state2.prototype = {
         }
         
         if (Ash.chSprite.x <= 44){
+            music.destroy();
             previousState = "lakeL";
             changeState(null,'Overworld');
         }
         else if (Ash.chSprite.x >= 1576){
+            music.destroy();
             previousState = "lakeR";
             changeState(null,'Overworld');
         }

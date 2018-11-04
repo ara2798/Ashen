@@ -1,4 +1,4 @@
-var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro";
+var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro",kori,fboss;
 
 //ALLY SKILLS
 var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey:"slash",
@@ -113,7 +113,7 @@ var Ash = {
         }
         return [Ash.leveledUp,Ash.learnedSkill];
     },
-    SkillLvl : [5,35],
+    SkillLvl : [5,8,14,18,23,27,35],
     SkillsLearned : [Slash,Fire],
     SkillsToLearn : [Cyclone,Explosion],
     Weapon : WoodSword
@@ -121,9 +121,9 @@ var Ash = {
 
 var Kori = {
     Name : "Kori",
-    PortraitKey : "ashportrait1",
-    Stats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
-    MaxStats : {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
+    PortraitKey : "koriportrait1",
+    Stats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
+    MaxStats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
     UpdtStats : function UpdtStats(){
         Kori.MaxStats.HP += Math.round(Math.random()*(90-80)+80);
         Kori.MaxStats.PhysAttack += Math.round(Math.random()*(4-2)+2);
@@ -141,7 +141,7 @@ var Kori = {
     currentMPRatio : 1,
     HPRatio: function(){return Kori.Stats.HP/Kori.MaxStats.HP},
     MPRatio: function(){return Kori.Stats.MP/Kori.MaxStats.MP},
-    XPObtained : 0,
+    XPObtained : 3283,
     XPNeeded : 0,
     XPCurve : function XPCurve(){
         Kori.XPNeeded = Math.round(1.1*Math.exp(Kori.Lvl)+4);
@@ -227,6 +227,16 @@ function Harpie(enemyObject,level) {
     enemyObject.Coins = level*5;
     enemyObject.Element = "Storm";
     enemyObject.SkillsLearned = [];
+}
+
+function Koriboss(enemyObject,level) {
+    enemyObject.Stats = {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100};
+    enemyObject.MaxStats = {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100};
+    enemyObject.Level = level;
+    enemyObject.XP = level*40;
+    enemyObject.Coins = level*40;
+    enemyObject.Element = "Ice";
+    enemyObject.SkillsLearned = [Slash];
 }
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}
