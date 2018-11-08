@@ -150,27 +150,33 @@ demo.state2.prototype = {
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            for (var i = 0; i < Allies.length; i++){
-                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
-            }
-            for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
-            }
-            setFightStage();
-            enemyInBattle = EnemyGroup1;
+            moveCamera = game.add.tween(game.camera).to({x:0,y:316},500,null,true);
+            moveCamera.onComplete.add(function(){
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup1.children.length; i++){
+                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup1;
+            },this);
         }
         
         if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            for (var i = 0; i < Allies.length; i++){
-                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
-            }
-            for (var i = 0; i < EnemyGroup2.children.length; i++){
-                moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
-            }
-            setFightStage();
-            enemyInBattle = EnemyGroup2;
+            moveCamera = game.add.tween(game.camera).to({x:0,y:487},500,null,true);
+            moveCamera.onComplete.add(function(){
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup2.children.length; i++){
+                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup2;
+            },this);
         }
         
         if (mc.x > 650 && mc.y > 500 && mc.y < 635 && !story2Completed){

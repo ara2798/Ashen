@@ -3,7 +3,7 @@ demo.state998 = function(){};
 demo.state998.prototype = {
     preload: function(){
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
-        game.load.image('square', 'assets/sprites/square2.png');
+        game.load.image('square', 'assets/sprites/square.png');
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
     },
     create: function(){

@@ -1,17 +1,18 @@
-var story3Completed = false, story4Completed = false, forestMiniBoss = false, bounds;
+var story3Completed = false, story4Completed = false, forestMiniBoss = false, bounds, joinParty = false;
 demo.state3 = function(){};
 demo.state3.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
-        game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
+        game.load.spritesheet('korienemy', 'assets/spritesheets/korienemysheet.png', 90, 90);
         game.load.image('forest', 'assets/backgrounds/forest.png');
-        game.load.image('koriportrait1','assets/sprites/ashportrait.png');
-        game.load.image('koriportmad','assets/sprites/ashportmad.png');
-        game.load.image('koriportsad','assets/sprites/ashportsad.png');
-        game.load.image('koriportthink','assets/sprites/ashportrait.png');
-        game.load.image('koriportsmile','assets/sprites/ashportsmile.png');
-        game.load.image('koriportfsmile','assets/sprites/ashportsmile.png');
-        game.load.image('koriportsigh','assets/sprites/ashportsmile.png');
+        game.load.image('koriportrait1','assets/sprites/koriportrait.png');
+        game.load.image('koriportmad','assets/sprites/koriportrait.png');
+        game.load.image('koriportsad','assets/sprites/koriportrait.png');
+        game.load.image('koriportthink','assets/sprites/koriportrait.png');
+        game.load.image('koriportsmile','assets/sprites/koriportrait.png');
+        game.load.image('koriportfsmile','assets/sprites/koriportrait.png');
+        game.load.image('koriportsigh','assets/sprites/koriportrait.png');
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
@@ -89,7 +90,7 @@ demo.state3.prototype = {
         if (!story3Completed){
             EnemyGroup3 = game.add.group();
             EnemyGroup3.enableBody = true;
-            kori = EnemyGroup3.create(1470,817,'kori');
+            kori = EnemyGroup3.create(1470,817,'korienemy');
             kori.anchor.setTo(0.5,0.5);
             kori.scale.setTo(1.1);
             kori.frame = 7;
@@ -97,27 +98,10 @@ demo.state3.prototype = {
             kori.animations.add('walkright', [9,10,11]);
             kori.animations.add('walkdown', [0,1,2]);
             kori.animations.add('walkup', [3,4,5]);
-            kori.animations.add('attack', [10,12,10]);
-            kori.animations.add('firespell', [13,10]);
-            kori.animations.add('slash',[10,12,10]);
-            kori.animations.add('cyclone',[10,12,10]);
-            Koriboss(kori,8);
-        }
-        else {
-            kori = game.add.sprite(mc.x,mc.y,'kori');
-            kori.anchor.setTo(0.5,0.5);
-            kori.scale.setTo(1.1, 1.1);
-            game.physics.enable(kori);
-            kori.body.collideWorldBounds = true;
-            kori.animations.add('walkleft', [6,7,8]);
-            kori.animations.add('walkright', [9,10,11]);
-            kori.animations.add('walkdown', [0,1,2]);
-            kori.animations.add('walkup', [3,4,5]);
-            kori.animations.add('attack', [10,12,10]);
-            kori.animations.add('firespell', [13,10]);
-            kori.animations.add('slash',[10,12,10]);
-            kori.animations.add('cyclone',[10,12,10]);
-            Kori.chSprite = kori;
+            kori.animations.add('attack', [7,12,7]);
+            kori.animations.add('icespell', [13,7]);
+            kori.animations.add('heal',[13,7]);
+            Koriboss(kori,6);
         }
         
         game.camera.follow(mc);
@@ -136,28 +120,69 @@ demo.state3.prototype = {
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
+            console.log("fight!");
             game.camera.unfollow();
-            for (var i = 0; i < Allies.length; i++){
-                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
             }
-            for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
-            }
-            setFightStage();
-            enemyInBattle = EnemyGroup1;
+            moveCamera = game.add.tween(game.camera).to({x:0,y:309},500,null,true);
+            moveCamera.onComplete.add(function(){
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup1.children.length; i++){
+                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup1;
+            },this);
         }
         
         if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            for (var i = 0; i < Allies.length; i++){
-                moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
             }
-            for (var i = 0; i < EnemyGroup2.children.length; i++){
-                moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
-            }
-            setFightStage();
-            enemyInBattle = EnemyGroup2;
+            moveCamera = game.add.tween(game.camera).to({x:710,y:133},500,null,true);
+            moveCamera.onComplete.add(function(){
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup2.children.length; i++){
+                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup2;
+            },this);
         }
         
         if (mc.x >= 845 && !story3Completed){
@@ -167,7 +192,7 @@ demo.state3.prototype = {
             game.camera.unfollow();
             moveTo(mc,970,817);
             moveCamera = game.add.tween(game.camera).to({x:820,y:546},500,null,true);
-            moveCamera.onComplete.add(function(){setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong to defeat him.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+            moveCamera.onComplete.add(function(){setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong enough to defeat him.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
             
         }
         
@@ -181,7 +206,13 @@ demo.state3.prototype = {
             story4Completed = true;
             storyMode = true;
             setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat %^&* together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
+            Kori.LvlUp();
             Allies.push(Kori);
+        }
+        
+        if (story4Completed && !storyMode && !joinParty){
+            joinParty = true;
+            moveToAndKill(Kori.chSprite,mc.x,mc.y);
         }
         
         if (Ash.chSprite.x <= 44){
