@@ -21,6 +21,24 @@ var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, Sk
                 Ash.chSprite.animations.play("firespell",2,false);
                 moveToSkill(Ash,Explosion,fire3,target);
             }};
+var Ice = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(target){
+                var ice1 = game.add.sprite(Kori.chSprite.x-30,Kori.chSprite.y,"icespikes");
+                Kori.chSprite.animations.play("icespell",2,false);
+                moveToSkill(Kori,Ice,ice1,target);
+            }};
+var Heal = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(target){
+                Kori.chSprite.animations.play("heal",2,false);
+                var healAmount = Math.round(target.MaxStats.HP/4);
+                target.Stats.HP += healAmount;
+                if (target.Stats.HP > target.MaxStats.HP){
+                    target.Stats.HP = target.MaxStats.HP;
+                }
+                healDisplay = "+" + healAmount;
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healAmount,{fontSize:20});
+                healDisplay.lifespan = 1000;
+            }};
 
 //ENEMY SKILLS
 var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
@@ -42,14 +60,28 @@ var TidalWave = {Name:"Tidal Wave", Stats:{PhysAttack:0, MagAttack:20, MP:10}, S
                 character.animations.play("tidalwave",3,false);
                 moveToSkill(character,TidalWave,tidalwave1,target);
             }};
+var IceEnmy = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(character,target){
+                var ice1 = game.add.sprite(character.x-30,character.y,"icespikes");
+                character.animations.play("icespell",2,false);
+                moveToSkill(character,IceEnmy,ice1,target);
+            }};
+var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"Ice", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(character,target){
+                character.animations.play("heal",2,false);
+                target.Stats.HP += Math.round(target.MaxStats.HP/4);
+                if (target.Stats.HP > target.MaxStats.HP){
+                    target.Stats.HP = target.MaxStats.HP;
+                }
+            }};
 
 //ITEM OBJECTS
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None"};
 var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None"};
-var Potion = {Name:"Potion",Description:"Restores 25 HP", Quantity: 2, Price: 10, imageKey:"item",
+var Potion = {Name:"Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"item",
              Use: function Use(character){
                  Potion.Quantity -= 1;
-                 character.Stats.HP += 25;
+                 character.Stats.HP += Math.round(character.MaxStats.HP/4);
                  if (character.MaxStats.HP < character.Stats.HP){
                      character.Stats.HP = character.MaxStats.HP;
                  }
@@ -73,8 +105,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50000,PhysDefense:3000,MagAttack:10,MagDefense:1500,Speed:20,MP:60},
-    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:3000,MagAttack:10,MagDefense:1500,Speed:20,MP:60},
+    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
+    MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -113,9 +145,9 @@ var Ash = {
         }
         return [Ash.leveledUp,Ash.learnedSkill];
     },
-    SkillLvl : [5,8,14,18,23,27,35],
+    SkillLvl : [50/*8,15,24,30,35*/],
     SkillsLearned : [Slash,Fire],
-    SkillsToLearn : [Cyclone,Explosion],
+    SkillsToLearn : [/*Ignite,FireSword,FireWhirl,Explosion,Hellfire*/],
     Weapon : WoodSword
 }
 
@@ -162,9 +194,9 @@ var Kori = {
         }
         return [Kori.leveledUp,Kori.learnedSkill];
     },
-    SkillLvl: [5,40],
-    SkillsLearned : [Slash],
-    SkillsToLearn : [Cyclone,Explosion],
+    SkillLvl: [50/*12,18,22,28*/],
+    SkillsLearned : [Ice,Heal],
+    SkillsToLearn : [/*IceBarrier,Ice2,Heal2,ArcticBlast*/],
     Weapon : WoodStaff
 }
 
@@ -230,13 +262,13 @@ function Harpie(enemyObject,level) {
 }
 
 function Koriboss(enemyObject,level) {
-    enemyObject.Stats = {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100};
-    enemyObject.MaxStats = {HP:400, PhysAttack:20,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100};
+    enemyObject.Stats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+25*level};
+    enemyObject.MaxStats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+25*level};
     enemyObject.Level = level;
     enemyObject.XP = level*40;
     enemyObject.Coins = level*40;
     enemyObject.Element = "Ice";
-    enemyObject.SkillsLearned = [Slash];
+    enemyObject.SkillsLearned = [IceEnmy/*,HealEnmy*/];
 }
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}

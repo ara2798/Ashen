@@ -1,4 +1,4 @@
-var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = true, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
+var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = false, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
 var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh"];
 
@@ -7,6 +7,7 @@ demo.state1.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.image('graveyard', 'assets/backgrounds/graveyard.png');
+        game.load.spritesheet('rain','assets/sprites/rain.png', 10, 17);
         game.load.image('pause menu', 'assets/sprites/real pause.png');
         game.load.image('battle menu', 'assets/sprites/battle.png');
         game.load.image('hud', 'assets/sprites/hud.png');
@@ -41,6 +42,18 @@ demo.state1.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'graveyard');
         
+        var emitter = game.add.emitter(850, -630, 1500);
+        emitter.width = 2300;
+        emitter.angle = 20;
+        emitter.makeParticles('rain');
+        emitter.minParticleScale = 0.1;
+        emitter.maxParticleScale = 0.5;
+        emitter.setYSpeed(300, 500);
+        emitter.setXSpeed(-5, 5);
+        emitter.minRotation = 0;
+        emitter.maxRotation = 0;
+        emitter.start(false, 2600, 5, 0);
+        
         /*platforms = game.add.group();
         platforms.enableBody = true;
         var ground = platforms.create(0, 900, 'road');
@@ -48,6 +61,7 @@ demo.state1.prototype = {
         var ledge = platforms.create(600,700, 'road');
         ledge.scale.setTo(0.3,0.5);
         ledge.body.immovable = true;*/
+        
         if(previousState == "intro"){
             mc = game.add.sprite(622, 914, 'mc');
         }
@@ -118,15 +132,18 @@ demo.state1.prototype = {
             unlockGYExit = true;
         }
         
-        if (encounter1 && !inTransition){
+        if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
-            for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
-            }
-            setFightStage();
-            enemyInBattle = EnemyGroup1;
+            moveCamera = game.add.tween(game.camera).to({x:492,y:164},500,null,true);
+            moveCamera.onComplete.add(function(){
+                moveTo(mc,game.camera.x+150,game.camera.y+200);
+                for (var i = 0; i < EnemyGroup1.children.length; i++){
+                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup1;
+            },this);
         }
         
         if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && unlockGYExit){
@@ -1207,6 +1224,8 @@ function selectBattleActions() {
                 Allies[i].portrait.kill();
                 Allies[i].hpBar.kill();
                 Allies[i].mpBar.kill();
+                Allies[i].hpDisplay.kill();
+                Allies[i].mpDisplay.kill();
             }
             currentCpos[0] = textBox.x + 85;
             currentCpos[1] = textBox.y + 31;
@@ -1222,6 +1241,8 @@ function selectBattleActions() {
                 Allies[i].portrait.kill();
                 Allies[i].hpBar.kill();
                 Allies[i].mpBar.kill();
+                Allies[i].hpDisplay.kill();
+                Allies[i].mpDisplay.kill();
             }
             currentCpos[0] = textBox.x + 85;
             currentCpos[1] = textBox.y + 31;
@@ -1243,6 +1264,13 @@ function selectBattleActions() {
                     Allies[i].portrait.kill();
                     Allies[i].hpBar.kill();
                     Allies[i].mpBar.kill();
+                    Allies[i].hpDisplay.kill();
+                    Allies[i].mpDisplay.kill();
+                }
+                if (Allies.length > 1){
+                    for (var i = 1; i < Allies.length; i++){
+                        moveToAndKill(Allies[i].chSprite,mc.x,mc.y);
+                    }
                 }
                 moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
                 moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
@@ -1277,8 +1305,12 @@ function selectBattleActions() {
                     }
                     createCursor(currentCpos[0],currentCpos[1]);
                 }
-                else if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Boost"){
-                    //select ally
+                else if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Support"){
+                    currentMenu = "pickAlly";
+                    cursor.kill();
+                    currentCpos[0] = Allies[0].chSprite.x - 70;
+                    currentCpos[1] = Allies[0].chSprite.y - 30;
+                    createCursor(currentCpos[0],currentCpos[1]);
                 }
             }       
         }
@@ -1332,6 +1364,13 @@ function selectBattleActions() {
                     Allies[i].portrait.kill();
                     Allies[i].hpBar.kill();
                     Allies[i].mpBar.kill();
+                    Allies[i].hpDisplay.kill();
+                    Allies[i].mpDisplay.kill();
+                }
+                if (Allies.length > 1){
+                    for (var i = 1; i < Allies.length; i++){
+                        moveToAndKill(Allies[i].chSprite,mc.x,mc.y);
+                    }
                 }
                 moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
                 moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
@@ -1371,6 +1410,15 @@ function selectBattleActions() {
             currentCpos[1] = textBox.y + 31;
             createCursor(currentCpos[0],currentCpos[1]);
             createMenu();
+        }
+        else if (currentMenu == "pickAlly"){
+            cursor.kill();
+            if (Inventory.Items.indexOf(actionBuilder[1]) != -1){
+                currentMenu = "itemsM";
+            }
+            else {
+                currentMenu = "skillsM";
+            }
         }
     }
     else if (cursors.x.isUp && fighting){
@@ -1435,6 +1483,8 @@ function addBattleAction(action) {
             Allies[i].portrait.kill();
             Allies[i].hpBar.kill();
             Allies[i].mpBar.kill();
+            Allies[i].hpDisplay.kill();
+            Allies[i].mpDisplay.kill();
         }
         currentMenu = "mainBM";
         currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
@@ -1459,7 +1509,7 @@ function performBattleActions(){
             }
             //Use boost skill
             else if (Inventory.Items.indexOf(BattleActionStack[i][1]) == -1){
-                console.log("Used boost skill");
+                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
             }
             //Use inventory item
             else {
@@ -1485,6 +1535,8 @@ function performBattleActions(){
         Allies[i].portrait.kill();
         Allies[i].hpBar.kill();
         Allies[i].mpBar.kill();
+        Allies[i].hpDisplay.kill();
+        Allies[i].mpDisplay.kill();
     }
     createMenu();
     currentCpos = [textBox.x+85,textBox.y+31];
@@ -1515,11 +1567,11 @@ function makeBscDamage(character,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.x,target.y - 20,damageText,{fontSize:20});
+            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.x,target.y - 20,"0",{fontSize:20});
+            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
@@ -1567,11 +1619,11 @@ function makeBscDamage(character,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,"0",{fontSize:20});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
@@ -1591,6 +1643,8 @@ function makeBscDamage(character,target){
             target.currentHPRatio = target.HPRatio();
             console.log("change bar");
             game.add.tween(target.hpBar.scale).to({x:0.6*target.currentHPRatio},500,null,true);
+            target.hpDisplay.kill();
+            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12});
         }
     }
 }
@@ -1607,23 +1661,43 @@ function makeSkillDamage(character,skill,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20,damageText,{fontSize:20});
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20,"0",{fontSize:20});
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20});
             damageText.lifespan = 1000;
         }
         character.Stats.MP -= skill.Stats.MP;
         if (character.currentMPRatio != character.MPRatio()){
             character.currentMPRatio = character.MPRatio();
             game.add.tween(character.mpBar.scale).to({x:0.6*character.currentMPRatio},500,null,true);
+            character.mpDisplay.kill();
+            character.mpDisplay = game.add.text(character.portrait.x+80,character.mpBar.y,"MP:"+character.Stats.MP+"/"+character.MaxStats.MP,{fontSize:12});
         }
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
-            if (target != kori && target != fboss){
-                target.kill();
+            target.kill();
+            if (target == kori){
+                kori = game.add.sprite(target.x,target.y,'kori');
+                kori.frame = 7;
+                kori.anchor.setTo(0.5,0.5);
+                kori.scale.setTo(1.1, 1.1);
+                game.physics.enable(kori);
+                kori.body.collideWorldBounds = true;
+                kori.animations.add('walkleft', [6,7,8]);
+                kori.animations.add('walkright', [9,10,11]);
+                kori.animations.add('walkdown', [0,1,2]);
+                kori.animations.add('walkup', [3,4,5]);
+                kori.animations.add('attack', [10,12,10]);
+                kori.animations.add('firespell', [13,10]);
+                kori.animations.add('slash',[10,12,10]);
+                kori.animations.add('cyclone',[10,12,10]);
+                Kori.chSprite = kori;
+            }
+            else if (target == fboss){
+                
             }
             if (enemyInBattle.countLiving() == 0){
                 for (var i = 0; i < Allies.length; i++){
@@ -1670,6 +1744,8 @@ function makeSkillDamage(character,skill,target){
             target.currentHPRatio = target.HPRatio();
             console.log("change bar");
             game.add.tween(target.hpBar.scale).to({x:0.6*target.currentHPRatio},500,null,true);
+            target.hpDisplay.kill();
+            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12});
         }
     }   
 }
@@ -1817,6 +1893,26 @@ function moveToSkill (character,skill,skillSprite,target){
     }   
 }
 
+function moveToAndKill(character,xpos,ypos){
+    
+    character.body.velocity.x = 0;
+    character.body.velocity.y = 0;
+    inTransition = true;
+    var currentPos = [character.x,character.y]
+    var dx = xpos - currentPos[0];
+    
+    if (dx < 0){
+        character.animations.play('walkleft',14,true);
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(function() {character.kill();inTransition=false;},this);
+    }
+    else if (dx >= 0){ 
+        character.animations.play("walkright",14,true);
+        var moveTween = game.add.tween(character).to({x:xpos,y:ypos},1000,null,true);
+        moveTween.onComplete.add(function() {character.kill();inTransition=false;},this);
+    }   
+}
+
 function createMenu(){
     
     text = "";
@@ -1844,8 +1940,10 @@ function createMenu(){
             Allies[i].portrait.scale.setTo(0.2);
             Allies[i].hpBar = game.add.sprite(Allies[i].portrait.x+50,Allies[i].portrait.y,'hpBar')
             Allies[i].hpBar.scale.setTo(0.6*Allies[i].currentHPRatio,0.5);
+            Allies[i].hpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].hpBar.y,"HP:"+Allies[i].Stats.HP+"/"+Allies[i].MaxStats.HP,{fontSize:12});
             Allies[i].mpBar = game.add.sprite(Allies[i].portrait.x+50,Allies[i].portrait.y+25,'mpBar')
             Allies[i].mpBar.scale.setTo(0.6*Allies[i].currentMPRatio,0.5);
+            Allies[i].mpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].mpBar.y,"MP:"+Allies[i].Stats.MP+"/"+Allies[i].MaxStats.MP,{fontSize:12});
             if (Allies[i].currentHPRatio != Allies[i].HPRatio()){
                 Allies[i].currentHPRatio = Allies[i].HPRatio();
                 console.log("change bar");

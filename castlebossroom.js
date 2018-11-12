@@ -1,10 +1,10 @@
 var story3Completed = false, forestMiniBoss = false, bounds;
-demo.state5 = function(){};
-demo.state5.prototype = {
+demo.state6 = function(){};
+demo.state6.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
-        game.load.image('castle', 'assets/backgrounds/castleinterior.png');
+        game.load.image('castlebossroom', 'assets/backgrounds/castlebossroom.png');
         //game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         //game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
@@ -25,12 +25,12 @@ demo.state5.prototype = {
         //music = game.add.audio('background_music');
         //music.play('', 0, 1, true);
       
-        game.world.setBounds(0, 0, 1620, 2220);
+        game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        game.add.sprite(0, 0, 'castle');
+        game.add.sprite(0, 0, 'castlebossroom');
         
-        if (previousState == "overworld"){
-            mc = game.add.sprite(805, 2080, 'mc');
+        if (previousState == "castle"){
+            mc = game.add.sprite(400, 480, 'mc');
         }
         
         mc.anchor.setTo(0.5,0.5);
@@ -147,18 +147,6 @@ demo.state5.prototype = {
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
             moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
         }*/
-        
-        if (Ash.chSprite.y > 2090){
-            music.destroy();
-            previousState = "castle";
-            changeState(null,'Overworld');
-        }
-        
-        if (Ash.chSprite.y < 90){
-            music.destroy();
-            previousState = "castle";
-            changeState(null,'castlebossroom');
-        }
         
         //Progress through the story
         continueStory();
