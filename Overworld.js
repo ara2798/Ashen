@@ -3,12 +3,21 @@ demo.state998 = function(){};
 demo.state998.prototype = {
     preload: function(){
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
-        game.load.image('square', 'assets/sprites/square2.png');
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        
+        //image for boundries
+        game.load.image('square', 'assets/sprites/square2.png');
+        //background music
+        game.load.audio('background_music', ['assets/audio/main1.wav']);
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        
       
+        //plays background music
+        music = game.add.audio('background_music');
+        music.play('', 0, 1, true);
+        
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'overworld');
@@ -71,17 +80,47 @@ demo.state998.prototype = {
         game.physics.enable(castle);
         castle.body.immovable = true;
         
+        //****BOUNDS*****
+        bounds = game.add.group();
+        bounds.enableBody = true; 
+        
+        var square = bounds.create(0,640,'square');
+        square.scale.setTo(5,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+
+        var square = bounds.create(0,550,'square');
+        square.scale.setTo(7.5,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(850,0,'square');
+        square.scale.setTo(5,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1368,713,'square');
+        square.scale.setTo(2,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
     },
     update: function(){
         
+        //mc cant go pass bounds
+        game.physics.arcade.collide(Ash.chSprite, bounds);
+        
         var goToGraveyard = game.physics.arcade.overlap(mc, graveyard, null, null, this);
         var goToLake = game.physics.arcade.overlap(mc, lake, null, null, this);
         var goToForest = game.physics.arcade.overlap(mc, forest, null, null, this);
         var goToCave = game.physics.arcade.overlap(mc, cave, null, null, this);
         var goToCastle = game.physics.arcade.overlap(mc, castle, null, null, this);
+        
         
         if (goToGraveyard){
             music.destroy();

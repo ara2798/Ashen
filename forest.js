@@ -22,15 +22,15 @@ demo.state3.prototype = {
         game.load.image('square', 'assets/sprites/square.png');
         
         //background music
-        //game.load.audio('background_music', ['assets/audio/lake_music.ogg', 'assets/audio/lake_music.mp3']);      
+        game.load.audio('background_music', ['assets/audio/forest1.wav']);      
         
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
         //plays background music
-        //music = game.add.audio('background_music');
-        //music.play('', 0, 1, true);
+        music = game.add.audio('background_music');
+        music.play('', 0, 1, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -123,13 +123,153 @@ demo.state3.prototype = {
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
+        //****BOUNDS*****
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+
+        //Top Forest
+        var square = bounds.create(0, 0,'square');
+        square.scale.setTo(5,2.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(100, 271,'square');
+        square.scale.setTo(1.06,.94);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(500, 0,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(740,30,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(860,130,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1180,0,'square');
+        square.scale.setTo(.90,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(350,240,'square');
+        square.scale.setTo(.76,.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(790,320,'square');
+        square.scale.setTo(.76,.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(990,90,'square');
+        square.scale.setTo(.76,.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1450,50,'square');
+        square.scale.setTo(.76,.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(821,23,'square');
+        square.scale.setTo(1.45,.8);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1280,0,'square');
+        square.scale.setTo(1.45,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1435,200,'square');
+        square.scale.setTo(1.45,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1540,500,'square');
+        square.scale.setTo(1.45,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
+        //bottom Forest
+        var square = bounds.create(0, 1050,'square');
+        square.scale.setTo(3.33,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(67, 869,'square');
+        square.scale.setTo(.76,1.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(190, 835,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1073, 0,'square');
+        square.scale.setTo(.76,.58);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(296, 992,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(700, 1125,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(960, 1100,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1078,1015,'square');
+        square.scale.setTo(.76,1.9);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(480,835,'square');
+        square.scale.setTo(.9,1.7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(583,950,'square');
+        square.scale.setTo(.76,.76);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1190,1020,'square');
+        square.scale.setTo(2.5,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1430,1125,'square');
+        square.scale.setTo(1.45,.8);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(418,1214,'square');
+        square.scale.setTo(1.45,.8);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
     },
     update: function(){
         //mc cant go pass bounds
-        //game.physics.arcade.collide(Ash.chSprite, bounds);
+        game.physics.arcade.collide(Ash.chSprite, bounds);
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);

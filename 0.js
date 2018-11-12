@@ -247,6 +247,8 @@ demo.state0.prototype = {
         //game.load.script('webfont','//fonts.googleapis.com/css?family=Press+Start+2P')
         game.load.image('logo', 'assets/sprites/logo.png');
         game.load.image('team name', 'assets/sprites/team name.png');
+        //background music
+        game.load.audio('background_music', ['assets/audio/logo.wav']); 
     },
     create: function(){
         game.stage.backgroundColor = '#000000';
@@ -254,6 +256,10 @@ demo.state0.prototype = {
         addChangeStateEventListeners();
         game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        
+        //plays background music
+        music = game.add.audio('background_music');
+        music.play('', 0, 1, false);
         
         logo = game.add.sprite(centerX,centerY,"logo");
         logo.scale.setTo(1.5);
@@ -272,6 +278,7 @@ demo.state0.prototype = {
 };
 
 function changeState(i, stateID){
+    music.destroy();
     game.state.start(stateID);
 }
 
