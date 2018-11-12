@@ -9,8 +9,6 @@ demo.state998.prototype = {
 >>>>>>> f3e48dda9409d71ec624058f01d068c270cfb2ad
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         
-        //image for boundries
-        game.load.image('square', 'assets/sprites/square2.png');
         //background music
         game.load.audio('background_music', ['assets/audio/main1.wav']);
     },
@@ -88,26 +86,62 @@ demo.state998.prototype = {
         bounds = game.add.group();
         bounds.enableBody = true; 
         
-        var square = bounds.create(0,640,'square');
-        square.scale.setTo(5,7);
-        square.body.immovable = true;
-        square.body.moves = false;
-
-        var square = bounds.create(0,550,'square');
-        square.scale.setTo(7.5,1.5);
+        var square = bounds.create(410,,'square');
+        square.scale.setTo(1.3,2.78);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(850,0,'square');
-        square.scale.setTo(5,5);
+        var square = bounds.create(230,366,'square');
+        square.scale.setTo(2.5,1.28);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(1368,713,'square');
-        square.scale.setTo(2,2);
+        var square = bounds.create(0,440,'square');
+        square.scale.setTo(2,1.6);
         square.body.immovable = true;
         square.body.moves = false;
         
+        var square = bounds.create(622,422,'square');
+        square.scale.setTo(1,1.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(0,690,'square');
+        square.scale.setTo(8.2,5.6);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1030,300,'square');
+        square.scale.setTo(5.7,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(940,460,'square');
+        square.scale.setTo(2.45,.63);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(930,515,'square');
+        square.scale.setTo(2.5,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(772,660,'square');
+        square.scale.setTo(2,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1450,600,'square');
+        square.scale.setTo(2,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1290,720,'square');
+        square.scale.setTo(1.1,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
+        
+        
+        var square = bounds.create(670,730,'square');
+        square.scale.setTo(1.5,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
         
         
         cursors = game.input.keyboard.addKeys({

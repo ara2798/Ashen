@@ -12,7 +12,7 @@ demo.state5.prototype = {
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square2.png');
+        game.load.image('square', 'assets/sprites/square1.png');
         
         //background music
         game.load.audio('background_music', ['assets/audio/castle.mp3']);      
