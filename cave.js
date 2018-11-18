@@ -4,7 +4,7 @@ demo.state4.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
-        game.load.image('forest', 'assets/backgrounds/forest.png');
+        game.load.image('cave', 'assets/backgrounds/forest.png');
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
@@ -27,12 +27,12 @@ demo.state4.prototype = {
       
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        game.add.sprite(0, 0, 'forest');
+        game.add.sprite(0, 0, 'cave');
         
-        if (previousState == "overworld"){
+        if (previousState == "forest"){
             mc = game.add.sprite(100, 580, 'mc');
         }
-        if (previousState == "cave"){
+        if (previousState == "overworld"){
             mc = game.add.sprite(1570, 915, 'mc');
         }
         
@@ -151,8 +151,8 @@ demo.state4.prototype = {
         }*/
         
         if (Ash.chSprite.x <= 44){
-            previousState = "forest";
-            changeState(null,'Overworld');
+            previousState = "cave";
+            changeState(null,'forest');
         }
         else if (Ash.chSprite.x >= 1576){
             previousState = "cave";

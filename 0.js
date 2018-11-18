@@ -1,17 +1,34 @@
 var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro",kori,fboss;
 
 //ALLY SKILLS
+//****Ash****
 var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey:"slash",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
             }};
-var Fire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single",
+var Fireball = {Name:"Fireball", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
                 var fire1 = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fire1");
                 Ash.chSprite.animations.play("firespell",2,false);
                 moveToSkill(Ash,Fire,fire1,target);
             }};
-var Cyclone = {Name:"Cyclone",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
+var Ignite = {Name:"Ignite", Stats:{MP:10}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(target){
+                Kori.chSprite.animations.play("heal",2,false);
+                var healAmount = Math.round(target.MaxStats.HP/4);
+                target.Stats.HP += healAmount;
+                if (target.Stats.HP > target.MaxStats.HP){
+                    target.Stats.HP = target.MaxStats.HP;
+                }
+                healDisplay = "+" + healAmount;
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay.lifespan = 1000;
+            }};
+var FireSlash = {Name:"Fireslash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single", AnimKey:"slash",
+            SkillAnimation: function SkillAnimation(target){
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
+            }};
+var BladeBlitz = {Name:"Bladeblitz",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Cyclone);
             }};
@@ -21,6 +38,11 @@ var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, Sk
                 Ash.chSprite.animations.play("firespell",2,false);
                 moveToSkill(Ash,Explosion,fire3,target);
             }};
+var Hellfire = {Name:"Hellfire",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
+            SkillAnimation: function SkillAnimation(target){
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Cyclone);
+            }};
+//****Kori****
 var Ice = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
                 var ice1 = game.add.sprite(Kori.chSprite.x-30,Kori.chSprite.y,"icespikes");
@@ -36,10 +58,45 @@ var Heal = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None", Are
                     target.Stats.HP = target.MaxStats.HP;
                 }
                 healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healAmount,{fontSize:20});
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                 healDisplay.lifespan = 1000;
             }};
-
+var GlacialBarrier = {Name:"Glacial Barrier", Stats:{MP:10}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(target){
+                Kori.chSprite.animations.play("heal",2,false);
+                var healAmount = Math.round(target.MaxStats.HP/4);
+                target.Stats.HP += healAmount;
+                if (target.Stats.HP > target.MaxStats.HP){
+                    target.Stats.HP = target.MaxStats.HP;
+                }
+                healDisplay = "+" + healAmount;
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay.lifespan = 1000;
+            }};
+var Hailstorm = {Name:"Hailstorm", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(target){
+                var fire3 = game.add.sprite(500,300,"fire3");
+                Ash.chSprite.animations.play("firespell",2,false);
+                moveToSkill(Ash,Explosion,fire3,target);
+            }};
+var Purify = {Name:"Purify", Stats:{MP:10}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
+            SkillAnimation: function SkillAnimation(target){
+                Kori.chSprite.animations.play("heal",2,false);
+                var healAmount = Math.round(target.MaxStats.HP/4);
+                target.Stats.HP += healAmount;
+                if (target.Stats.HP > target.MaxStats.HP){
+                    target.Stats.HP = target.MaxStats.HP;
+                }
+                healDisplay = "+" + healAmount;
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay.lifespan = 1000;
+            }};
+var ArcticBlast = {Name:"Arctic Blast", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(target){
+                var fire3 = game.add.sprite(500,300,"fire3");
+                Ash.chSprite.animations.play("firespell",2,false);
+                moveToSkill(Ash,Explosion,fire3,target);
+            }};
 //ENEMY SKILLS
 var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(character,target){
@@ -66,13 +123,17 @@ var IceEnmy = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:
                 character.animations.play("icespell",2,false);
                 moveToSkill(character,IceEnmy,ice1,target);
             }};
-var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"Ice", AreaOfEffect:"Single",
+var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("heal",2,false);
-                target.Stats.HP += Math.round(target.MaxStats.HP/4);
+                var healAmount = Math.round(target.MaxStats.HP/4);
+                target.Stats.HP += healAmount;
                 if (target.Stats.HP > target.MaxStats.HP){
                     target.Stats.HP = target.MaxStats.HP;
                 }
+                healDisplay = "+" + healAmount;
+                healDisplay = game.add.text(target.x,target.y,healAmount,{fontSize:20});
+                healDisplay.lifespan = 1000;
             }};
 
 //ITEM OBJECTS
@@ -105,8 +166,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
-    MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
+    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
+    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -146,8 +207,8 @@ var Ash = {
         return [Ash.leveledUp,Ash.learnedSkill];
     },
     SkillLvl : [50/*8,15,24,30,35*/],
-    SkillsLearned : [Slash,Fire],
-    SkillsToLearn : [/*Ignite,FireSword,FireWhirl,Explosion,Hellfire*/],
+    SkillsLearned : [Slash,Fireball],
+    SkillsToLearn : [/*Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
     Weapon : WoodSword
 }
 
@@ -196,7 +257,7 @@ var Kori = {
     },
     SkillLvl: [50/*12,18,22,28*/],
     SkillsLearned : [Ice,Heal],
-    SkillsToLearn : [/*IceBarrier,Ice2,Heal2,ArcticBlast*/],
+    SkillsToLearn : [/*IceBarrier,Hailstorm,Heal2,ArcticBlast*/],
     Weapon : WoodStaff
 }
 
@@ -277,31 +338,61 @@ demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
         //game.load.script('webfont','//fonts.googleapis.com/css?family=Press+Start+2P')
-        game.load.image('logo', 'assets/sprites/logo.png');
-        game.load.image('team name', 'assets/sprites/team name.png');
+        game.load.image('logo', 'assets/backgrounds/first screen.png');
+        game.load.image('title', 'assets/backgrounds/title.png');
+        game.load.spritesheet('rain','assets/sprites/rain.png', 10, 17);
+        
         //background music
-        game.load.audio('background_music', ['assets/audio/logo.wav']); 
+        game.load.audio('logo', ['assets/audio/logo.wav']);
+        game.load.audio('title', ['assets/audio/title.wav']);
+        
     },
     create: function(){
-        game.stage.backgroundColor = '#000000';
+        game.add.sprite(0, 0, 'title');
         console.log('state0');
         addChangeStateEventListeners();
         game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
         //plays background music
-        music = game.add.audio('background_music');
+        music = game.add.audio('logo');
         music.play('', 0, 1, false);
         
-        logo = game.add.sprite(centerX,centerY,"logo");
-        logo.scale.setTo(1.5);
+        var logo = game.add.sprite(0, 0, "logo");
+        /*logo.scale.setTo(1.5);
         logo.anchor.setTo(0.5,0.5);
         team = game.add.sprite(centerX,centerY+100,"team name");
         team.scale.setTo(1.2);
-        team.anchor.setTo(0.5,0.5);
+        team.anchor.setTo(0.5,0.5);*/
         
         //text = "8-bitz Studioz"
         //game.add.text(450,550, text, {fontSize: '100px', fill: '#ffffff', font: 'Press Start 2P' });
+        
+        game.time.events.add(Phaser.Timer.SECOND * 7, fadeLogo, this);       
+
+        function fadeLogo(){
+            game.add.tween(logo).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+        }
+
+        game.time.events.add(Phaser.Timer.SECOND * 9, removeTween, this);
+
+        function removeTween(){
+            logo.kill();
+            music = game.add.audio('title');
+            music.play('', 0, 1, true);
+            var emitter = game.add.emitter(200, -200, 80);
+            emitter.width = 600;
+            emitter.angle = 10;
+            emitter.makeParticles('rain');
+            emitter.minParticleScale = 0.1;
+            emitter.maxParticleScale = 0.5;
+            emitter.setYSpeed(300, 500);
+            emitter.setXSpeed(-5, 5);
+            emitter.minRotation = 0;
+            emitter.maxRotation = 0;
+            emitter.start(false, 1000, 5, 0);
+        }
+        
     },
     update: function(){
         

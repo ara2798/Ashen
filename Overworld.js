@@ -3,10 +3,7 @@ demo.state998 = function(){};
 demo.state998.prototype = {
     preload: function(){
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
-<<<<<<< HEAD
-=======
         game.load.image('square', 'assets/sprites/square.png');
->>>>>>> f3e48dda9409d71ec624058f01d068c270cfb2ad
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         
         //background music
@@ -15,11 +12,10 @@ demo.state998.prototype = {
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
-      
         //plays background music
         music = game.add.audio('background_music');
         music.play('', 0, 1, true);
-        
+      
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'overworld');
@@ -57,6 +53,7 @@ demo.state998.prototype = {
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
+        //****TRANSPORT *****
         graveyard = game.add.sprite(0,0,'square');
         graveyard.scale.setTo(1.8);
         game.physics.enable(graveyard);
@@ -86,7 +83,7 @@ demo.state998.prototype = {
         bounds = game.add.group();
         bounds.enableBody = true; 
         
-        var square = bounds.create(410,,'square');
+        var square = bounds.create(410,0,'square');
         square.scale.setTo(1.3,2.78);
         square.body.immovable = true;
         square.body.moves = false;
@@ -134,15 +131,11 @@ demo.state998.prototype = {
         square.scale.setTo(1.1,1.5);
         square.body.immovable = true;
         square.body.moves = false;
-        
-        
-        
-        
+             
         var square = bounds.create(670,730,'square');
         square.scale.setTo(1.5,.5);
         square.body.immovable = true;
         square.body.moves = false;
-        
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
@@ -158,7 +151,6 @@ demo.state998.prototype = {
         var goToForest = game.physics.arcade.overlap(mc, forest, null, null, this);
         var goToCave = game.physics.arcade.overlap(mc, cave, null, null, this);
         var goToCastle = game.physics.arcade.overlap(mc, castle, null, null, this);
-        
         
         if (goToGraveyard){
             music.destroy();

@@ -12,10 +12,10 @@ demo.state5.prototype = {
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square1.png');
-        
+        game.load.image('square', 'assets/sprites/square.png');
+
         //background music
-        game.load.audio('background_music', ['assets/audio/castle.mp3']);      
+        game.load.audio('background_music', ['assets/audio/castle.mp3']);
         
     },
     create: function(){
@@ -145,7 +145,6 @@ demo.state5.prototype = {
         square.scale.setTo(7,3.7);
         square.body.immovable = true;
         square.body.moves = false;
-        
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P

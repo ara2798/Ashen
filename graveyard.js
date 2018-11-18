@@ -25,7 +25,7 @@ demo.state1.prototype = {
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
         
-        //image for boundries 
+        //image for boundries
         game.load.image('square', 'assets/sprites/square.png');
         
         //background music
@@ -146,12 +146,12 @@ demo.state1.prototype = {
             },this);
         }
         
-        if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && unlockGYExit){
+        if (Ash.chSprite.x >= 1370 && Ash.chSprite.y >= 1210 && unlockGYExit){
             music.destroy();
             previousState = "graveyard";
             changeState(null,'Overworld');
         }
-        else if (Ash.chSprite.x >= 1208 && Ash.chSprite.y >= 1210 && !unlockGYExit && !storyMode){
+        else if (Ash.chSprite.x >= 1370 && Ash.chSprite.y >= 1210 && !unlockGYExit && !storyMode){
             storyMode = true;
             moveTo(mc,1438,998);
             setStory(["ashportrait1","I should kill all the monsters nearby.", "I don't want them anywhere near my sister's\ngrave."]);
@@ -208,7 +208,7 @@ function setStory(storyL){
     dialogueBox.scale.setTo(1,1.5);
     portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,storyL[0]);
     portrait.scale.setTo(0.5);
-    text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,storyL[1]);
+    text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,storyL[1],{fontSize:25,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
     story = storyL;
     storyElement = 2;
 }
@@ -224,7 +224,7 @@ function continueStory(){
                 storyElement += 1;
             }
             text.kill();
-            text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,story[storyElement]);
+            text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,story[storyElement],{fontSize:25,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             storyElement += 1;
         }
         else if(cursors.z.isDown && !press[4]){
@@ -248,7 +248,7 @@ function createPauseM(){
             pause = true;
             currentMenu = "pauseM";
             pauseM = game.add.sprite(game.camera.x,game.camera.y,'pause menu');
-            pauseMtext = game.add.text(game.camera.x+610,game.camera.y+40,"Stats\nSkills\nItems\nWeapons");
+            pauseMtext = game.add.text(game.camera.x+610,game.camera.y+40,"Stats\nSkills\nItems\nWeapons",{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             currentCpos = [game.camera.x+570,game.camera.y+43]
             createCursor(currentCpos[0],currentCpos[1]);
             currentSubmenu = "Stats";
@@ -302,7 +302,7 @@ function createSubmenu(){
             Allies[i].XPCurve();
             text += "Exp. Points: " + Allies[i].XPObtained + "/" + Allies[i].XPNeeded;
             text += "\n\n";
-            Text = game.add.text(game.camera.x+210, game.camera.y+50+175*i,text,{fontSize:12});
+            Text = game.add.text(game.camera.x+210, game.camera.y+50+175*i,text,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
             textOS.push(Text);
         }
     }
@@ -341,7 +341,7 @@ function createSubmenu(){
             text += Allies[allyPicked].SkillsLearned[j].Element;
             text += "\n"
         }
-        Text = game.add.text(game.camera.x+50,game.camera.y+150,text,{fontSize:20});
+        Text = game.add.text(game.camera.x+50,game.camera.y+150,text,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
         textOS.push(Text);
     }
     else if (currentSubmenu == "Items"){
@@ -362,7 +362,7 @@ function createSubmenu(){
                 text += "x" + Inventory.Items[i].Quantity + "\n";
             }
         }
-        Text = game.add.text(game.camera.x+80,game.camera.y+150,text,{fontSize:20});
+        Text = game.add.text(game.camera.x+80,game.camera.y+150,text,{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
         textOS.push(Text);
     }
     else if (currentSubmenu == "Weapons"){
@@ -390,7 +390,7 @@ function createSubmenu(){
             }
             text += Inventory.Weapons[i].Element + "\n";
         }
-        Text = game.add.text(game.camera.x+80,game.camera.y+150,text,{fontSize:20});
+        Text = game.add.text(game.camera.x+80,game.camera.y+150,text,{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
         textOS.push(Text);
     }
 }
@@ -645,8 +645,8 @@ function selectPauseMActions(){
                     createSubmenu();
                     createCursor(game.camera.x+380,game.camera.y+118);
                     itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
-                    itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:19});
-                    itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:19});
+                    itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                    itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                     textOS.push(itemImage);
                     textOS.push(itemDescr);
                     textOS.push(itemUse);
@@ -707,7 +707,7 @@ function selectPauseMActions(){
                 Kori.portrait.scale.setTo(0.4);
                 text = "Current weapon: " + Kori.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
             }
-            text = game.add.text(game.camera.x+180, game.camera.y+70,text,{fontSize:20})
+            text = game.add.text(game.camera.x+180, game.camera.y+70,text,{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
             textOS.push(text);
             cursor.kill();
             currentMenu = "assignWeapon";
@@ -775,8 +775,8 @@ function selectPauseMActions(){
             createSubmenu();
             createCursor(game.camera.x+380,game.camera.y+118);
             itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
-            itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:19});
-            itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:19});
+            itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             textOS.push(itemImage);
             textOS.push(itemDescr);
             textOS.push(itemUse);
@@ -810,14 +810,14 @@ function selectPauseMActions(){
 
 function moveMC(){
     if (!fighting && !storyMode && !pause){   
-        if(cursors.right.isDown && mc.body.velocity.y == 0){
+        if(cursors.right.isDown && mc.body.velocity.y == 0 && cursors.left.isUp){
             mc.body.velocity.x = 350;
             mc.animations.play('walkright', 14, true);
             /*if(mc.x >= 1547.5){
                 changeState(null,"0");
             }*/
         }
-        else if(cursors.left.isDown && mc.body.velocity.y == 0){
+        else if(cursors.left.isDown && mc.body.velocity.y == 0 && cursors.right.isUp){
             mc.body.velocity.x = -350;
             mc.animations.play('walkleft', 14, true);
         }
@@ -826,11 +826,11 @@ function moveMC(){
             mc.animations.stop('walkleft');
             mc.body.velocity.x = 0;
         }*/
-        else if(cursors.up.isDown){
+        else if(cursors.up.isDown && mc.body.velocity.x == 0 && cursors.down.isUp){
             mc.body.velocity.y = -250;
             mc.animations.play('walkup', 14, true);
         }
-        else if(cursors.down.isDown){
+        else if(cursors.down.isDown && mc.body.velocity.x == 0 && cursors.up.isUp){
             mc.body.velocity.y = 250;
             mc.animations.play('walkdown', 14, true);
         }
@@ -1185,7 +1185,7 @@ function setFightStage () {
     createMenu();
     currentCpos = [textBox.x+85,textBox.y+31];
     while (Allies[turn - 1].Stats.HP <= 0){
-        currentCpos[0] += 185;
+        currentCpos[0] += 150;
         turn += 1;
     }
     createCursor(currentCpos[0],currentCpos[1]);
@@ -1279,7 +1279,7 @@ function selectBattleActions() {
                 HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
                 HUD.scale.setTo(1.015,0.5);
                 HUD.lifespan = 1000;
-                text = game.add.text(HUD.x+35,HUD.y+20,"Could not escape",{fontSize:20});
+                text = game.add.text(HUD.x+35,HUD.y+20,"Could not escape",{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                 text.lifespan = 1000;
             }
         }
@@ -1287,7 +1287,12 @@ function selectBattleActions() {
             if (Allies[turn-1].SkillsLearned[skillPicked].Stats.MP <= Allies[turn-1].Stats.MP){
                 actionBuilder.push(Allies[turn-1]);
                 actionBuilder.push(Allies[turn-1].SkillsLearned[skillPicked]);
-                if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Attack"){
+                if (Allies[turn-1].SkillsLearned[skillPicked].AreaOfEffect == "All"){
+                    actionBuilder.push(0);
+                    currentMenu = "None";
+                    addBattleAction(actionBuilder);
+                }
+                else if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Attack"){
                     currentMenu = "pickEnemy";
                     cursor.kill();
                     for (var i = 0; i < enemyInBattle.children.length; i++){
@@ -1312,7 +1317,14 @@ function selectBattleActions() {
                     currentCpos[1] = Allies[0].chSprite.y - 30;
                     createCursor(currentCpos[0],currentCpos[1]);
                 }
-            }       
+            }
+            else{
+                HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
+                HUD.scale.setTo(1.015,0.5);
+                HUD.lifespan = 1000;
+                text = game.add.text(HUD.x+35,HUD.y+20,"Not enough MP",{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                text.lifespan = 1000;
+            }
         }
         else if (currentMenu == "itemsM"){
             if (Inventory.Items.length > 0){
@@ -1348,7 +1360,7 @@ function selectBattleActions() {
             ResultDisplayed += 1;
             textHUD.kill();
             if (ResultDisplayed < text.length){
-                textHUD = game.add.text(HUD.x+35,HUD.y+20,text[ResultDisplayed],{fontSize:20});
+                textHUD = game.add.text(HUD.x+35,HUD.y+20,text[ResultDisplayed],{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             }
             else {
                 ResultDisplayed = 0;
@@ -1387,7 +1399,7 @@ function selectBattleActions() {
                 currentMenu = "mainBM";
                 cursor.kill();
                 actionBuilder = [];
-                currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
+                currentCpos[0] = textBox.x + 85 + (turn - 1) * 150;
                 currentCpos[1] = textBox.y + 31;
                 createCursor(currentCpos[0],currentCpos[1]);
             }
@@ -1406,7 +1418,7 @@ function selectBattleActions() {
             textOS.destroy();
             cursor.kill();
             actionBuilder = [];
-            currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
+            currentCpos[0] = textBox.x + 85 + (turn - 1) * 150;
             currentCpos[1] = textBox.y + 31;
             createCursor(currentCpos[0],currentCpos[1]);
             createMenu();
@@ -1487,7 +1499,7 @@ function addBattleAction(action) {
             Allies[i].mpDisplay.kill();
         }
         currentMenu = "mainBM";
-        currentCpos[0] = textBox.x + 85 + (turn - 1) * 185;
+        currentCpos[0] = textBox.x + 85 + (turn - 1) * 150;
         currentCpos[1] = textBox.y + 31;
         cursor.kill();
         createCursor(currentCpos[0],currentCpos[1]);
@@ -1567,11 +1579,11 @@ function makeBscDamage(character,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20});
+            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20});
+            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
@@ -1579,7 +1591,7 @@ function makeBscDamage(character,target){
             BattleCoins += target.Coins;
             target.kill();
             if (target == kori){
-                kori = game.add.sprite(target.x,target.y,'kori');
+                kori = game.add.sprite(target.x+20,target.y,'kori');
                 kori.frame = 7;
                 kori.anchor.setTo(0.5,0.5);
                 kori.scale.setTo(1.1, 1.1);
@@ -1619,11 +1631,11 @@ function makeBscDamage(character,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,"0",{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
@@ -1644,7 +1656,7 @@ function makeBscDamage(character,target){
             console.log("change bar");
             game.add.tween(target.hpBar.scale).to({x:0.6*target.currentHPRatio},500,null,true);
             target.hpDisplay.kill();
-            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12});
+            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
         }
     }
 }
@@ -1661,11 +1673,11 @@ function makeSkillDamage(character,skill,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20});
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20});
+            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         character.Stats.MP -= skill.Stats.MP;
@@ -1673,7 +1685,7 @@ function makeSkillDamage(character,skill,target){
             character.currentMPRatio = character.MPRatio();
             game.add.tween(character.mpBar.scale).to({x:0.6*character.currentMPRatio},500,null,true);
             character.mpDisplay.kill();
-            character.mpDisplay = game.add.text(character.portrait.x+80,character.mpBar.y,"MP:"+character.Stats.MP+"/"+character.MaxStats.MP,{fontSize:12});
+            character.mpDisplay = game.add.text(character.portrait.x+80,character.mpBar.y,"MP:"+character.Stats.MP+"/"+character.MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
         }
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
@@ -1719,11 +1731,11 @@ function makeSkillDamage(character,skill,target){
         if (Damage > 0){
             target.Stats.HP -= Damage;
             damageText = "-" + Damage;
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         else {
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20});
+            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         character.Stats.MP -= skill.Stats.MP;
@@ -1745,7 +1757,7 @@ function makeSkillDamage(character,skill,target){
             console.log("change bar");
             game.add.tween(target.hpBar.scale).to({x:0.6*target.currentHPRatio},500,null,true);
             target.hpDisplay.kill();
-            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12});
+            target.hpDisplay = game.add.text(target.portrait.x+80,target.hpBar.y,"HP:"+target.Stats.HP+"/"+target.MaxStats.HP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
         }
     }   
 }
@@ -1933,17 +1945,17 @@ function createMenu(){
             text += "Run                          ";
         }
         text += "\n";
-        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:20});
+        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:16,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
         textOS.lineSpacing = 5;
         for (var i = 0; i < Allies.length; i++){
             Allies[i].portrait = game.add.sprite(textBox.x+550,textBox.y+30+50*i,Allies[i].PortraitKey)
             Allies[i].portrait.scale.setTo(0.2);
             Allies[i].hpBar = game.add.sprite(Allies[i].portrait.x+50,Allies[i].portrait.y,'hpBar')
             Allies[i].hpBar.scale.setTo(0.6*Allies[i].currentHPRatio,0.5);
-            Allies[i].hpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].hpBar.y,"HP:"+Allies[i].Stats.HP+"/"+Allies[i].MaxStats.HP,{fontSize:12});
+            Allies[i].hpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].hpBar.y,"HP:"+Allies[i].Stats.HP+"/"+Allies[i].MaxStats.HP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
             Allies[i].mpBar = game.add.sprite(Allies[i].portrait.x+50,Allies[i].portrait.y+25,'mpBar')
             Allies[i].mpBar.scale.setTo(0.6*Allies[i].currentMPRatio,0.5);
-            Allies[i].mpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].mpBar.y,"MP:"+Allies[i].Stats.MP+"/"+Allies[i].MaxStats.MP,{fontSize:12});
+            Allies[i].mpDisplay = game.add.text(Allies[i].portrait.x+80,Allies[i].mpBar.y,"MP:"+Allies[i].Stats.MP+"/"+Allies[i].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
             if (Allies[i].currentHPRatio != Allies[i].HPRatio()){
                 Allies[i].currentHPRatio = Allies[i].HPRatio();
                 console.log("change bar");
@@ -1966,7 +1978,7 @@ function createMenu(){
                 text += "\n"
             }
         }
-        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:20});
+        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
     }
     else if (currentMenu == "itemsM"){
         for (var i = 0; i < Inventory.Items.length; i++){
@@ -1982,7 +1994,7 @@ function createMenu(){
                 } 
             }
         }
-        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:20});
+        textOS = game.add.text(textBox.x + 120,textBox.y + 31,text,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
     }
     else if (currentMenu == "BattleEnd"){
         cursor.kill();
@@ -2002,7 +2014,7 @@ function createMenu(){
                 text.push(Allies[i].Name + " learned " + Allies[i].SkillsLearned[(Allies[i].SkillsLearned.length) - 1].Name);
             }
         }
-        textHUD = game.add.text(HUD.x+35,HUD.y+20,text[ResultDisplayed],{fontSize:20});
+        textHUD = game.add.text(HUD.x+35,HUD.y+20,text[ResultDisplayed],{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
     }
 }
 

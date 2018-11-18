@@ -20,10 +20,11 @@ demo.state3.prototype = {
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square.png');
-        
+        game.load.image('square', 'assets/sprites/square.png'); 
+
         //background music
-        game.load.audio('background_music', ['assets/audio/forest1.wav']);      
+        game.load.audio('background_music', ['assets/audio/forest.wav']);
+        game.load.audio('sad',['assets/audio/forest1.wav'])
         
     },
     create: function(){
@@ -179,8 +180,7 @@ demo.state3.prototype = {
         square.scale.setTo(1.45,1);
         square.body.immovable = true;
         square.body.moves = false;
-        
-        
+                
         //bottom Forest
         var square = bounds.create(0, 1050,'square');
         square.scale.setTo(3.33,1.9);
@@ -245,7 +245,6 @@ demo.state3.prototype = {
         square.scale.setTo(1.45,.8);
         square.body.immovable = true;
         square.body.moves = false;
-        
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
@@ -332,7 +331,11 @@ demo.state3.prototype = {
             game.camera.unfollow();
             moveTo(mc,970,817);
             moveCamera = game.add.tween(game.camera).to({x:820,y:546},500,null,true);
-            moveCamera.onComplete.add(function(){setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong enough to defeat him.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                music3 = game.add.audio('sad');
+                music3.play('', 0, 1, true);
+                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
             
         }
         
@@ -351,6 +354,8 @@ demo.state3.prototype = {
         }
         
         if (story4Completed && !storyMode && !joinParty){
+            music3.destroy();
+            music.resume();
             joinParty = true;
             moveToAndKill(Kori.chSprite,mc.x,mc.y);
         }
@@ -362,7 +367,7 @@ demo.state3.prototype = {
         }
         else if (Ash.chSprite.x >= 1576 && Ash.chSprite.y > 725){
             music.destroy();
-            previousState = "cave";
+            previousState = "forest";
             changeState(null,'cave');
         }
         
