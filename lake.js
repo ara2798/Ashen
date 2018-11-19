@@ -135,6 +135,14 @@ demo.state2.prototype = {
         square.scale.setTo(.3,.3);
         square.body.immovable = true;
         square.body.moves = false;
+        var square = bounds.create(1280, 5,'square');
+        square.scale.setTo(4,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1280, 255,'square');
+        square.scale.setTo(.5,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P

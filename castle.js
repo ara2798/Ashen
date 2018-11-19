@@ -146,6 +146,11 @@ demo.state5.prototype = {
         square.body.immovable = true;
         square.body.moves = false;
         
+        var square = bounds.create(486,1275,'square');
+        square.scale.setTo(6.3,3.7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
