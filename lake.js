@@ -106,8 +106,16 @@ demo.state2.prototype = {
         square.body.moves = false;
 
         //top lake
-        var square = bounds.create(556, 8,'square');
-        square.scale.setTo(7,5);
+        var square = bounds.create(670, 0,'square');
+        square.scale.setTo(6.1,4.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(627, 416,'square');
+        square.scale.setTo(1,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(760, 429,'square');
+        square.scale.setTo(1.7,.5);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(467, 850,'square');

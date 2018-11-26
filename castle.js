@@ -102,54 +102,30 @@ demo.state5.prototype = {
         bounds.enableBody = true; 
         
         var square = bounds.create(0,0,'square');
-        square.scale.setTo(7.1,10);
+        square.scale.setTo(7.1,8.8);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(900,0,'square');
-        square.scale.setTo(7.1,10);
-        square.body.immovable = true;
-        square.body.moves = false;
-        
-        var square = bounds.create(0,1090,'square');
-        square.scale.setTo(2.7,1.6);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(1350,1090,'square');
-        square.scale.setTo(2.7,1.6);
+        var square = bounds.create(960,0,'square');
+        square.scale.setTo(7.1,8.8);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(0,1275,'square');
-        square.scale.setTo(3,3.6);
+        
+        var square = bounds.create(0,1360,'square');
+        square.scale.setTo(2.8,2.2);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(1315,1275,'square');
-        square.scale.setTo(3,3.6);
+        var square = bounds.create(1360,1360,'square');
+        square.scale.setTo(2.8,2.2);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(0,1652,'square');
-        square.scale.setTo(2.7,1.7);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(1350,1652,'square');
-        square.scale.setTo(2.7,1.7);
+        var square = bounds.create(525,1360,'square');
+        square.scale.setTo(6,2.1);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(0,1830,'square');
-        square.scale.setTo(7,3.7);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(900,1830,'square');
-        square.scale.setTo(7,3.7);
-        square.body.immovable = true;
-        square.body.moves = false;
-        
-        var square = bounds.create(486,1275,'square');
-        square.scale.setTo(6.3,3.7);
-        square.body.immovable = true;
-        square.body.moves = false;
+
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
