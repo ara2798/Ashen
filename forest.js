@@ -14,7 +14,7 @@ demo.state3.prototype = {
         game.load.image('koriportfsmile','assets/sprites/koriportrait.png');
         game.load.image('koriportsigh','assets/sprites/koriportrait.png');
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
-        game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
+        game.load.spritesheet('weasel', 'assets/spritesheets/weaselspritesheet.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -24,7 +24,7 @@ demo.state3.prototype = {
 
         //background music
         game.load.audio('background_music', ['assets/audio/forest.wav']);
-        game.load.audio('sad',['assets/audio/forest1.wav'])
+        game.load.audio('kori1',['assets/audio/kori1.wav']);
         
     },
     create: function(){
@@ -32,6 +32,8 @@ demo.state3.prototype = {
         
         //plays background music
         music = game.add.audio('background_music');
+        koriMusic = game.add.audio('kori1');
+        battleMusic = game.add.audio('battle_music');
         music.play('', 0, 1, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
@@ -64,9 +66,9 @@ demo.state3.prototype = {
         
         var weasel = EnemyGroup1.create(530, 490,'weasel');
         weasel.scale.setTo(0.9);
-        weasel.animations.add('walkleft',[0]);
-        weasel.animations.add('walkright',[0]);
-        weasel.animations.add('attack',[0]);
+        weasel.animations.add('walkleft',[0,1,2,3]);
+        weasel.animations.add('walkright',[4,5,6,7]);
+        weasel.animations.add('attack',[8,9,0]);
         //weasel.animations.add('icespikes',[0]);
         Weasel(weasel,10);
         
@@ -82,9 +84,9 @@ demo.state3.prototype = {
         Harpie(harpie,8);
         var weasel = EnemyGroup2.create(1290, 435,'weasel');
         weasel.scale.setTo(0.9);
-        weasel.animations.add('walkleft',[0]);
-        weasel.animations.add('walkright',[0]);
-        weasel.animations.add('attack',[0]);
+        weasel.animations.add('walkleft',[0,1,2,3]);
+        weasel.animations.add('walkright',[4,5,6,7]);
+        weasel.animations.add('attack',[8,9,0]);
         //weasel.animations.add('shadowbeam',[0]);
         Weasel(weasel,8);
         
@@ -259,7 +261,6 @@ demo.state3.prototype = {
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
-            console.log("fight!");
             game.camera.unfollow();
             if (Allies.length > 1){
                 if (Allies.indexOf(Kori) != -1){
@@ -280,6 +281,8 @@ demo.state3.prototype = {
             }
             moveCamera = game.add.tween(game.camera).to({x:0,y:309},500,null,true);
             moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
@@ -313,6 +316,8 @@ demo.state3.prototype = {
             }
             moveCamera = game.add.tween(game.camera).to({x:710,y:133},500,null,true);
             moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
@@ -333,8 +338,7 @@ demo.state3.prototype = {
             moveCamera = game.add.tween(game.camera).to({x:820,y:546},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
-                music3 = game.add.audio('sad');
-                music3.play('', 0, 1, true);
+                koriMusic.play('', 0, 1, true);
                 setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill %&$$%, don't you?","ashportrait1","...","koriportthink","I owe him a life debt. It's a bind I cannot break.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
             
         }
@@ -346,6 +350,7 @@ demo.state3.prototype = {
         }
         
         if (story3Completed && forestMiniBoss && !story4Completed && !fighting){
+            music.pause();
             story4Completed = true;
             storyMode = true;
             setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat %^&* together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
@@ -354,7 +359,7 @@ demo.state3.prototype = {
         }
         
         if (story4Completed && !storyMode && !joinParty){
-            music3.destroy();
+            koriMusic.destroy();
             music.resume();
             joinParty = true;
             moveToAndKill(Kori.chSprite,mc.x,mc.y);

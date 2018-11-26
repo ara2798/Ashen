@@ -15,24 +15,24 @@ demo.state5.prototype = {
         game.load.image('square', 'assets/sprites/square.png');
 
         //background music
-        game.load.audio('background_music', ['assets/audio/castle.mp3']);
+        game.load.audio('entrance', ['assets/audio/castle_intro.wav']);
+        game.load.audio('background_music', ['assets/audio/castle_outro.wav']);
         
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
         //plays background music
+        music2 = game.add.audio('entrance');
+        music2.play('', 0, 1, false);
         music = game.add.audio('background_music');
-        music.play('', 0, 1, true);
+        game.time.events.add(Phaser.Timer.SECOND * 10, function(){music.play('', 0, 1, true)}, this);
       
         game.world.setBounds(0, 0, 1620, 2220);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'castle');
         
-        if (previousState == "overworld"){
-            mc = game.add.sprite(805, 2080, 'mc');
-        }
-        
+        mc = game.add.sprite(805, 2080, 'mc');
         mc.anchor.setTo(0.5,0.5);
         mc.scale.setTo(1.1, 1.1);
         game.physics.enable(mc);
@@ -201,12 +201,6 @@ demo.state5.prototype = {
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
             moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
         }*/
-        
-        if (Ash.chSprite.y > 2090){
-            music.destroy();
-            previousState = "castle";
-            changeState(null,'Overworld');
-        }
         
         if (Ash.chSprite.y < 90){
             music.destroy();

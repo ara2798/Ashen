@@ -7,7 +7,7 @@ demo.state998.prototype = {
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
         
         //background music
-        game.load.audio('background_music', ['assets/audio/main1.wav']);
+        game.load.audio('background_music', ['assets/audio/overworld1.wav']);
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -134,11 +134,6 @@ demo.state998.prototype = {
              
         var square = bounds.create(670,730,'square');
         square.scale.setTo(1.5,.5);
-        square.body.immovable = true;
-        square.body.moves = false;
-        
-        var square = bounds.create(817,558,'square');
-        square.scale.setTo(1.3,1);
         square.body.immovable = true;
         square.body.moves = false;
         

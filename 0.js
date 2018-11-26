@@ -2,7 +2,7 @@ var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup
 
 //ALLY SKILLS
 //****Ash****
-var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey:"slash",
+var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:15}, SkillType:"Attack", Element:"None", AreaOfEffect:"Single", AnimKey:"slash",
             SkillAnimation: function SkillAnimation(target){
                 moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
             }};
@@ -10,37 +10,38 @@ var Fireball = {Name:"Fireball", Stats:{PhysAttack:0, MagAttack:20, MP:10}, Skil
             SkillAnimation: function SkillAnimation(target){
                 var fire1 = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fire1");
                 Ash.chSprite.animations.play("firespell",2,false);
-                moveToSkill(Ash,Fire,fire1,target);
+                moveToSkill(Ash,Fireball,fire1,target);
             }};
-var Ignite = {Name:"Ignite", Stats:{MP:10}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
+var Ignite = {Name:"Ignite", Stats:{MP:15}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
-                Kori.chSprite.animations.play("heal",2,false);
-                var healAmount = Math.round(target.MaxStats.HP/4);
-                target.Stats.HP += healAmount;
-                if (target.Stats.HP > target.MaxStats.HP){
-                    target.Stats.HP = target.MaxStats.HP;
-                }
-                healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-                healDisplay.lifespan = 1000;
+                Ash.chSprite.animations.play("ignite",2,false);
+                var IgnPhysAmnt = Math.round(target.MaxStats.PhysAttack*0.1);
+                var IgnMagAmnt = Math.round(target.MaxStats.MagAttack*0.1);
+                target.Stats.PhysAttack += IgnPhysAmnt;
+                target.Stats.MagAttack += IgnMagAmnt;
+                AtckDisplay = game.add.sprite(target.chSprite.x,target.chSprite.y - 40,"attackbuff");
+                AtckDisplay.lifespan = 1000;
             }};
-var FireSlash = {Name:"Fireslash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single", AnimKey:"slash",
+var FireSlash = {Name:"Fireslash", Stats:{PhysAttack:20, MagAttack:0, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single", AnimKey:"fireslash",
             SkillAnimation: function SkillAnimation(target){
-                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Slash);
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,FireSlash);
             }};
-var BladeBlitz = {Name:"Bladeblitz",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
+var BladeBlitz = {Name:"Bladeblitz",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "bladeblitz",
             SkillAnimation: function SkillAnimation(target){
-                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Cyclone);
+                moveToAttack(Ash,Ash.chSprite.x+400,Ash.chSprite.y,target,BladeBlitz);
             }};
 var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
                 var fire3 = game.add.sprite(500,300,"fire3");
+                fire3.animations.add('act',[0]);
                 Ash.chSprite.animations.play("firespell",2,false);
-                moveToSkill(Ash,Explosion,fire3,target);
+                for (var i = 0; i < enemyInBattle.children.length; i++){
+                    makeSkillDamage(Ash,Explosion,enemyInBattle.children[i]);
+                }
             }};
-var Hellfire = {Name:"Hellfire",Stats:{PhysAttack:15, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "cyclone",
+var Hellfire = {Name:"Hellfire",Stats:{PhysAttack:50, MagAttack:0, MP:20},SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "hellfire",
             SkillAnimation: function SkillAnimation(target){
-                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Cyclone);
+                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Hellfire);
             }};
 //****Kori****
 var Ice = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
@@ -58,44 +59,50 @@ var Heal = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None", Are
                     target.Stats.HP = target.MaxStats.HP;
                 }
                 healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y - 20,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                 healDisplay.lifespan = 1000;
             }};
 var GlacialBarrier = {Name:"Glacial Barrier", Stats:{MP:10}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
                 Kori.chSprite.animations.play("heal",2,false);
-                var healAmount = Math.round(target.MaxStats.HP/4);
-                target.Stats.HP += healAmount;
-                if (target.Stats.HP > target.MaxStats.HP){
-                    target.Stats.HP = target.MaxStats.HP;
-                }
-                healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-                healDisplay.lifespan = 1000;
+                var GBPhysAmnt = Math.round(target.MaxStats.PhysDefense*0.1);
+                var GBMagAmnt = Math.round(target.MaxStats.MagDefense*0.1);
+                target.Stats.PhysDefense += GBPhysAmnt;
+                target.Stats.MagDefense += GBMagAmnt;
+                DefnsDisplay = game.add.sprite(target.chSprite.x,target.chSprite.y - 40,"defensebuff");
+                DefnsDisplay.lifespan = 1000;
             }};
-var Hailstorm = {Name:"Hailstorm", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+var Hailstorm = {Name:"Hailstorm", Stats:{PhysAttack:0, MagAttack:35, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
-                var fire3 = game.add.sprite(500,300,"fire3");
-                Ash.chSprite.animations.play("firespell",2,false);
-                moveToSkill(Ash,Explosion,fire3,target);
+                var ice2 = game.add.sprite(500,300,"ice2");
+                ice2.animations.add('act',[0]);
+                Kori.chSprite.animations.play("icespell",2,false);
+                for (var i = 0; i < enemyInBattle.children.length; i++){
+                    makeSkillDamage(Kori,Hailstorm,enemyInBattle.children[i]);
+                }
             }};
 var Purify = {Name:"Purify", Stats:{MP:10}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
                 Kori.chSprite.animations.play("heal",2,false);
-                var healAmount = Math.round(target.MaxStats.HP/4);
-                target.Stats.HP += healAmount;
-                if (target.Stats.HP > target.MaxStats.HP){
-                    target.Stats.HP = target.MaxStats.HP;
+                for (var i = 0; i < Allies.length; i++){
+                    var healAmount = Math.round(Allies[i].MaxStats.HP/4);
+                    Allies[i].Stats.HP += healAmount;
+                    if (Allies[i].Stats.HP > Allies[i].MaxStats.HP){
+                        Allies[i].Stats.HP = Allies[i].MaxStats.HP;
+                    }
+                    healDisplay = "+" + healAmount;
+                    healDisplay = game.add.text(Allies[i].chSprite.x,Allies[i].chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                    healDisplay.lifespan = 1000;
                 }
-                healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-                healDisplay.lifespan = 1000;
             }};
-var ArcticBlast = {Name:"Arctic Blast", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+var ArcticBlast = {Name:"Arctic Blast", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
-                var fire3 = game.add.sprite(500,300,"fire3");
-                Ash.chSprite.animations.play("firespell",2,false);
-                moveToSkill(Ash,Explosion,fire3,target);
+                var ice3 = game.add.sprite(500,300,"ice3");
+                ice3.animations.add('act',[0]);
+                Kori.chSprite.animations.play("icespell",2,false);
+                for (var i = 0; i < enemyInBattle.children.length; i++){
+                    makeSkillDamage(Kori,Hailstorm,enemyInBattle.children[i]);
+                }
             }};
 //ENEMY SKILLS
 var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
@@ -132,8 +139,26 @@ var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None",
                     target.Stats.HP = target.MaxStats.HP;
                 }
                 healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.x,target.y,healAmount,{fontSize:20});
+                healDisplay = game.add.text(target.x,target.y - 20,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                 healDisplay.lifespan = 1000;
+            }};
+var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(character,target){
+                var fire3 = game.add.sprite(character.x-30,character.y,"fire1");
+                character.animations.play("icespell",2,false);
+                moveToSkill(character,KnightFire,fire1,target);
+            }};
+var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(character,target){
+                var ice1 = game.add.sprite(character.x-30,character.y,"icespikes");
+                character.animations.play("icespell",2,false);
+                moveToSkill(character,KnightIce,ice1,target);
+            }};
+var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(character,target){
+                var storm1 = game.add.sprite(character.x-30,character.y,"storm");
+                character.animations.play("stormspell",2,false);
+                moveToSkill(character,KnightStorm,storm1,target);
             }};
 
 //ITEM OBJECTS
@@ -166,8 +191,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
-    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:60},
+    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -175,7 +200,7 @@ var Ash = {
         Ash.MaxStats.MagAttack += Math.round(Math.random()*(4-2)+2);
         Ash.MaxStats.MagDefense += Math.round(Math.random()*(5-3)+3);
         Ash.MaxStats.Speed += Math.round(Math.random()*(6-4)+4);
-        Ash.MaxStats.MP += Math.round(Math.random()*(20-15)+15);
+        Ash.MaxStats.MP += Math.round(Math.random()*(10-5)+5);
         for (var i in Ash.MaxStats){
             Ash.Stats[i] = Ash.MaxStats[i];
         }
@@ -207,7 +232,7 @@ var Ash = {
         return [Ash.leveledUp,Ash.learnedSkill];
     },
     SkillLvl : [50/*8,15,24,30,35*/],
-    SkillsLearned : [Slash,Fireball],
+    SkillsLearned : [Slash,Fireball,Ignite,BladeBlitz],
     SkillsToLearn : [/*Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
     Weapon : WoodSword
 }
@@ -215,8 +240,8 @@ var Ash = {
 var Kori = {
     Name : "Kori",
     PortraitKey : "koriportrait1",
-    Stats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
-    MaxStats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:100},
+    Stats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:25},
+    MaxStats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:25},
     UpdtStats : function UpdtStats(){
         Kori.MaxStats.HP += Math.round(Math.random()*(90-80)+80);
         Kori.MaxStats.PhysAttack += Math.round(Math.random()*(4-2)+2);
@@ -224,7 +249,7 @@ var Kori = {
         Kori.MaxStats.MagAttack += Math.round(Math.random()*(10-8)+8);
         Kori.MaxStats.MagDefense += Math.round(Math.random()*(8-5)+5);
         Kori.MaxStats.Speed += Math.round(Math.random()*(7-5)+5);
-        Kori.MaxStats.MP += Math.round(Math.random()*(30-25)+25);
+        Kori.MaxStats.MP += Math.round(Math.random()*(15-10)+10);
         for (var i in Kori.MaxStats){
             Kori.Stats[i] = Kori.MaxStats[i];
         }
@@ -331,6 +356,16 @@ function Koriboss(enemyObject,level) {
     enemyObject.Element = "Ice";
     enemyObject.SkillsLearned = [IceEnmy/*,HealEnmy*/];
 }
+
+function Knight(enemyObject,level) {
+    enemyObject.Stats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+50*level};
+    enemyObject.MaxStats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+50*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*80;
+    enemyObject.Coins = level*80;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [/*KnightFire,KnightIce,KnightStorm*/];
+}
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}
 };*/
@@ -368,7 +403,7 @@ demo.state0.prototype = {
         //text = "8-bitz Studioz"
         //game.add.text(450,550, text, {fontSize: '100px', fill: '#ffffff', font: 'Press Start 2P' });
         
-        game.time.events.add(Phaser.Timer.SECOND * 7, fadeLogo, this);       
+        game.time.events.add(Phaser.Timer.SECOND * 7, fadeLogo, this);    
 
         function fadeLogo(){
             game.add.tween(logo).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);

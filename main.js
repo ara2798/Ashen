@@ -8,4 +8,4 @@ game.state.add('castle', demo.state5);
 game.state.add('castlebossroom', demo.state6);
 game.state.add('Overworld', demo.state998);
 game.state.add('GameOver', demo.state999);
-game.state.start('0');
+game.state.start('castlebossroom');

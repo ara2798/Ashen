@@ -28,14 +28,16 @@ demo.state1.prototype = {
         //image for boundries
         game.load.image('square', 'assets/sprites/square.png');
         
-        //background music
+        //music
         game.load.audio('background_music', ['assets/audio/graveyard_background_music.ogg', 'assets/audio/graveyard_background_music.mp3']);
+        game.load.audio('battle_music', ['assets/audio/battle.wav']);
     },
     create: function(){
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
         //plays background music
         music = game.add.audio('background_music');
+        battleMusic = game.add.audio('battle_music');
         music.play('', 0, 1, true);
         
         game.world.setBounds(0, 0, 1620, 1260);
@@ -79,7 +81,10 @@ demo.state1.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
         
         //bounds
@@ -124,8 +129,6 @@ demo.state1.prototype = {
     update: function(){
         
         game.physics.arcade.collide(mc, square);
-        //game.physics.arcade.collide(mc, platforms);
-        //game.physics.arcade.collide(EnemyGroup1, platforms);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         
         if (EnemyGroup1.countLiving() == 0){
@@ -137,6 +140,8 @@ demo.state1.prototype = {
             game.camera.unfollow();
             moveCamera = game.add.tween(game.camera).to({x:492,y:164},500,null,true);
             moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
                 moveTo(mc,game.camera.x+150,game.camera.y+200);
                 for (var i = 0; i < EnemyGroup1.children.length; i++){
                     moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
@@ -1273,7 +1278,7 @@ function selectBattleActions() {
                     }
                 }
                 moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
-                moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
             }
             else{
                 HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
@@ -1385,7 +1390,7 @@ function selectBattleActions() {
                     }
                 }
                 moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
-                moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
             }
         }
     }
@@ -1427,9 +1432,19 @@ function selectBattleActions() {
             cursor.kill();
             if (Inventory.Items.indexOf(actionBuilder[1]) != -1){
                 currentMenu = "itemsM";
+                itemPicked = 0;
+                actionBuilder.splice(1,1);
+                currentCpos[0] = textBox.x + 85;
+                currentCpos[1] = textBox.y + 31;
+                createCursor(currentCpos[0],currentCpos[1]);
             }
             else {
                 currentMenu = "skillsM";
+                skillPicked = 0;
+                actionBuilder.splice(1,1);
+                currentCpos[0] = textBox.x + 85;
+                currentCpos[1] = textBox.y + 31;
+                createCursor(currentCpos[0],currentCpos[1]);
             }
         }
     }
@@ -1515,16 +1530,12 @@ function performBattleActions(){
             if (BattleActionStack[i][1] == 0){
                 moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].chSprite.x+200,BattleActionStack[i][0].chSprite.y,BattleActionStack[i][2],0);
             }
-            //Use attack skills
-            else if (Allies.indexOf(BattleActionStack[i][2]) == -1){
-                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
-            }
-            //Use boost skill
-            else if (Inventory.Items.indexOf(BattleActionStack[i][1]) == -1){
+            //Use skills
+            else if (BattleActionStack[i][0].SkillsLearned.indexOf(BattleActionStack[i][1]) != -1){
                 BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
             }
             //Use inventory item
-            else {
+            else if (Inventory.Items.indexOf(BattleActionStack[i][1]) != -1){
                 BattleActionStack[i][1].Use(BattleActionStack[i][2]);
             }
         }
@@ -1843,7 +1854,16 @@ function contAtkAnimation(character,xpos,ypos,target,skill){
             }
             else {
                 attackAnim = chSprite.animations.play(skill.AnimKey,3,false);
-                makeSkillDamage(character,skill,target);
+                if (skill.AreaOfEffect == "All"){
+                    for (var i = 0; i < enemyInBattle.children.length;i++){
+                        if (enemyInBattle.children[i].alive){
+                            makeSkillDamage(character,skill,enemyInBattle.children[i]);
+                        }
+                    }
+                }
+                else {
+                    makeSkillDamage(character,skill,target);
+                }
             }
         }
     }

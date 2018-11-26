@@ -23,6 +23,7 @@ demo.state2.prototype = {
         
         //plays background music
         music = game.add.audio('background_music');
+        battleMusic = game.add.audio('battle_music');
         music.play('', 0, 1, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
@@ -164,6 +165,8 @@ demo.state2.prototype = {
             game.camera.unfollow();
             moveCamera = game.add.tween(game.camera).to({x:0,y:316},500,null,true);
             moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
@@ -180,6 +183,8 @@ demo.state2.prototype = {
             game.camera.unfollow();
             moveCamera = game.add.tween(game.camera).to({x:0,y:487},500,null,true);
             moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
@@ -213,7 +218,7 @@ demo.state2.prototype = {
             swampboss.animations.add('tidalwave',[8,9,0]);
             Swampboss(swampboss,10);
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
-            moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
+            moveCamera.onComplete.add(function(){music.pause(); battleMusic.play('', 0, 1, true); game.camera.shake(0.02,1000,true,6); moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
         }
         
         if (Ash.chSprite.x <= 44){
