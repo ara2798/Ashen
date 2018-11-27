@@ -111,7 +111,7 @@ demo.state2.prototype = {
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(627, 416,'square');
-        square.scale.setTo(1,.5);
+        square.scale.setTo(1,0.5);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(760, 429,'square');
@@ -129,7 +129,7 @@ demo.state2.prototype = {
         var square = bounds.create(240, 1000,'square');
         square.scale.setTo(1,1);
         square.body.immovable = true;
-        square.body.moves = false;        
+        square.body.moves = false;       
 
         //trees
         var square = bounds.create(0, 0,'square');

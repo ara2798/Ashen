@@ -3,9 +3,10 @@ demo.state6 = function(){};
 demo.state6.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
-        game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castlebossroom', 'assets/backgrounds/castlebossroom.png');
         game.load.spritesheet('knight', 'assets/spritesheets/knightspritesheet.png', 135, 135);
+        game.load.image('knightportrait1','assets/sprites/knightportrait.png');
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -55,9 +56,9 @@ demo.state6.prototype = {
         knight.animations.add('walkleft',[0]);
         knight.animations.add('walkright',[0]);
         knight.animations.add('attack',[0,1,2]);
-        knight.animations.add('firespell',[0,1,2,3]);
-        knight.animations.add('icespell',[0,1,2,4]);
-        knight.animations.add('stormspell',[0,1,2,5]);
+        knight.animations.add('firespell',[0,1,2,3,0]);
+        knight.animations.add('icespell',[0,1,2,4,0]);
+        knight.animations.add('stormspell',[0,1,2,5,0]);
         Knight(knight,10);
         
         game.camera.follow(mc);
@@ -79,7 +80,7 @@ demo.state6.prototype = {
             mc.body.velocity.y = 0;
             mc.animations.stop();
             mc.frame = 4;
-            setStory(["ashportrait1","Rest in peace, my beloved sister. I brought your \nfavorite flowers...","I’m sorry... I should’ve been able to save you. \nIt’s all my fault...","All I have left of you is your old teddy \nbear -- he keeps me warm...","Almost like you’re still here.","...","I know you wouldn’t approve, but I have to make \nthis right.","...I’ll do whatever it takes."]);
+            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy"]);
         }
         
         if (story5Completed && !storyMode && !castleBoss){
@@ -114,9 +115,9 @@ demo.state6.prototype = {
         }
         
         if (story5Completed && castleBoss && !story6Completed && !fighting){
-            story5Completed = true;
+            story6Completed = true;
             storyMode = true;
-            setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat %^&* together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
+            setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up. I don’t care. ","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child.","I’ll see to it that he rots in hell.","knightportrait1","Do it, kill m--","koriportrait1","...","What will you do now?", "ashportrait1","I’ll rebuild this kingdom... We’ll have peace\nin her honor."]);
         }
         
         //Progress through the story

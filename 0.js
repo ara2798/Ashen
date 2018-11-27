@@ -8,9 +8,9 @@ var Slash = {Name:"Slash", Stats:{PhysAttack:20, MagAttack:0, MP:15}, SkillType:
             }};
 var Fireball = {Name:"Fireball", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
-                var fire1 = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fire1");
+                var fireball = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"fireball");
                 Ash.chSprite.animations.play("firespell",2,false);
-                moveToSkill(Ash,Fireball,fire1,target);
+                moveToSkill(Ash,Fireball,fireball,target);
             }};
 var Ignite = {Name:"Ignite", Stats:{MP:15}, SkillType:"Support", Element:"Fire", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(target){
@@ -32,8 +32,11 @@ var BladeBlitz = {Name:"Bladeblitz",Stats:{PhysAttack:15, MagAttack:0, MP:20},Sk
             }};
 var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:35}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
-                var fire3 = game.add.sprite(500,300,"fire3");
-                fire3.animations.add('act',[0]);
+                var explosion = game.add.sprite(game.camera.x+400,game.camera.y+75,"explosion");
+                explosion.scale.setTo(2.5,3);
+                explosion.animations.add('act',[0,1,2]);
+                explosion.animations.play('act',5,true);
+                explosion.lifespan = 2000;
                 Ash.chSprite.animations.play("firespell",2,false);
                 for (var i = 0; i < enemyInBattle.children.length; i++){
                     makeSkillDamage(Ash,Explosion,enemyInBattle.children[i]);
@@ -144,9 +147,15 @@ var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None",
             }};
 var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
-                var fire3 = game.add.sprite(character.x-30,character.y,"fire1");
-                character.animations.play("icespell",2,false);
-                moveToSkill(character,KnightFire,fire1,target);
+                var explosion = game.add.sprite(game.camera.x+100,game.camera.y+75,"explosion");
+                explosion.scale.setTo(2.5,3);
+                explosion.animations.add('act',[0,1,2]);
+                explosion.animations.play('act',5,true);
+                explosion.lifespan = 2000;
+                character.animations.play("firespell",2,false);
+                for (var i = 0; i < Allies.length; i++){
+                    makeSkillDamage(character,KnightFire,Allies[i]);
+                }
             }};
 var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
@@ -191,8 +200,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
-    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:50},
+    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:50},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -232,7 +241,7 @@ var Ash = {
         return [Ash.leveledUp,Ash.learnedSkill];
     },
     SkillLvl : [50/*8,15,24,30,35*/],
-    SkillsLearned : [Slash,Fireball,Ignite,BladeBlitz],
+    SkillsLearned : [Slash,Fireball,Ignite,BladeBlitz,Explosion],
     SkillsToLearn : [/*Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
     Weapon : WoodSword
 }
@@ -357,14 +366,34 @@ function Koriboss(enemyObject,level) {
     enemyObject.SkillsLearned = [IceEnmy/*,HealEnmy*/];
 }
 
+function Snek(enemyObject,level) {
+    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+10*level};
+    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+10*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*10;
+    enemyObject.Coins = level*25;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
+function Jester(enemyObject,level) {
+    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
+    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*10;
+    enemyObject.Coins = level*25;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
 function Knight(enemyObject,level) {
-    enemyObject.Stats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+50*level};
-    enemyObject.MaxStats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+50*level};
+    enemyObject.Stats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+50*level,MP:100+50*level};
+    enemyObject.MaxStats = {HP:170+90*level, PhysAttack:50+8*level,PhysDefense:30+5*level,MagAttack:50+8*level,MagDefense:30+5*level,Speed:25+50*level,MP:100+50*level};
     enemyObject.Level = level;
     enemyObject.XP = level*80;
     enemyObject.Coins = level*80;
     enemyObject.Element = "None";
-    enemyObject.SkillsLearned = [/*KnightFire,KnightIce,KnightStorm*/];
+    enemyObject.SkillsLearned = [KnightFire/*,KnightIce,KnightStorm*/];
 }
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}

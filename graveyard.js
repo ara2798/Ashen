@@ -1,6 +1,6 @@
 var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = false, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
-var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh"];
+var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1"];
 
 demo.state1 = function(){};
 demo.state1.prototype = {
@@ -21,7 +21,8 @@ demo.state1.prototype = {
         game.load.image('hpBar','assets/sprites/hp.png');
         game.load.image('mpBar','assets/sprites/mp.png');
         game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 89, 45);
-        game.load.image('fire1', 'assets/sprites/skillfire1.png');
+        game.load.image('fireball', 'assets/sprites/skillfire1.png');
+        game.load.spritesheet('explosion', 'assets/sprites/explosion.png', 128, 128);
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
         
@@ -1533,6 +1534,13 @@ function performBattleActions(){
             //Use skills
             else if (BattleActionStack[i][0].SkillsLearned.indexOf(BattleActionStack[i][1]) != -1){
                 BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
+                BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
+                if (BattleActionStack[i][0].currentMPRatio != BattleActionStack[i][0].MPRatio()){
+                    BattleActionStack[i][0].currentMPRatio = BattleActionStack[i][0].MPRatio();
+                    game.add.tween(BattleActionStack[i][0].mpBar.scale).to({x:0.6*BattleActionStack[i][0].currentMPRatio},500,null,true);
+                    BattleActionStack[i][0].mpDisplay.kill();
+                    BattleActionStack[i][0].mpDisplay = game.add.text(BattleActionStack[i][0].portrait.x+80,BattleActionStack[i][0].mpBar.y,"MP:"+BattleActionStack[i][0].Stats.MP+"/"+BattleActionStack[i][0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+                }
             }
             //Use inventory item
             else if (Inventory.Items.indexOf(BattleActionStack[i][1]) != -1){
@@ -1548,6 +1556,7 @@ function performBattleActions(){
             //in progress
             else if (Allies.indexOf(BattleActionStack[i][2]) != -1){
                 BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
+                BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
             }
         }        
     }
@@ -1690,13 +1699,6 @@ function makeSkillDamage(character,skill,target){
         else {
             damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
-        }
-        character.Stats.MP -= skill.Stats.MP;
-        if (character.currentMPRatio != character.MPRatio()){
-            character.currentMPRatio = character.MPRatio();
-            game.add.tween(character.mpBar.scale).to({x:0.6*character.currentMPRatio},500,null,true);
-            character.mpDisplay.kill();
-            character.mpDisplay = game.add.text(character.portrait.x+80,character.mpBar.y,"MP:"+character.Stats.MP+"/"+character.MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
         }
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;

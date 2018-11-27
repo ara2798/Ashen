@@ -3,20 +3,21 @@ demo.state5 = function(){};
 demo.state5.prototype = {
     preload: function(){
         game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
-        game.load.spritesheet('kori', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castle', 'assets/backgrounds/castleinterior.png');
-        //game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
+        game.load.spritesheet('jester', 'assets/spritesheets/jesterspritesheet.png', 128, 128);
         //game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square.png');
+        game.load.image('square', 'assets/sprites/square2.png');
 
         //background music
         game.load.audio('entrance', ['assets/audio/castle_intro.wav']);
         game.load.audio('background_music', ['assets/audio/castle_outro.wav']);
+        game.load.audio('jester', ['assets/audio/jester.wav']);
         
     },
     create: function(){
@@ -26,6 +27,7 @@ demo.state5.prototype = {
         music2 = game.add.audio('entrance');
         music2.play('', 0, 1, false);
         music = game.add.audio('background_music');
+        jesterMusic = game.add.audio('jester');
         game.time.events.add(Phaser.Timer.SECOND * 10, function(){music.play('', 0, 1, true)}, this);
       
         game.world.setBounds(0, 0, 1620, 2220);
@@ -46,19 +48,21 @@ demo.state5.prototype = {
         mc.animations.add('slash',[10,12,10]);
         mc.animations.add('cyclone',[10,12,10]);
         Ash.chSprite = mc;
-        
-        /*
+
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
-        var weasel = EnemyGroup1.create(446, 466,'weasel');
-        weasel.scale.setTo(0.9);
-        weasel.animations.add('walkleft',[0]);
-        weasel.animations.add('walkright',[0]);
-        weasel.animations.add('attack',[0]);
-        //weasel.animations.add('icespikes',[0]);
-        Weasel(weasel,10);
+        var jester = EnemyGroup1.create(815, 1600,'jester');
+        jester.scale.setTo(0.9);
+        jester.animations.add('stand',[0,3]);
+        jester.animations.add('walkleft',[1,2]);
+        jester.animations.add('walkright',[3,4]);
+        jester.animations.add('attack',[0]);
+        jester.animations.play('stand',2,true);
+        //jester.animations.add('icespikes',[0]);
+        Jester(jester,15);
         
+        /*
         EnemyGroup2 = game.add.group();
         EnemyGroup2.enableBody = true;     
         
@@ -76,9 +80,10 @@ demo.state5.prototype = {
         weasel.animations.add('attack',[0]);
         //weasel.animations.add('shadowbeam',[0]);
         Weasel(weasel,8);
-        
+
         EnemyGroup3 = game.add.group();
         EnemyGroup3.enableBody = true;
+        
         var kori = EnemyGroup3.create(320,1110,'kori');
         kori.anchor.setTo(0.5,0.5);
         kori.scale.setTo(1.1, 1.1);
@@ -102,30 +107,27 @@ demo.state5.prototype = {
         bounds.enableBody = true; 
         
         var square = bounds.create(0,0,'square');
-        square.scale.setTo(7.1,8.8);
+        square.scale.setTo(6.9,9);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(960,0,'square');
-        square.scale.setTo(7.1,8.8);
-        square.body.immovable = true;
-        square.body.moves = false;
-        
-        
-        var square = bounds.create(0,1360,'square');
-        square.scale.setTo(2.8,2.2);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(1360,1360,'square');
-        square.scale.setTo(2.8,2.2);
+        var square = bounds.create(945,0,'square');
+        square.scale.setTo(7.1,9);
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(525,1360,'square');
-        square.scale.setTo(6,2.1);
+        var square = bounds.create(0,1370,'square');
+        square.scale.setTo(2.9,1.3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1335,1370,'square');
+        square.scale.setTo(2.9,1.3);
         square.body.immovable = true;
         square.body.moves = false;
         
-
+        var square = bounds.create(500,1370,'square');
+        square.scale.setTo(6.25,1.3);
+        square.body.immovable = true;
+        square.body.moves = false;
         
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
@@ -134,21 +136,45 @@ demo.state5.prototype = {
     update: function(){
         //mc cant go pass bounds
         game.physics.arcade.collide(Ash.chSprite, bounds);
-        /*
+        
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
-        var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        //var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
 
-        if (encounter1 && !inTransition){
+        if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
-            for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
             }
-            setFightStage();
-            enemyInBattle = EnemyGroup1;
+            moveCamera = game.add.tween(game.camera).to({x:400,y:1500},500,null,true);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup1.children.length; i++){
+                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup1;
+            },this);
         }
-        
+        /*
         if (encounter2 && !inTransition){
             fighting = true;
             game.camera.unfollow();
@@ -158,8 +184,8 @@ demo.state5.prototype = {
             }
             setFightStage();
             enemyInBattle = EnemyGroup2;
-        }*/
-        /*
+        }
+        
         if (mc.x > 1170 && mc.y > 7300 && !story3Completed){
             story3Completed = true;
             storyMode = true;
