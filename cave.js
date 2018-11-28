@@ -14,7 +14,7 @@ demo.state4.prototype = {
         game.load.image('square', 'assets/sprites/square.png');
         
         //background music
-        game.load.audio('background_music', ['assets/audio/jester.wav']);      
+        game.load.audio('background_music', ['assets/audio/cave.wav']);      
         
     },
     create: function(){
@@ -23,7 +23,7 @@ demo.state4.prototype = {
         //plays background music
         music = game.add.audio('background_music');
         battleMusic = game.add.audio('battle_music');
-        music.play('', 0, 1, true);
+        music.play('', 0, 1.25, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -93,12 +93,61 @@ demo.state4.prototype = {
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
+               //****BOUNDS*****
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+
+        //top cave
+        var square = bounds.create(0, 0,'square');
+        square.scale.setTo(16,2.8);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1068, 280,'square');
+        square.scale.setTo(10,.7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1116, 399,'square');
+        square.scale.setTo(10,.1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1499, 489,'square');
+        square.scale.setTo(2,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
+        //bottom cave
+        var square = bounds.create(0, 1030,'square');
+        square.scale.setTo(11.2,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(489, 978,'square');
+        square.scale.setTo(1.6,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(534, 937,'square');
+        square.scale.setTo(1,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1131, 1124,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         cursors = game.input.keyboard.addKeys({
             'up':Phaser.KeyCode.UP, 'down':Phaser.KeyCode.DOWN, 'left':Phaser.KeyCode.LEFT, 'right':Phaser.KeyCode.RIGHT, 'z':Phaser.KeyCode.Z, 'x':Phaser.KeyCode.X,'p':Phaser.KeyCode.P
         });
     },
     update: function(){
         //mc cant go pass bounds
+        
+        game.physics.arcade.collide(Ash.chSprite, bounds);
         //game.physics.arcade.collide(Ash.chSprite, bounds);
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);

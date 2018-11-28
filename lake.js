@@ -12,7 +12,7 @@ demo.state2.prototype = {
         game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square.png');
+        game.load.image('square', 'assets/sprites/square2.png');
         
         //background music
         game.load.audio('background_music', ['assets/audio/lake_music.ogg', 'assets/audio/lake_music.mp3']);      
@@ -100,8 +100,13 @@ demo.state2.prototype = {
         bounds.enableBody = true;     
 
         //bottom lake
-        var square = bounds.create(600, 700,'square');
-        square.scale.setTo(7,7);
+        var square = bounds.create(620, 700,'square');
+        square.scale.setTo(6.8,4.38);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1340, 825,'square');
+        square.scale.setTo(7,1);
         square.body.immovable = true;
         square.body.moves = false;
 
@@ -119,7 +124,7 @@ demo.state2.prototype = {
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(467, 850,'square');
-        square.scale.setTo(1,3.5);
+        square.scale.setTo(1,3.3);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(390, 940,'square');
@@ -129,19 +134,31 @@ demo.state2.prototype = {
         var square = bounds.create(240, 1000,'square');
         square.scale.setTo(1,1);
         square.body.immovable = true;
-        square.body.moves = false;       
+        square.body.moves = false;    
+        
+        var square = bounds.create(366, 0,'square');
+        square.scale.setTo(5,.8);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(366, 0,'square');
+        square.scale.setTo(1.3,2.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1306, 239,'square');
+        square.scale.setTo(5,.1);
+        square.body.immovable = true;
+        square.body.moves = false; 
+        
+        var square = bounds.create(530, 80,'square');
+        square.scale.setTo(5,.5);
+        square.body.immovable = true;
+        square.body.moves = false;  
 
         //trees
         var square = bounds.create(0, 0,'square');
         square.scale.setTo(4,2);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(404, 276,'square');
-        square.scale.setTo(.3,.3);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(520, 276,'square');
-        square.scale.setTo(.3,.3);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(1280, 5,'square');
