@@ -1,4 +1,4 @@
-var graveyard, lake;
+var graveyard, lake, forest, cave, castle;
 demo.state998 = function(){};
 demo.state998.prototype = {
     preload: function(){
@@ -111,7 +111,7 @@ demo.state998.prototype = {
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(940,460,'square');
-        square.scale.setTo(2.45,.63);
+        square.scale.setTo(2.45,0.63);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(930,515,'square');
@@ -133,7 +133,7 @@ demo.state998.prototype = {
         square.body.moves = false;
              
         var square = bounds.create(670,730,'square');
-        square.scale.setTo(1.5,.5);
+        square.scale.setTo(1.5,0.5);
         square.body.immovable = true;
         square.body.moves = false;
         

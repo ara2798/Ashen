@@ -58,7 +58,10 @@ demo.state3.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();
@@ -351,6 +354,7 @@ demo.state3.prototype = {
         
         if (story3Completed && forestMiniBoss && !story4Completed && !fighting){
             music.pause();
+            game.camera.unfollow();
             story4Completed = true;
             storyMode = true;
             setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat the knight together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
@@ -361,6 +365,8 @@ demo.state3.prototype = {
         if (story4Completed && !storyMode && !joinParty){
             koriMusic.destroy();
             music.resume();
+            game.camera.follow(mc);
+            game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
             joinParty = true;
             moveToAndKill(Kori.chSprite,mc.x,mc.y);
         }

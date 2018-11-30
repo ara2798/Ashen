@@ -23,7 +23,7 @@ demo.state4.prototype = {
         //plays background music
         music = game.add.audio('background_music');
         battleMusic = game.add.audio('battle_music');
-        music.play('', 0, 1.25, true);
+        music.play('', 0, 1, true);
       
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -47,7 +47,10 @@ demo.state4.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();
@@ -93,7 +96,7 @@ demo.state4.prototype = {
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
-               //****BOUNDS*****
+        //****BOUNDS*****
         bounds = game.add.group();
         bounds.enableBody = true;     
 
@@ -116,8 +119,7 @@ demo.state4.prototype = {
         var square = bounds.create(1499, 489,'square');
         square.scale.setTo(2,.5);
         square.body.immovable = true;
-        square.body.moves = false;
-        
+        square.body.moves = false;      
         
         //bottom cave
         var square = bounds.create(0, 1030,'square');
@@ -146,9 +148,7 @@ demo.state4.prototype = {
     },
     update: function(){
         //mc cant go pass bounds
-        
         game.physics.arcade.collide(Ash.chSprite, bounds);
-        //game.physics.arcade.collide(Ash.chSprite, bounds);
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
@@ -208,7 +208,7 @@ demo.state4.prototype = {
                     Kori.chSprite = kori;
                 }
             }
-            moveCamera = game.add.tween(game.camera).to({x:710,y:133},500,null,true);
+            moveCamera = game.add.tween(game.camera).to({x:720,y:400},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
@@ -216,7 +216,7 @@ demo.state4.prototype = {
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
                 for (var i = 0; i < EnemyGroup2.children.length; i++){
-                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+70+130*i);
                 }
                 setFightStage();
                 enemyInBattle = EnemyGroup2;

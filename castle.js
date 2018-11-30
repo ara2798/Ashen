@@ -12,7 +12,7 @@ demo.state5.prototype = {
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square2.png');
+        game.load.image('square', 'assets/sprites/square.png');
 
         //background music
         game.load.audio('entrance', ['assets/audio/castle_intro.wav']);
@@ -28,7 +28,7 @@ demo.state5.prototype = {
         music2.play('', 0, 1, false);
         music = game.add.audio('background_music');
         jesterMusic = game.add.audio('jester');
-        game.time.events.add(Phaser.Timer.SECOND * 10, function(){music.play('', 0, 1, true)}, this);
+        game.time.events.add(Phaser.Timer.SECOND * 9, function(){music.play('', 0, 1, true)}, this);
       
         game.world.setBounds(0, 0, 1620, 2220);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -46,13 +46,16 @@ demo.state5.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
 
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
-        var jester = EnemyGroup1.create(815, 1600,'jester');
+        var jester = EnemyGroup1.create(760, 1600,'jester');
         jester.scale.setTo(0.9);
         jester.animations.add('stand',[0,3]);
         jester.animations.add('walkleft',[1,2]);

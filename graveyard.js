@@ -1318,6 +1318,7 @@ function selectBattleActions() {
                 }
                 else if (Allies[turn-1].SkillsLearned[skillPicked].SkillType == "Support"){
                     currentMenu = "pickAlly";
+                    allyPicked = 0;
                     cursor.kill();
                     currentCpos[0] = Allies[0].chSprite.x - 70;
                     currentCpos[1] = Allies[0].chSprite.y - 30;
@@ -1338,6 +1339,7 @@ function selectBattleActions() {
                     actionBuilder.push(Allies[turn-1]);
                     actionBuilder.push(Inventory.Items[itemPicked]);
                     currentMenu = "pickAlly";
+                    allyPicked = 0;
                     cursor.kill();
                     currentCpos[0] = Allies[0].chSprite.x - 70;
                     currentCpos[1] = Allies[0].chSprite.y - 30;
@@ -1611,7 +1613,7 @@ function makeBscDamage(character,target){
             BattleCoins += target.Coins;
             target.kill();
             if (target == kori){
-                kori = game.add.sprite(target.x+20,target.y,'kori');
+                kori = game.add.sprite(target.x+25,target.y,'kori');
                 kori.frame = 7;
                 kori.anchor.setTo(0.5,0.5);
                 kori.scale.setTo(1.1, 1.1);
@@ -1627,7 +1629,7 @@ function makeBscDamage(character,target){
                 kori.animations.add('cyclone',[10,12,10]);
                 Kori.chSprite = kori;
             }
-            else if (target == fboss){
+            else if (target == knight){
                 
             }
             if (enemyInBattle.countLiving() == 0){
@@ -1721,7 +1723,7 @@ function makeSkillDamage(character,skill,target){
                 kori.animations.add('cyclone',[10,12,10]);
                 Kori.chSprite = kori;
             }
-            else if (target == fboss){
+            else if (target == knight){
                 
             }
             if (enemyInBattle.countLiving() == 0){

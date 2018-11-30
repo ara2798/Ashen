@@ -1,4 +1,4 @@
-var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro",kori,fboss;
+var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro",kori,knight;
 
 //ALLY SKILLS
 //****Ash****
@@ -147,12 +147,12 @@ var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None",
             }};
 var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
+                character.animations.play("firespell",8,false);
                 var explosion = game.add.sprite(game.camera.x+100,game.camera.y+75,"explosion");
                 explosion.scale.setTo(2.5,3);
                 explosion.animations.add('act',[0,1,2]);
                 explosion.animations.play('act',5,true);
                 explosion.lifespan = 2000;
-                character.animations.play("firespell",2,false);
                 for (var i = 0; i < Allies.length; i++){
                     makeSkillDamage(character,KnightFire,Allies[i]);
                 }
@@ -160,13 +160,13 @@ var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillT
 var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 var ice1 = game.add.sprite(character.x-30,character.y,"icespikes");
-                character.animations.play("icespell",2,false);
+                character.animations.play("icespell",8,false);
                 moveToSkill(character,KnightIce,ice1,target);
             }};
 var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 var storm1 = game.add.sprite(character.x-30,character.y,"storm");
-                character.animations.play("stormspell",2,false);
+                character.animations.play("stormspell",8,false);
                 moveToSkill(character,KnightStorm,storm1,target);
             }};
 
@@ -200,8 +200,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:50},
-    MaxStats : {HP:200, PhysAttack:50000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:50},
+    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -474,5 +474,5 @@ function addKeyCallback(key, fn, args){
 }
 
 function addChangeStateEventListeners(){
-    addKeyCallback(Phaser.Keyboard.ENTER, changeState, 'graveyard');
+    addKeyCallback(Phaser.Keyboard.ENTER, changeState, 'cutscene1');
 }

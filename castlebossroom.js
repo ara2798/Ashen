@@ -33,7 +33,7 @@ demo.state6.prototype = {
 
         mc = game.add.sprite(400, 480, 'mc');
         mc.anchor.setTo(0.5,0.5);
-        mc.scale.setTo(1.1, 1.1);
+        mc.scale.setTo(1.5);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
         mc.animations.add('walkleft', [6,7,8]);
@@ -43,7 +43,10 @@ demo.state6.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
         
         
@@ -89,7 +92,7 @@ demo.state6.prototype = {
                 if (Allies.indexOf(Kori) != -1){
                     kori = game.add.sprite(mc.x,mc.y,'kori');
                     kori.anchor.setTo(0.5,0.5);
-                    kori.scale.setTo(1.1, 1.1);
+                    kori.scale.setTo(1.5);
                     game.physics.enable(kori);
                     kori.body.collideWorldBounds = true;
                     kori.animations.add('walkleft', [6,7,8]);
@@ -108,7 +111,7 @@ demo.state6.prototype = {
                 moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
             }
             for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+200+200*i);
             }
             setFightStage();
             enemyInBattle = EnemyGroup1;

@@ -12,7 +12,7 @@ demo.state2.prototype = {
         game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
-        game.load.image('square', 'assets/sprites/square2.png');
+        game.load.image('square', 'assets/sprites/square.png');
         
         //background music
         game.load.audio('background_music', ['assets/audio/lake_music.ogg', 'assets/audio/lake_music.mp3']);      
@@ -57,7 +57,10 @@ demo.state2.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('cyclone',[10,12,10]);
+        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('bladeblitz',[10,12,10]);
+        mc.animations.add('ignite',[13,10]);
+        mc.animations.add('hellfire',[10,12,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();

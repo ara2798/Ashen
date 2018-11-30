@@ -13,7 +13,7 @@ demo.state999.prototype = {
         
         //plays background music
         music = game.add.audio('background_music');
-        music.play('', 0, .75, true);
+        music.play('', 0, 1, true);
         
         game.add.text(centerX,centerY,"GAME OVER",{fontSize:30,fill:"#ffffff"});
     },
