@@ -200,7 +200,7 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    Stats : {HP:200, PhysAttack:50,breakPhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
@@ -240,9 +240,9 @@ var Ash = {
         }
         return [Ash.leveledUp,Ash.learnedSkill];
     },
-    SkillLvl : [50/*8,15,24,30,35*/],
-    SkillsLearned : [Slash,Fireball,Ignite,BladeBlitz,Explosion],
-    SkillsToLearn : [/*Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
+    SkillLvl : [5,8,11,15,17],
+    SkillsLearned : [Slash,Fireball/*,Ignite,BladeBlitz,Explosion*/],
+    SkillsToLearn : [Ignite,FireSlash,BladeBlitz,Explosion,Hellfire],
     Weapon : WoodSword
 }
 

@@ -6,6 +6,7 @@ demo.state4.prototype = {
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('cave', 'assets/backgrounds/cave.png');
         game.load.spritesheet('snek', 'assets/spritesheets/snekspritesheet.png', 128, 128);
+        //game.load.image('dark','assets/sprites/square2.png');
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -28,6 +29,10 @@ demo.state4.prototype = {
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'cave');
+        
+        //darken = game.add.sprite(0,0,'dark');
+        //darken.scale.setTo(16.2,12.6);
+        //darken.alpha = 0.5;
         
         if (previousState == "forest"){
             mc = game.add.sprite(100, 580, 'mc');

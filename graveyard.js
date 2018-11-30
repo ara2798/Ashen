@@ -1,4 +1,4 @@
-var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = false, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
+var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = true, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
 var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1"];
 
@@ -815,7 +815,7 @@ function selectPauseMActions(){
 }
 
 function moveMC(){
-    if (!fighting && !storyMode && !pause){   
+    if (!fighting && !storyMode && !pause && !inTransition){   
         if(cursors.right.isDown && mc.body.velocity.y == 0 && cursors.left.isUp){
             mc.body.velocity.x = 350;
             mc.animations.play('walkright', 14, true);
@@ -1527,42 +1527,45 @@ function addBattleAction(action) {
 
 function performBattleActions(){
     for (var i = 0; i < BattleActionStack.length; i++){
-        if (Allies.indexOf(BattleActionStack[i][0]) != -1){
-            //Use basic attack
-            console.log("player atks");
-            if (BattleActionStack[i][1] == 0){
-                moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].chSprite.x+200,BattleActionStack[i][0].chSprite.y,BattleActionStack[i][2],0);
-            }
-            //Use skills
-            else if (BattleActionStack[i][0].SkillsLearned.indexOf(BattleActionStack[i][1]) != -1){
-                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
-                BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
-                if (BattleActionStack[i][0].currentMPRatio != BattleActionStack[i][0].MPRatio()){
-                    BattleActionStack[i][0].currentMPRatio = BattleActionStack[i][0].MPRatio();
-                    game.add.tween(BattleActionStack[i][0].mpBar.scale).to({x:0.6*BattleActionStack[i][0].currentMPRatio},500,null,true);
-                    BattleActionStack[i][0].mpDisplay.kill();
-                    BattleActionStack[i][0].mpDisplay = game.add.text(BattleActionStack[i][0].portrait.x+80,BattleActionStack[i][0].mpBar.y,"MP:"+BattleActionStack[i][0].Stats.MP+"/"+BattleActionStack[i][0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+        if (BattleActionStack[i][0].Stats.HP > 0){
+            if (Allies.indexOf(BattleActionStack[i][0]) != -1){
+                //Use basic attack
+                console.log("player atks");
+                if (BattleActionStack[i][1] == 0){
+                    moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].chSprite.x+200,BattleActionStack[i][0].chSprite.y,BattleActionStack[i][2],0);
+                }
+                //Use skills
+                else if (BattleActionStack[i][0].SkillsLearned.indexOf(BattleActionStack[i][1]) != -1){
+                    BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][2]);
+                    BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
+                    if (BattleActionStack[i][0].currentMPRatio != BattleActionStack[i][0].MPRatio()){
+                        BattleActionStack[i][0].currentMPRatio = BattleActionStack[i][0].MPRatio();
+                        game.add.tween(BattleActionStack[i][0].mpBar.scale).to({x:0.6*BattleActionStack[i][0].currentMPRatio},500,null,true);
+                        BattleActionStack[i][0].mpDisplay.kill();
+                        BattleActionStack[i][0].mpDisplay = game.add.text(BattleActionStack[i][0].portrait.x+80,BattleActionStack[i][0].mpBar.y,"MP:"+BattleActionStack[i][0].Stats.MP+"/"+BattleActionStack[i][0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+                    }
+                }
+                //Use inventory item
+                else if (Inventory.Items.indexOf(BattleActionStack[i][1]) != -1){
+                    BattleActionStack[i][1].Use(BattleActionStack[i][2]);
                 }
             }
-            //Use inventory item
-            else if (Inventory.Items.indexOf(BattleActionStack[i][1]) != -1){
-                BattleActionStack[i][1].Use(BattleActionStack[i][2]);
-            }
-        }
-        //handle enemy actions
-        else{
-            console.log("enemy atks");
-            if (BattleActionStack[i][1] == 0){
-                moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].x-200,BattleActionStack[i][0].y,BattleActionStack[i][2],0); 
-            }
-            //in progress
-            else if (Allies.indexOf(BattleActionStack[i][2]) != -1){
-                BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
-                BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
-            }
-        }        
+            //handle enemy actions
+            else{
+                console.log("enemy atks");
+                if (BattleActionStack[i][1] == 0){
+                    moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].x-200,BattleActionStack[i][0].y,BattleActionStack[i][2],0); 
+                }
+                //in progress
+                else if (Allies.indexOf(BattleActionStack[i][2]) != -1){
+                    BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
+                    BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
+                }
+            }  
+        }           
     }
     BattleActionStack=[];
+    turn = 1;
     currentMenu = "mainBM";
     textOS.kill();
     for (var i = 0; i < Allies.length; i++){
@@ -1574,6 +1577,10 @@ function performBattleActions(){
     }
     createMenu();
     currentCpos = [textBox.x+85,textBox.y+31];
+    while (Allies[turn - 1].Stats.HP <= 0 && turn < Allies.length){
+        currentCpos[0] += 150;
+        turn += 1;
+    }
     createCursor(currentCpos[0],currentCpos[1]);
 }
 
@@ -1850,39 +1857,35 @@ function contAtkAnimation(character,xpos,ypos,target,skill){
     
     if (Allies.indexOf(character)>=0){
         var chSprite = character.chSprite;
-        if (character.Stats.HP > 0){
-            chSprite.animations.stop();
-            if (skill == 0){
-                attackAnim = chSprite.animations.play('attack',3,false);
-                makeBscDamage(character,target);
-            }
-            else {
-                attackAnim = chSprite.animations.play(skill.AnimKey,3,false);
-                if (skill.AreaOfEffect == "All"){
-                    for (var i = 0; i < enemyInBattle.children.length;i++){
-                        if (enemyInBattle.children[i].alive){
-                            makeSkillDamage(character,skill,enemyInBattle.children[i]);
-                        }
+        chSprite.animations.stop();
+        if (skill == 0){
+            attackAnim = chSprite.animations.play('attack',3,false);
+            makeBscDamage(character,target);
+        }
+        else {
+            attackAnim = chSprite.animations.play(skill.AnimKey,3,false);
+            if (skill.AreaOfEffect == "All"){
+                for (var i = 0; i < enemyInBattle.children.length;i++){
+                    if (enemyInBattle.children[i].alive){
+                        makeSkillDamage(character,skill,enemyInBattle.children[i]);
                     }
                 }
-                else {
-                    makeSkillDamage(character,skill,target);
-                }
+            }
+            else {
+                makeSkillDamage(character,skill,target);
             }
         }
     }
     else{
         var chSprite = character;
-        if (character.Stats.HP > 0){
-            chSprite.animations.stop();
-            if (skill == 0){
-                attackAnim = chSprite.animations.play('attack',3,false);
-                makeBscDamage(character,target);
-            }
-            else {
-                attackAnim = chSprite.animations.play(skill.AnimKey,3,false);
-                makeSkillDamage(character,skill,target);
-            }
+        chSprite.animations.stop();
+        if (skill == 0){
+            attackAnim = chSprite.animations.play('attack',3,false);
+            makeBscDamage(character,target);
+        }
+        else {
+            attackAnim = chSprite.animations.play(skill.AnimKey,3,false);
+            makeSkillDamage(character,skill,target);
         }
     }
     
@@ -2026,6 +2029,8 @@ function createMenu(){
         HUD.scale.setTo(1.015,0.5);
         for (var i = 0; i < Allies.length; i++){
             BattleResults.push(Allies[i].LvlUp());
+            console.log(i);
+            console.log(BattleResults);
         }
         text = [];
         text.push("Obtained " + BattleCoins + " Coins");
