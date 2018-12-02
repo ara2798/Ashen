@@ -72,7 +72,11 @@ demo.state3.prototype = {
         weasel.animations.add('walkleft',[0,1,2,3]);
         weasel.animations.add('walkright',[4,5,6,7]);
         weasel.animations.add('attack',[8,9,0]);
-        //weasel.animations.add('icespikes',[0]);
+        weasel.addChild(game.make.sprite(20,135,'null_element'));
+        weasel.children[0].scale.setTo(0.3);
+        weasel.addChild(game.make.sprite(37,139,'hpBar'));
+        weasel.children[1].scale.setTo(0.3,0.3);
+        weasel.barXScale = 0.3;
         Weasel(weasel,10);
         
         EnemyGroup2 = game.add.group();
@@ -84,13 +88,22 @@ demo.state3.prototype = {
         harpie.animations.add('walkright',[0]);
         harpie.animations.add('attack',[0]);
         //harpie.animations.add('icespikes',[0]);
+        harpie.addChild(game.make.sprite(20,135,'storm_element'));
+        harpie.children[0].scale.setTo(0.3);
+        harpie.addChild(game.make.sprite(37,139,'hpBar'));
+        harpie.children[1].scale.setTo(0.3,0.3);
+        harpie.barXScale = 0.3;
         Harpie(harpie,8);
-        var weasel = EnemyGroup2.create(1290, 435,'weasel');
+        var weasel = EnemyGroup2.create(1290, 425,'weasel');
         weasel.scale.setTo(0.9);
         weasel.animations.add('walkleft',[0,1,2,3]);
         weasel.animations.add('walkright',[4,5,6,7]);
         weasel.animations.add('attack',[8,9,0]);
-        //weasel.animations.add('shadowbeam',[0]);
+        weasel.addChild(game.make.sprite(20,135,'null_element'));
+        weasel.children[0].scale.setTo(0.3);
+        weasel.addChild(game.make.sprite(37,139,'hpBar'));
+        weasel.children[1].scale.setTo(0.3,0.3);
+        weasel.barXScale = 0.3;
         Weasel(weasel,8);
         
         if (!story3Completed){
@@ -342,22 +355,27 @@ demo.state3.prototype = {
             moveCamera.onComplete.add(function(){
                 music.pause();
                 koriMusic.play('', 0, 1, true);
-                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king, don't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared me. It's a\nbind I cannot break. I have to remain loyal to\nour new king.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","...Move.","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king, don't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared me. It's a\nbind I cannot break. I have to remain loyal to\nour new king.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","Move!!!","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
             
         }
         
         if (story3Completed && !storyMode && !forestMiniBoss){
             forestMiniBoss = true;
+            kori.addChild(game.make.sprite(-50,40,'ice_element'));
+            kori.children[0].scale.setTo(0.3);
+            kori.addChild(game.make.sprite(-30,44,'hpBar'));
+            kori.children[1].scale.setTo(0.3,0.3);
+            kori.barXScale = 0.3;
             setFightStage();
             enemyInBattle = EnemyGroup3;
         }
         
         if (story3Completed && forestMiniBoss && !story4Completed && !fighting){
-            music.pause();
-            game.camera.unfollow();
             story4Completed = true;
             storyMode = true;
-            setStory(["ashportthink","...","koriportmad","What are you waiting for? Do it!!!","ashportmad","No! We can defeat the knight together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now... That's\nwhat your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
+            kori.children[0].kill();
+            kori.children[1].kill();
+            setStory(["ashportthink","...","koriportmad","What are you waiting for!? Do it!!!","ashportmad","No! We can defeat the knight together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now...", "That's what your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
             Kori.LvlUp();
             Allies.push(Kori);
         }
@@ -365,8 +383,8 @@ demo.state3.prototype = {
         if (story4Completed && !storyMode && !joinParty){
             koriMusic.destroy();
             music.resume();
-            game.camera.follow(mc);
-            game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
+            moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
+            moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);},this);
             joinParty = true;
             moveToAndKill(Kori.chSprite,mc.x,mc.y);
         }

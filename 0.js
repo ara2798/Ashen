@@ -1,4 +1,4 @@
-var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, previousState = "intro",kori,knight;
+var demo = {}, centerX = 800 / 2, centerY = 600 / 2, mc, EnemyGroup1, EnemyGroup2, EnemyGroup3, EnemyGroup4, itemImage, itemDescr, itemUse, text, kori,knight;
 
 //ALLY SKILLS
 //****Ash****
@@ -202,6 +202,7 @@ var Ash = {
     PortraitKey : "ashportrait1",
     Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    Element: "Fire",
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
         Ash.MaxStats.PhysAttack += Math.round(Math.random()*(10-8)+8);
@@ -240,15 +241,16 @@ var Ash = {
         }
         return [Ash.leveledUp,Ash.learnedSkill];
     },
-    SkillLvl : [50/*8,15,24,30,35*/],
-    SkillsLearned : [Slash,Fireball,Ignite,BladeBlitz,Explosion],
-    SkillsToLearn : [/*Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
+    SkillLvl : [5,8,11,15,17],
+    SkillsLearned : [Slash,Fireball/*,Ignite,BladeBlitz,Explosion*/],
+    SkillsToLearn : [Ignite,FireSlash,BladeBlitz,Explosion,Hellfire],
     Weapon : WoodSword
 }
 
 var Kori = {
     Name : "Kori",
     PortraitKey : "koriportrait1",
+    Element: "Ice",
     Stats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:25},
     MaxStats : {HP:150, PhysAttack:5,PhysDefense:15,MagAttack:50,MagDefense:30,Speed:25,MP:25},
     UpdtStats : function UpdtStats(){
@@ -414,7 +416,7 @@ demo.state0.prototype = {
     create: function(){
         game.add.sprite(0, 0, 'title');
         console.log('state0');
-        addChangeStateEventListeners();
+        
         game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
@@ -432,16 +434,17 @@ demo.state0.prototype = {
         //text = "8-bitz Studioz"
         //game.add.text(450,550, text, {fontSize: '100px', fill: '#ffffff', font: 'Press Start 2P' });
         
-        game.time.events.add(Phaser.Timer.SECOND * 7, fadeLogo, this);    
+        game.time.events.add(Phaser.Timer.SECOND * 2, fadeLogo, this);    
 
         function fadeLogo(){
             game.add.tween(logo).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
         }
 
-        game.time.events.add(Phaser.Timer.SECOND * 9, removeTween, this);
+        game.time.events.add(Phaser.Timer.SECOND * 4, removeTween, this);
 
         function removeTween(){
             logo.kill();
+            music.destroy();
             music = game.add.audio('title');
             music.play('', 0, 1, true);
             var emitter = game.add.emitter(200, -200, 80);
@@ -455,6 +458,7 @@ demo.state0.prototype = {
             emitter.minRotation = 0;
             emitter.maxRotation = 0;
             emitter.start(false, 1000, 5, 0);
+            addChangeStateEventListeners();
         }
         
     },

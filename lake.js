@@ -72,6 +72,11 @@ demo.state2.prototype = {
         swamplady.animations.add('walkright',[2,3]);
         swamplady.animations.add('attack',[0,5]);
         swamplady.animations.add('icespikes',[4,5,0]);
+        swamplady.addChild(game.make.sprite(35,135,'ice_element'));
+        swamplady.children[0].scale.setTo(0.3);
+        swamplady.addChild(game.make.sprite(52,139,'hpBar'));
+        swamplady.children[1].scale.setTo(0.3,0.3);
+        swamplady.barXScale = 0.3;
         Swamplady(swamplady,5);
         var swamplady = EnemyGroup1.create(446, 466,'swamplady');
         swamplady.scale.setTo(0.9);
@@ -79,6 +84,11 @@ demo.state2.prototype = {
         swamplady.animations.add('walkright',[2,3]);
         swamplady.animations.add('attack',[0,5]);
         swamplady.animations.add('icespikes',[4,5,0]);
+        swamplady.addChild(game.make.sprite(35,135,'ice_element'));
+        swamplady.children[0].scale.setTo(0.3);
+        swamplady.addChild(game.make.sprite(52,139,'hpBar'));
+        swamplady.children[1].scale.setTo(0.3,0.3);
+        swamplady.barXScale = 0.3;
         Swamplady(swamplady,5);
         
         EnemyGroup2 = game.add.group();
@@ -90,6 +100,11 @@ demo.state2.prototype = {
         flasher.animations.add('walkright',[1]);
         flasher.animations.add('attack',[0,2,4]);
         flasher.animations.add('shadowbeam',[2,3,0]);
+        flasher.addChild(game.make.sprite(35,135,'null_element'));
+        flasher.children[0].scale.setTo(0.3);
+        flasher.addChild(game.make.sprite(52,139,'hpBar'));
+        flasher.children[1].scale.setTo(0.3,0.3);
+        flasher.barXScale = 0.3;
         Flasher(flasher,5);
         
         EnemyGroup3 = game.add.group();
@@ -191,12 +206,12 @@ demo.state2.prototype = {
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveCamera = game.add.tween(game.camera).to({x:0,y:316},500,null,true);
+            moveCamera = game.add.tween(game.camera).to({x:0,y:320},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
-                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+190*i);
                 }
                 for (var i = 0; i < EnemyGroup1.children.length; i++){
                     moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
@@ -238,15 +253,20 @@ demo.state2.prototype = {
         
         if (story2Completed && !storyMode && !swampMiniBoss){
             swampMiniBoss = true;
-            var swampboss = EnemyGroup3.create(1400, 420,'swampboss');
+            var swampboss = EnemyGroup3.create(1400, 400,'swampboss');
             swampboss.scale.setTo(1.8);
             swampboss.animations.add('walkleft',[0,1,2,3]);
             swampboss.animations.add('walkright',[4,5,6,7]);
             swampboss.animations.add('attack',[0]);
             swampboss.animations.add('tidalwave',[8,9,0]);
+            swampboss.addChild(game.make.sprite(35,165,'ice_element'));
+            swampboss.children[0].scale.setTo(0.3);
+            swampboss.addChild(game.make.sprite(52,169,'hpBar'));
+            swampboss.children[1].scale.setTo(0.5,0.3);
+            swampboss.barXScale = 0.5;
             Swampboss(swampboss,10);
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
-            moveCamera.onComplete.add(function(){music.pause(); battleMusic.play('', 0, 1, true); game.camera.shake(0.02,1000,true,6); moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
+            moveCamera.onComplete.add(function(){music.pause(); battleMusic.play('', 0, 1, true); game.camera.shake(0.02,1000,true,6); moveTo(EnemyGroup3.children[0],game.camera.x+400,350);setFightStage();enemyInBattle = EnemyGroup3;},this);
         }
         
         if (Ash.chSprite.x <= 44){
