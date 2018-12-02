@@ -6,7 +6,7 @@ demo.state5.prototype = {
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castle', 'assets/backgrounds/castleinterior.png');
         game.load.spritesheet('jester', 'assets/spritesheets/jesterspritesheet.png', 128, 128);
-        //game.load.spritesheet('weasel', 'assets/spritesheets/weasel.png', 128, 128);
+        game.load.spritesheet('skeleton', 'assets/spritesheets/skeleton.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -63,44 +63,68 @@ demo.state5.prototype = {
         jester.animations.add('attack',[0]);
         jester.animations.play('stand',2,true);
         //jester.animations.add('icespikes',[0]);
+        jester.addChild(game.make.sprite(-50,40,'null_element'));
+        jester.children[0].scale.setTo(0.3);
+        jester.addChild(game.make.sprite(-30,44,'hpBar'));
+        jester.children[1].scale.setTo(0.3,0.3);
+        jester.barXScale = 0.3;
         Jester(jester,15);
         
-        /*
         EnemyGroup2 = game.add.group();
         EnemyGroup2.enableBody = true;     
         
-        var harpie = EnemyGroup2.create(253, 373,'harpie');
-        harpie.scale.setTo(0.9);
-        harpie.animations.add('walkleft',[0]);
-        harpie.animations.add('walkright',[0]);
-        harpie.animations.add('attack',[0]);
-        //harpie.animations.add('icespikes',[0]);
-        Harpie(harpie,8);
-        var weasel = EnemyGroup2.create(320, 1110,'weasel');
-        weasel.scale.setTo(0.9);
-        weasel.animations.add('walkleft',[0]);
-        weasel.animations.add('walkright',[0]);
-        weasel.animations.add('attack',[0]);
-        //weasel.animations.add('shadowbeam',[0]);
-        Weasel(weasel,8);
+        var skeleton = EnemyGroup2.create(1190, 1610,'skeleton');
+        skeleton.scale.setTo(1);
+        skeleton.animations.add('walkleft',[0]);
+        skeleton.animations.add('walkright',[0]);
+        skeleton.animations.add('attack',[0]);
+        //skeleton.animations.add('icespikes',[0]);
+        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.children[0].scale.setTo(0.3);
+        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.children[1].scale.setTo(0.3,0.3);
+        skeleton.barXScale = 0.3;
+        Skeleton(skeleton,13);
+        var skeleton = EnemyGroup2.create(1210, 1961,'skeleton');
+        skeleton.scale.setTo(1);
+        skeleton.animations.add('walkleft',[0]);
+        skeleton.animations.add('walkright',[0]);
+        skeleton.animations.add('attack',[0]);
+        //skeleton.animations.add('icespikes',[0]);
+        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.children[0].scale.setTo(0.3);
+        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.children[1].scale.setTo(0.3,0.3);
+        skeleton.barXScale = 0.3;
+        Skeleton(skeleton,13);
 
         EnemyGroup3 = game.add.group();
         EnemyGroup3.enableBody = true;
         
-        var kori = EnemyGroup3.create(320,1110,'kori');
-        kori.anchor.setTo(0.5,0.5);
-        kori.scale.setTo(1.1, 1.1);
-        game.physics.enable(kori);
-        kori.body.collideWorldBounds = true;
-        kori.animations.add('walkleft', [6,7,8]);
-        kori.animations.add('walkright', [9,10,11]);
-        kori.animations.add('walkdown', [0,1,2]);
-        kori.animations.add('walkup', [3,4,5]);
-        kori.animations.add('attack', [10,12,10]);
-        kori.animations.add('firespell', [13,10]);
-        kori.animations.add('slash',[10,12,10]);
-        kori.animations.add('cyclone',[10,12,10]);
-        Kori.chSprite = kori;*/
+        var skeleton = EnemyGroup3.create(360, 1290,'skeleton');
+        skeleton.scale.setTo(1);
+        skeleton.animations.add('walkleft',[0]);
+        skeleton.animations.add('walkright',[0]);
+        skeleton.animations.add('attack',[0]);
+        //skeleton.animations.add('icespikes',[0]);
+        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.children[0].scale.setTo(0.3);
+        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.children[1].scale.setTo(0.3,0.3);
+        skeleton.barXScale = 0.3;
+        Skeleton(skeleton,13);
+        var skeleton = EnemyGroup3.create(780, 843,'skeleton');
+        skeleton.scale.setTo(1);
+        skeleton.animations.add('walkleft',[0]);
+        skeleton.animations.add('walkright',[0]);
+        skeleton.animations.add('attack',[0]);
+        //skeleton.animations.add('icespikes',[0]);
+        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.children[0].scale.setTo(0.3);
+        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.children[1].scale.setTo(0.3,0.3);
+        skeleton.barXScale = 0.3;
+        Skeleton(skeleton,13);
         
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
@@ -141,7 +165,7 @@ demo.state5.prototype = {
         game.physics.arcade.collide(Ash.chSprite, bounds);
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
-        //var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
@@ -177,18 +201,42 @@ demo.state5.prototype = {
                 enemyInBattle = EnemyGroup1;
             },this);
         }
-        /*
-        if (encounter2 && !inTransition){
+        
+        if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveTo(mc,game.camera.x+150,game.camera.y+200);
-            for (var i = 0; i < EnemyGroup2.children.length; i++){
-                moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
             }
-            setFightStage();
-            enemyInBattle = EnemyGroup2;
+            moveCamera = game.add.tween(game.camera).to({x:820,y:500},500,null,true);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup2.children.length; i++){
+                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup2;
+            },this);
         }
-        
+        /*
         if (mc.x > 1170 && mc.y > 7300 && !story3Completed){
             story3Completed = true;
             storyMode = true;

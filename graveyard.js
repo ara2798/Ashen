@@ -1549,7 +1549,51 @@ function addBattleAction(action) {
 }
 
 function performBattleActions(){
+    var actionNumber = 0;
     for (var i = 0; i < BattleActionStack.length; i++){
+        /*game.time.events.add(Phaser.Timer.SECOND*(i*2.5),function(action){
+            console.log(Phaser.Timer.SECOND * actionNumber * 1);
+            game.time.events.add(Phaser.Timer.SECOND * actionNumber * 1, performAction, this,action);
+            function performAction(action){
+                if (action[0].Stats.HP > 0){
+                    if (Allies.indexOf(action[0]) != -1){
+                        //Use basic attack
+                        if (action[1] == 0){
+                            moveToAttack(action[0],action[0].chSprite.x+200,action[0].chSprite.y,action[2],0);
+                        }
+                        //Use skills
+                        else if (action[0].SkillsLearned.indexOf(action[1]) != -1){
+                            action[1].SkillAnimation(action[2]);
+                            action[0].Stats.MP -= action[1].Stats.MP;
+                            if (action[0].currentMPRatio != action[0].MPRatio()){
+                                action[0].currentMPRatio = action[0].MPRatio();
+                                game.add.tween(action[0].mpBar.scale).to({x:0.6*action[0].currentMPRatio},500,null,true);
+                                action[0].mpDisplay.kill();
+                                action[0].mpDisplay = game.add.text(action[0].portrait.x+80,action[0].mpBar.y,"MP:"+action[0].Stats.MP+"/"+action[0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+                            }
+                        }
+                        //Use inventory item
+                        else if (Inventory.Items.indexOf(action[1]) != -1){
+                            action[1].Use(action[2]);
+                        }
+                    }
+                    //handle enemy actions
+                    else{
+                        console.log("enemy atks");
+                        if (action[1] == 0){
+                            moveToAttack(action[0],action[0].x-200,action[0].y,action[2],0); 
+                        }
+                        //in progress
+                        else if (Allies.indexOf(action[2]) != -1){
+                            action[1].SkillAnimation(action[0],action[2]);
+                            action[0].Stats.MP -= action[1].Stats.MP;
+                        }
+                    }
+                    actionNumber++
+                }
+            }
+        },this,BattleActionStack[i]);*/
+        
         if (BattleActionStack[i][0].Stats.HP > 0){
             if (Allies.indexOf(BattleActionStack[i][0]) != -1){
                 //Use basic attack
@@ -1583,8 +1627,8 @@ function performBattleActions(){
                     BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
                     BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
                 }
-            }  
-        }           
+            }
+        }        
     }
     BattleActionStack=[];
     turn = 1;
@@ -1633,7 +1677,7 @@ function makeBscDamage(character,target){
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             //damageText.lifespan = 1000;
-            multiplierText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             multiplierText.lifespan = 1000;
             if (target.Stats.HP > 0){
                 game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
@@ -1643,7 +1687,7 @@ function makeBscDamage(character,target){
             }
         }
         else {
-            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            damageText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){
@@ -1737,7 +1781,7 @@ function makeSkillDamage(character,skill,target){
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             //damageText.lifespan = 1000;
-            multiplierText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             multiplierText.lifespan = 1000;
             if (target.Stats.HP > 0){
                 game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
@@ -1747,7 +1791,7 @@ function makeSkillDamage(character,skill,target){
             }
         }
         else {
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            damageText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
         if (target.Stats.HP <= 0){

@@ -120,7 +120,7 @@ demo.state3.prototype = {
             kori.animations.add('attack', [7,12,7]);
             kori.animations.add('icespell', [13,7]);
             kori.animations.add('heal',[13,7]);
-            Koriboss(kori,6);
+            Koriboss(kori,8);
         }
         
         game.camera.follow(mc);
@@ -330,7 +330,7 @@ demo.state3.prototype = {
                     Kori.chSprite = kori;
                 }
             }
-            moveCamera = game.add.tween(game.camera).to({x:710,y:133},500,null,true);
+            moveCamera = game.add.tween(game.camera).to({x:820,y:500},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);

@@ -369,20 +369,30 @@ function Koriboss(enemyObject,level) {
 }
 
 function Snek(enemyObject,level) {
-    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+10*level};
-    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:1+2*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+10*level};
+    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+10*level, PhysDefense:3+5*level, MagAttack:1+2*level, MagDefense:1+5*level, Speed:1+20*level, MP:3+10*level};
+    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+10*level, PhysDefense:3+5*level, MagAttack:1+2*level, MagDefense:1+5*level, Speed:1+20*level, MP:3+10*level};
     enemyObject.Level = level;
-    enemyObject.XP = level*10;
+    enemyObject.XP = level*30;
     enemyObject.Coins = level*25;
     enemyObject.Element = "None";
     enemyObject.SkillsLearned = [];
 }
 
 function Jester(enemyObject,level) {
-    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
+    enemyObject.Stats = {HP:10+35*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
     enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
     enemyObject.Level = level;
-    enemyObject.XP = level*10;
+    enemyObject.XP = level*40;
+    enemyObject.Coins = level*35;
+    enemyObject.Element = "None";
+    enemyObject.SkillsLearned = [];
+}
+
+function Skeleton(enemyObject,level) {
+    enemyObject.Stats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+15*level, MP:3+10*level};
+    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+2*level, MagAttack:1+2*level, MagDefense:1+2*level, Speed:1+15*level, MP:3+10*level};
+    enemyObject.Level = level;
+    enemyObject.XP = level*20;
     enemyObject.Coins = level*25;
     enemyObject.Element = "None";
     enemyObject.SkillsLearned = [];

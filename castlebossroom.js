@@ -89,6 +89,11 @@ demo.state6.prototype = {
         
         if (story5Completed && !storyMode && !castleBoss){
             castleBoss = true;
+            knight.addChild(game.make.sprite(-50,40,'null_element'));
+            knight.children[0].scale.setTo(0.3);
+            knight.addChild(game.make.sprite(-30,44,'hpBar'));
+            knight.children[1].scale.setTo(0.3,0.3);
+            knight.barXScale = 0.3;
             if (Allies.length > 1){
                 if (Allies.indexOf(Kori) != -1){
                     kori = game.add.sprite(mc.x,mc.y,'kori');

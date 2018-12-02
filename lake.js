@@ -239,7 +239,7 @@ demo.state2.prototype = {
             },this);
         }
         
-        if (mc.x > 650 && mc.y > 500 && mc.y < 650.5 && !story2Completed){
+        if (mc.x > 650 && mc.y > 500 && mc.y <= 650.5 && !story2Completed){
             story2Completed = true;
             storyMode = true;
             fighting = true;
