@@ -33,7 +33,7 @@ demo.state6.prototype = {
 
         mc = game.add.sprite(400, 480, 'mc');
         mc.anchor.setTo(0.5,0.5);
-        mc.scale.setTo(1.5);
+        mc.scale.setTo(1.3);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
         mc.animations.add('walkleft', [6,7,8]);
@@ -56,6 +56,7 @@ demo.state6.prototype = {
         var knight = EnemyGroup1.create(400, 230,'knight');
         knight.frame = 6;
         knight.anchor.setTo(0.5,0.5);
+        knight.scale.setTo(1.1);
         knight.animations.add('walkleft',[0]);
         knight.animations.add('walkright',[0]);
         knight.animations.add('attack',[0,1,2]);
@@ -92,7 +93,7 @@ demo.state6.prototype = {
                 if (Allies.indexOf(Kori) != -1){
                     kori = game.add.sprite(mc.x,mc.y,'kori');
                     kori.anchor.setTo(0.5,0.5);
-                    kori.scale.setTo(1.5);
+                    kori.scale.setTo(1.3);
                     game.physics.enable(kori);
                     kori.body.collideWorldBounds = true;
                     kori.animations.add('walkleft', [6,7,8]);

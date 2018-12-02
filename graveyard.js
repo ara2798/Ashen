@@ -1,4 +1,4 @@
-var /*platforms,*/pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = true, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
+var previousState = "intro", pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = false, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
 var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1"];
 
@@ -20,6 +20,10 @@ demo.state1.prototype = {
         game.load.image('ashportthink','assets/sprites/ashportrait.png');
         game.load.image('hpBar','assets/sprites/hp.png');
         game.load.image('mpBar','assets/sprites/mp.png');
+        game.load.image('fire_element','assets/sprites/fire_element.png');
+        game.load.image('ice_element','assets/sprites/ice_element.png');
+        game.load.image('storm_element','assets/sprites/storm_element.png');
+        game.load.image('null_element','assets/sprites/null_element.png');
         game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 89, 45);
         game.load.image('fireball', 'assets/sprites/skillfire1.png');
         game.load.spritesheet('explosion', 'assets/sprites/explosion.png', 128, 128);
@@ -103,13 +107,25 @@ demo.state1.prototype = {
             ghoul.animations.add('walkleft',[0]);
             ghoul.animations.add('walkright',[1]);
             ghoul.animations.add('attack',[0,2]);
+            ghoul.addChild(game.make.sprite(0,50,'null_element'));
+            ghoul.children[0].scale.setTo(0.3);
+            ghoul.addChild(game.make.sprite(17,54,'hpBar'));
+            ghoul.children[1].scale.setTo(0.3,0.3);
+            ghoul.barXScale = 0.3;
             Ghoul(ghoul,5);
+            
             var ghoul = EnemyGroup1.create(1100, 375,'ghoul');
             ghoul.scale.setTo(1.2);
             ghoul.animations.add('walkleft',[0]);
             ghoul.animations.add('walkright',[1]);
             ghoul.animations.add('attack',[0,2]);
+            ghoul.addChild(game.make.sprite(0,50,'null_element'));
+            ghoul.children[0].scale.setTo(0.3);
+            ghoul.addChild(game.make.sprite(17,54,'hpBar'));
+            ghoul.children[1].scale.setTo(0.3,0.3);
+            ghoul.barXScale = 0.3;
             Ghoul(ghoul,5);
+            //ghoul.addChild(game.add.text(20,50,'HP: '+ghoul.Stats.HP+'/'+ghoul.MaxStats.HP,{fontSize:10,fill:'#ffffff',stroke:'#000000',strokeThickness:2}));
         }
         
         //var move3 = game.add.tween(ghoul).to({x:315,y:550},4500,null,true,0);
@@ -168,7 +184,7 @@ demo.state1.prototype = {
             story1Completed = true;
             storyMode = true;
             mc.frame = 4;
-            setStory(["ashportrait1","Rest in peace, my beloved sister. I brought your \nfavorite flowers...","I’m sorry... I should’ve been able to save you. \nIt’s all my fault...","All I have left of you is your old teddy \nbear -- he keeps me warm...","Almost like you’re still here.","...","I know you wouldn’t approve, but I have to make \nthis right.","...I’ll do whatever it takes."]);
+            setStory(["ashportsad","Rest in peace, my beloved sister. I brought your \nfavorite flowers...","I’m sorry... I should’ve been able to save you. \nIt’s all my fault...","All I have left of you is your old teddy bear -- it\nkeeps me warm...","Almost like you’re still here.","...","I know you wouldn’t approve, but I have to make \nthis right.","...I’ll do whatever it takes."]);
         }
         
         //Progress through the story
@@ -1261,6 +1277,9 @@ function selectBattleActions() {
                 if (enemyInBattle.children[i].Stats.HP > 0 && Allies[turn - 1].Stats.Speed < enemyInBattle.children[i].Stats.Speed){
                     escapedBattle = false;
                 }
+                else if (enemyInBattle.children[0] == kori || enemyInBattle.children[0] == knight){
+                    escapedBattle = false;
+                }
             }
             if (escapedBattle){
                 textOS.destroy();
@@ -1376,6 +1395,7 @@ function selectBattleActions() {
                 BattleCoins = 0;
                 BattleXP = 0;
                 currentMenu = "";
+                turn = 1;
                 textOS.kill();
                 textHUD.kill();
                 textBox.kill();
@@ -1392,8 +1412,13 @@ function selectBattleActions() {
                         moveToAndKill(Allies[i].chSprite,mc.x,mc.y);
                     }
                 }
-                moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
-                moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                if (enemyInBattle.children[0] != kori){
+                    moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
+                    moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                }
+                else {
+                    fighting = false;
+                }
             }
         }
     }
@@ -1471,16 +1496,8 @@ function addBattleAction(action) {
     if (turn > Allies.length){
         cursor.kill()
         for (var i = 0; i < enemyInBattle.children.length; i++){
-            console.log(enemyInBattle.children[i]);
             if (enemyInBattle.children[i].alive){
                 actionBuilder.push(enemyInBattle.children[i]);
-                var pickTarget = Math.round(Math.random()*(Allies.length-1));
-                while (Allies[pickTarget].Stats.HP <= 0){
-                    pickTarget += 1;
-                    if (pickTarget >= Allies.length){
-                        pickTarget = 0;
-                    }
-                }
                 var AtkOrSkill = Math.round(Math.random());
                 if (AtkOrSkill == 1 && enemyInBattle.children[i].SkillsLearned[0] != undefined){
                     if (enemyInBattle.children[i].Stats.MP >= enemyInBattle.children[i].SkillsLearned[0].Stats.MP){
@@ -1497,6 +1514,13 @@ function addBattleAction(action) {
                 else{
                     actionBuilder.push(0);
                 }
+                var pickTarget = Math.round(Math.random()*(Allies.length-1));
+                while (Allies[pickTarget].Stats.HP <= 0){
+                    pickTarget += 1;
+                    if (pickTarget >= Allies.length){
+                        pickTarget = 0;
+                    }
+                }
                 actionBuilder.push(Allies[pickTarget]);
                 BattleActionStack.push(actionBuilder);
                 actionBuilder = [];
@@ -1505,7 +1529,6 @@ function addBattleAction(action) {
         sortStack(BattleActionStack);
         console.log(BattleActionStack);
         performBattleActions();
-        turn = 1;
     }
     else {
         textOS.kill();
@@ -1530,7 +1553,6 @@ function performBattleActions(){
         if (BattleActionStack[i][0].Stats.HP > 0){
             if (Allies.indexOf(BattleActionStack[i][0]) != -1){
                 //Use basic attack
-                console.log("player atks");
                 if (BattleActionStack[i][1] == 0){
                     moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].chSprite.x+200,BattleActionStack[i][0].chSprite.y,BattleActionStack[i][2],0);
                 }
@@ -1581,6 +1603,7 @@ function performBattleActions(){
         currentCpos[0] += 150;
         turn += 1;
     }
+    console.log(turn);
     createCursor(currentCpos[0],currentCpos[1]);
 }
 
@@ -1607,9 +1630,17 @@ function makeBscDamage(character,target){
         }
         if (Damage > 0){
             target.Stats.HP -= Damage;
-            damageText = "-" + Damage;
-            damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-            damageText.lifespan = 1000;
+            //damageText = "-" + Damage;
+            //damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            //damageText.lifespan = 1000;
+            multiplierText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText.lifespan = 1000;
+            if (target.Stats.HP > 0){
+                game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
+            }
+            else {
+                game.add.tween(target.children[1].scale).to({x:0},500,null,true);
+            }
         }
         else {
             damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1618,34 +1649,34 @@ function makeBscDamage(character,target){
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
-            target.kill();
             if (target == kori){
-                kori = game.add.sprite(target.x+25,target.y,'kori');
-                kori.frame = 7;
-                kori.anchor.setTo(0.5,0.5);
-                kori.scale.setTo(1.1, 1.1);
-                game.physics.enable(kori);
-                kori.body.collideWorldBounds = true;
-                kori.animations.add('walkleft', [6,7,8]);
-                kori.animations.add('walkright', [9,10,11]);
-                kori.animations.add('walkdown', [0,1,2]);
-                kori.animations.add('walkup', [3,4,5]);
-                kori.animations.add('attack', [10,12,10]);
-                kori.animations.add('firespell', [13,10]);
-                kori.animations.add('slash',[10,12,10]);
-                kori.animations.add('cyclone',[10,12,10]);
+                kori = target;
                 Kori.chSprite = kori;
-            }
-            else if (target == knight){
-                
-            }
-            if (enemyInBattle.countLiving() == 0){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
                 }
                 Inventory.Coins += BattleCoins;
                 currentMenu = "BattleEnd";
                 createMenu();
+            }
+            else if (target == knight){
+                for (var i = 0; i < Allies.length; i++){
+                    Allies[i].XPObtained += BattleXP;
+                }
+                Inventory.Coins += BattleCoins;
+                currentMenu = "BattleEnd";
+                createMenu();
+            }
+            else {
+                target.kill();
+                if (enemyInBattle.countLiving() == 0){
+                    for (var i = 0; i < Allies.length; i++){
+                        Allies[i].XPObtained += BattleXP;
+                    }
+                    Inventory.Coins += BattleCoins;
+                    currentMenu = "BattleEnd";
+                    createMenu();
+                }
             } 
         }
     }
@@ -1659,9 +1690,11 @@ function makeBscDamage(character,target){
         }
         if (Damage > 0){
             target.Stats.HP -= Damage;
-            damageText = "-" + Damage;
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-            damageText.lifespan = 1000;
+            //damageText = "-" + Damage;
+            //damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            //damageText.lifespan = 1000;
+            multiplierText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20, "x " + DamageMultiplier, {fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText.lifespan = 1000;
         }
         else {
             damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1701,9 +1734,17 @@ function makeSkillDamage(character,skill,target){
         }
         if (Damage > 0){
             target.Stats.HP -= Damage;
-            damageText = "-" + Damage;
-            damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-            damageText.lifespan = 1000;
+            //damageText = "-" + Damage;
+            //damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            //damageText.lifespan = 1000;
+            multiplierText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,"x "+DamageMultiplier,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText.lifespan = 1000;
+            if (target.Stats.HP > 0){
+                game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
+            }
+            else {
+                game.add.tween(target.children[1].scale).to({x:0},500,null,true);
+            }
         }
         else {
             damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1711,35 +1752,35 @@ function makeSkillDamage(character,skill,target){
         }
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
-            BattleCoins += target.Coins;
-            target.kill();
+            BattleCoins += target.Coins;          
             if (target == kori){
-                kori = game.add.sprite(target.x,target.y,'kori');
-                kori.frame = 7;
-                kori.anchor.setTo(0.5,0.5);
-                kori.scale.setTo(1.1, 1.1);
-                game.physics.enable(kori);
-                kori.body.collideWorldBounds = true;
-                kori.animations.add('walkleft', [6,7,8]);
-                kori.animations.add('walkright', [9,10,11]);
-                kori.animations.add('walkdown', [0,1,2]);
-                kori.animations.add('walkup', [3,4,5]);
-                kori.animations.add('attack', [10,12,10]);
-                kori.animations.add('firespell', [13,10]);
-                kori.animations.add('slash',[10,12,10]);
-                kori.animations.add('cyclone',[10,12,10]);
+                kori = target;
                 Kori.chSprite = kori;
-            }
-            else if (target == knight){
-                
-            }
-            if (enemyInBattle.countLiving() == 0){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
                 }
                 Inventory.Coins += BattleCoins;
                 currentMenu = "BattleEnd";
                 createMenu();
+            }
+            else if (target == knight){
+                for (var i = 0; i < Allies.length; i++){
+                    Allies[i].XPObtained += BattleXP;
+                }
+                Inventory.Coins += BattleCoins;
+                currentMenu = "BattleEnd";
+                createMenu();
+            }
+            else {
+                target.kill();
+                if (enemyInBattle.countLiving() == 0){
+                    for (var i = 0; i < Allies.length; i++){
+                        Allies[i].XPObtained += BattleXP;
+                    }
+                    Inventory.Coins += BattleCoins;
+                    currentMenu = "BattleEnd";
+                    createMenu();
+                }
             } 
         }
     }
@@ -1752,9 +1793,11 @@ function makeSkillDamage(character,skill,target){
         }
         if (Damage > 0){
             target.Stats.HP -= Damage;
-            damageText = "-" + Damage;
-            damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
-            damageText.lifespan = 1000;
+            //damageText = "-" + Damage;
+            //damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            //damageText.lifespan = 1000;
+            multiplierText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20, "x " + DamageMultiplier, {fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            multiplierText.lifespan = 1000;
         }
         else {
             damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1789,10 +1832,10 @@ function checkElementalWkn(character,enemy){
         DamageMultiplier = 1;
     }
     else if ((character.Element == "Fire" && enemy.Element == "Ice") || (character.Element == "Ice" && enemy.Element == "Storm") || (character.Element == "Storm" && enemy.Element == "Fire")){
-        DamageMultiplierMultiplier = 1.5;
+        DamageMultiplier = 2;
     }
     else if ((character.Element == "Ice" && enemy.Element == "Fire") || (character.Element == "Fire" && enemy.Element == "Storm") || (character.Element == "Storm" && enemy.Element == "Ice")){
-        DamageMultiplierMultiplier = 0.5;
+        DamageMultiplier = 0.5;
     }
 }
 
