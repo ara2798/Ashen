@@ -334,33 +334,19 @@ function createSubmenu(){
             Allies[i].portrait = game.add.sprite(game.camera.x+100+150*i,game.camera.y+50,Allies[i].PortraitKey);
             Allies[i].portrait.scale.setTo(0.4);
         }
-        text += "Skill           Stats                         MP    Element\n";
+        text += "Skill           Description                              MP\n";
         for (var j = 0; j < Allies[allyPicked].SkillsLearned.length; j++){
             text += Allies[allyPicked].SkillsLearned[j].Name;
             var SpaceBetwn = 15 - Allies[allyPicked].SkillsLearned[j].Name.length;
             for (var k = 0; k < SpaceBetwn; k++){
                 text += " ";
             }
-            if (Allies[allyPicked].SkillsLearned[j].Stats.PhysAttack != 0){
-                text += "+" + Allies[allyPicked].SkillsLearned[j].Stats.PhysAttack + " Phys. Attack";
-                var SpaceBetwn = 7 - Allies[allyPicked].SkillsLearned[j].Stats.PhysAttack.toString().length;
-                for (var k = 0; k < SpaceBetwn; k++){
-                    text += " ";
-                }
-            }
-            else{
-                text += "+" + Allies[allyPicked].SkillsLearned[j].Stats.MagAttack + " Mag. Attack";
-                var SpaceBetwn = 8 - Allies[allyPicked].SkillsLearned[j].Stats.PhysAttack.toString().length;
-                for (var k = 0; k < SpaceBetwn; k++){
-                    text += " ";
-                }
-            }
-            text += Allies[allyPicked].SkillsLearned[j].Stats.MP;
-            var SpaceBetwn = 8 - Allies[allyPicked].SkillsLearned[j].Stats.MP.toString().length;
+            text += Allies[allyPicked].SkillsLearned[j].Description;
+            var SpaceBetwn = 25 - Allies[allyPicked].Description.length;
             for (var k = 0; k < SpaceBetwn; k++){
                 text += " ";
             }
-            text += Allies[allyPicked].SkillsLearned[j].Element;
+            text += Allies[allyPicked].SkillsLearned[j].Stats.MP;
             text += "\n"
         }
         Text = game.add.text(game.camera.x+50,game.camera.y+150,text,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -457,7 +443,7 @@ function moveCursorPM(){
 }
 
 function moveCursorPSM(){
-    if (currentMenu == "pickAlly"){
+    if (currentMenu == "pickAlly" && pause == true){
         if(cursors.right.isDown && !press[0]){
             press[0] = true;
             if (allyPicked + 1 < Allies.length){
@@ -1754,7 +1740,7 @@ function makeBscDamage(character,target){
             }
             if (LostBattle){
                 game.camera.fade(0x000000,1500);
-                game.camera.onFadeComplete.add(function(){changeState(null,"GameOver");});
+                game.camera.onFadeComplete.add(function(){battleMusic.destroy();changeState(null,"GameOver");});
             }
         }
         if (target.currentHPRatio != target.HPRatio()){
@@ -2112,6 +2098,7 @@ function createMenu(){
     }
     else if (currentMenu == "BattleEnd"){
         cursor.kill();
+        BattleResults = [];
         HUD = game.add.sprite(game.camera.x, game.camera.y, 'hud');
         HUD.scale.setTo(1.015,0.5);
         for (var i = 0; i < Allies.length; i++){

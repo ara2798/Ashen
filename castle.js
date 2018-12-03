@@ -7,6 +7,8 @@ demo.state5.prototype = {
         game.load.image('castle', 'assets/backgrounds/castleinterior.png');
         game.load.spritesheet('jester', 'assets/spritesheets/jesterspritesheet.png', 128, 128);
         game.load.spritesheet('skeleton', 'assets/spritesheets/skeleton.png', 128, 128);
+        game.load.image('null_element','assets/sprites/null_element.png');
+        game.load.image('hpBar','assets/sprites/hp.png');
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -17,6 +19,7 @@ demo.state5.prototype = {
         //background music
         game.load.audio('entrance', ['assets/audio/castle_intro.wav']);
         game.load.audio('background_music', ['assets/audio/castle_outro.wav']);
+        game.load.audio('battle_music', ['assets/audio/battle.wav']);
         game.load.audio('jester', ['assets/audio/jester.wav']);
         
     },
@@ -27,6 +30,7 @@ demo.state5.prototype = {
         music2 = game.add.audio('entrance');
         music2.play('', 0, 1, false);
         music = game.add.audio('background_music');
+        battleMusic = game.add.audio('battle_music');
         jesterMusic = game.add.audio('jester');
         game.time.events.add(Phaser.Timer.SECOND * 9, function(){music.play('', 0, 1, true)}, this);
       
@@ -58,14 +62,14 @@ demo.state5.prototype = {
         var jester = EnemyGroup1.create(760, 1600,'jester');
         jester.scale.setTo(0.9);
         jester.animations.add('stand',[0,3]);
-        jester.animations.add('walkleft',[1,2]);
-        jester.animations.add('walkright',[3,4]);
+        jester.animations.add('walkleft',[0,1,2,1]);
+        jester.animations.add('walkright',[3,4,5,4]);
         jester.animations.add('attack',[0]);
         jester.animations.play('stand',2,true);
         //jester.animations.add('icespikes',[0]);
-        jester.addChild(game.make.sprite(-50,40,'null_element'));
+        jester.addChild(game.make.sprite(0,135,'null_element'));
         jester.children[0].scale.setTo(0.3);
-        jester.addChild(game.make.sprite(-30,44,'hpBar'));
+        jester.addChild(game.make.sprite(20,139,'hpBar'));
         jester.children[1].scale.setTo(0.3,0.3);
         jester.barXScale = 0.3;
         Jester(jester,15);
@@ -79,9 +83,9 @@ demo.state5.prototype = {
         skeleton.animations.add('walkright',[0]);
         skeleton.animations.add('attack',[0]);
         //skeleton.animations.add('icespikes',[0]);
-        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
-        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
         Skeleton(skeleton,13);
@@ -91,9 +95,9 @@ demo.state5.prototype = {
         skeleton.animations.add('walkright',[0]);
         skeleton.animations.add('attack',[0]);
         //skeleton.animations.add('icespikes',[0]);
-        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
-        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
         Skeleton(skeleton,13);
@@ -107,9 +111,9 @@ demo.state5.prototype = {
         skeleton.animations.add('walkright',[0]);
         skeleton.animations.add('attack',[0]);
         //skeleton.animations.add('icespikes',[0]);
-        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
-        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
         Skeleton(skeleton,13);
@@ -119,9 +123,9 @@ demo.state5.prototype = {
         skeleton.animations.add('walkright',[0]);
         skeleton.animations.add('attack',[0]);
         //skeleton.animations.add('icespikes',[0]);
-        skeleton.addChild(game.make.sprite(-50,40,'null_element'));
+        skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
-        skeleton.addChild(game.make.sprite(-30,44,'hpBar'));
+        skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
         Skeleton(skeleton,13);
@@ -222,7 +226,7 @@ demo.state5.prototype = {
                     Kori.chSprite = kori;
                 }
             }
-            moveCamera = game.add.tween(game.camera).to({x:820,y:500},500,null,true);
+            moveCamera = game.add.tween(game.camera).to({x:820,y:1620},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
@@ -237,6 +241,40 @@ demo.state5.prototype = {
             },this);
         }
         /*
+        if (encounter3 && !inTransition && !fighting){
+            fighting = true;
+            game.camera.unfollow();
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
+            }
+            moveCamera = game.add.tween(game.camera).to({x:93,y:866},500,null,true);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                }
+                for (var i = 0; i < EnemyGroup2.children.length; i++){
+                    moveTo(EnemyGroup3.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup3;
+            },this);
+        }
         if (mc.x > 1170 && mc.y > 7300 && !story3Completed){
             story3Completed = true;
             storyMode = true;
