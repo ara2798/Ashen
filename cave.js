@@ -68,6 +68,11 @@ demo.state4.prototype = {
         snek.animations.add('walkright',[3,4]);
         snek.animations.add('attack',[5,6,1]);
         //snek.animations.add('icespikes',[0]);
+        snek.addChild(game.make.sprite(20,135,'null_element'));
+        snek.children[0].scale.setTo(0.3);
+        snek.addChild(game.make.sprite(37,139,'hpBar'));
+        snek.children[1].scale.setTo(0.4,0.3);
+        snek.barXScale = 0.4;
         Snek(snek,13);
         
         EnemyGroup2 = game.add.group();
@@ -80,7 +85,12 @@ demo.state4.prototype = {
         snek.animations.add('walkright',[3,4]);
         snek.animations.add('attack',[5,6,1]);
         //snek.animations.add('icespikes',[0]);
-        Snek(snek,13);
+        snek.addChild(game.make.sprite(20,135,'null_element'));
+        snek.children[0].scale.setTo(0.3);
+        snek.addChild(game.make.sprite(37,139,'hpBar'));
+        snek.children[1].scale.setTo(0.4,0.3);
+        snek.barXScale = 0.4;
+        Snek(snek,11);
         var snek = EnemyGroup2.create(1350, 675,'snek');
         snek.scale.setTo(0.9);
         snek.frame = 0;
@@ -88,7 +98,12 @@ demo.state4.prototype = {
         snek.animations.add('walkright',[3,4]);
         snek.animations.add('attack',[5,6,1]);
         //snek.animations.add('icespikes',[0]);
-        Snek(snek,13);
+        snek.addChild(game.make.sprite(20,135,'null_element'));
+        snek.children[0].scale.setTo(0.3);
+        snek.addChild(game.make.sprite(37,139,'hpBar'));
+        snek.children[1].scale.setTo(0.4,0.3);
+        snek.barXScale = 0.4;
+        Snek(snek,11);
         var snek = EnemyGroup2.create(1050, 820,'snek');
         snek.scale.setTo(0.9);
         snek.frame = 0;
@@ -96,7 +111,12 @@ demo.state4.prototype = {
         snek.animations.add('walkright',[3,4]);
         snek.animations.add('attack',[5,6,1]);
         //snek.animations.add('icespikes',[0]);
-        Snek(snek,13);
+        snek.addChild(game.make.sprite(20,135,'null_element'));
+        snek.children[0].scale.setTo(0.3);
+        snek.addChild(game.make.sprite(37,139,'hpBar'));
+        snek.children[1].scale.setTo(0.4,0.3);
+        snek.barXScale = 0.4;
+        Snek(snek,11);
         
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
@@ -221,7 +241,7 @@ demo.state4.prototype = {
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
                 }
                 for (var i = 0; i < EnemyGroup2.children.length; i++){
-                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+70+130*i);
+                    moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+60+120*i);
                 }
                 setFightStage();
                 enemyInBattle = EnemyGroup2;

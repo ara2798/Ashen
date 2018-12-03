@@ -53,7 +53,7 @@ demo.state6.prototype = {
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
-        var knight = EnemyGroup1.create(400, 230,'knight');
+        knight = EnemyGroup1.create(400, 230,'knight');
         knight.frame = 6;
         knight.anchor.setTo(0.5,0.5);
         knight.scale.setTo(1.1);
@@ -84,11 +84,16 @@ demo.state6.prototype = {
             mc.body.velocity.y = 0;
             mc.animations.stop();
             mc.frame = 4;
-            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy"]);
+            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy on you two."]);
         }
         
         if (story5Completed && !storyMode && !castleBoss){
             castleBoss = true;
+            knight.addChild(game.make.sprite(-40,70,'null_element'));
+            knight.children[0].scale.setTo(0.3);
+            knight.addChild(game.make.sprite(-20,74,'hpBar'));
+            knight.children[1].scale.setTo(0.35,0.3);
+            knight.barXScale = 0.35;
             if (Allies.length > 1){
                 if (Allies.indexOf(Kori) != -1){
                     kori = game.add.sprite(mc.x,mc.y,'kori');
@@ -121,6 +126,7 @@ demo.state6.prototype = {
         if (story5Completed && castleBoss && !story6Completed && !fighting){
             story6Completed = true;
             storyMode = true;
+            moveTo(mc,game.camera.x+399,game.camera.y+230);
             setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up. I don’t care. ","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child.","I’ll see to it that he rots in hell.","knightportrait1","Do it, kill m--","koriportrait1","...","What will you do now?", "ashportrait1","I’ll rebuild this kingdom... We’ll have peace\nin her honor."]);
         }
         

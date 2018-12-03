@@ -66,27 +66,27 @@ demo.state2.prototype = {
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;     
         
-        var swamplady = EnemyGroup1.create(253, 373,'swamplady');
+        var swamplady = EnemyGroup1.create(223, 373,'swamplady');
         swamplady.scale.setTo(0.9);
         swamplady.animations.add('walkleft',[0,1]);
         swamplady.animations.add('walkright',[2,3]);
         swamplady.animations.add('attack',[0,5]);
         swamplady.animations.add('icespikes',[4,5,0]);
-        swamplady.addChild(game.make.sprite(35,135,'ice_element'));
+        swamplady.addChild(game.make.sprite(15,135,'ice_element'));
         swamplady.children[0].scale.setTo(0.3);
-        swamplady.addChild(game.make.sprite(52,139,'hpBar'));
+        swamplady.addChild(game.make.sprite(32,139,'hpBar'));
         swamplady.children[1].scale.setTo(0.3,0.3);
         swamplady.barXScale = 0.3;
         Swamplady(swamplady,5);
-        var swamplady = EnemyGroup1.create(446, 466,'swamplady');
+        var swamplady = EnemyGroup1.create(416, 466,'swamplady');
         swamplady.scale.setTo(0.9);
         swamplady.animations.add('walkleft',[0,1]);
         swamplady.animations.add('walkright',[2,3]);
         swamplady.animations.add('attack',[0,5]);
         swamplady.animations.add('icespikes',[4,5,0]);
-        swamplady.addChild(game.make.sprite(35,135,'ice_element'));
+        swamplady.addChild(game.make.sprite(15,135,'ice_element'));
         swamplady.children[0].scale.setTo(0.3);
-        swamplady.addChild(game.make.sprite(52,139,'hpBar'));
+        swamplady.addChild(game.make.sprite(32,139,'hpBar'));
         swamplady.children[1].scale.setTo(0.3,0.3);
         swamplady.barXScale = 0.3;
         Swamplady(swamplady,5);
@@ -206,7 +206,24 @@ demo.state2.prototype = {
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveCamera = game.add.tween(game.camera).to({x:0,y:320},500,null,true);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
+            }
+            moveCamera = game.add.tween(game.camera).to({x:0,y:315},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
@@ -214,7 +231,7 @@ demo.state2.prototype = {
                     moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+190*i);
                 }
                 for (var i = 0; i < EnemyGroup1.children.length; i++){
-                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+200*i);
+                    moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+100+180*i);
                 }
                 setFightStage();
                 enemyInBattle = EnemyGroup1;
@@ -224,12 +241,29 @@ demo.state2.prototype = {
         if (encounter2 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveCamera = game.add.tween(game.camera).to({x:0,y:487},500,null,true);
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
+            }
+            moveCamera = game.add.tween(game.camera).to({x:0,y:420},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
                 for (var i = 0; i < Allies.length; i++){
-                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+190*i);
                 }
                 for (var i = 0; i < EnemyGroup2.children.length; i++){
                     moveTo(EnemyGroup2.children[i],game.camera.x+650,game.camera.y+100+200*i);
@@ -239,7 +273,7 @@ demo.state2.prototype = {
             },this);
         }
         
-        if (mc.x > 650 && mc.y > 500 && mc.y < 650.5 && !story2Completed){
+        if (mc.x > 800 && mc.y > 500 && mc.y <= 650.5 && !story2Completed){
             story2Completed = true;
             storyMode = true;
             fighting = true;
@@ -265,8 +299,18 @@ demo.state2.prototype = {
             swampboss.children[1].scale.setTo(0.5,0.3);
             swampboss.barXScale = 0.5;
             Swampboss(swampboss,10);
-            moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
-            moveCamera.onComplete.add(function(){music.pause(); battleMusic.play('', 0, 1, true); game.camera.shake(0.02,1000,true,6); moveTo(EnemyGroup3.children[0],game.camera.x+400,350);setFightStage();enemyInBattle = EnemyGroup3;},this);
+            moveCamera = game.add.tween(game.camera).to({x:570,y:300},500,null,true);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                battleMusic.play('', 0, 1, true);
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+250+200*i);
+                }
+                game.camera.shake(0.02,1000,true,6);
+                moveTo(EnemyGroup3.children[0],game.camera.x+400,350);
+                setFightStage();
+                enemyInBattle = EnemyGroup3;
+            },this);
         }
         
         if (Ash.chSprite.x <= 44){
