@@ -5,7 +5,7 @@ var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashports
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.image('graveyard', 'assets/backgrounds/graveyard.png');
         game.load.spritesheet('rain','assets/sprites/rain.png', 10, 17);
         game.load.image('pause menu', 'assets/sprites/real pause.png');
@@ -1932,7 +1932,7 @@ function contAtkAnimation(character,xpos,ypos,target,skill){
         var chSprite = character.chSprite;
         chSprite.animations.stop();
         if (skill == 0){
-            attackAnim = chSprite.animations.play('attack',3,false);
+            attackAnim = chSprite.animations.play('attack',4,false);
             makeBscDamage(character,target);
         }
         else {
@@ -1953,7 +1953,7 @@ function contAtkAnimation(character,xpos,ypos,target,skill){
         var chSprite = character;
         chSprite.animations.stop();
         if (skill == 0){
-            attackAnim = chSprite.animations.play('attack',3,false);
+            attackAnim = chSprite.animations.play('attack',4,false);
             makeBscDamage(character,target);
         }
         else {
