@@ -118,6 +118,18 @@ demo.state2.prototype = {
         bounds.enableBody = true;     
 
         //bottom lake
+        
+        var square = bounds.create(1055, 640,'square');
+        square.scale.setTo(.5,.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        var square = bounds.create(1065, 643,'square');
+        square.scale.setTo(2.7,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        
         var square = bounds.create(620, 700,'square');
         square.scale.setTo(6.8,4.38);
         square.body.immovable = true;
