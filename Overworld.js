@@ -4,7 +4,7 @@ demo.state998.prototype = {
     preload: function(){
         game.load.image('overworld', 'assets/backgrounds/overworld.png');
         game.load.image('square', 'assets/sprites/square.png');
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         
         //background music
         game.load.audio('background_music', ['assets/audio/overworld1.wav']);

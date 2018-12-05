@@ -26,7 +26,9 @@ demo.state1.prototype = {
         game.load.image('null_element','assets/sprites/null_element.png');
         game.load.spritesheet('ghoul', 'assets/spritesheets/ghoulspritesheet.png', 89, 45);
         game.load.image('fireball', 'assets/sprites/skillfire1.png');
+        game.load.spritesheet('attackbuff', 'assets/sprites/ashbuff.png', 90, 90);
         game.load.spritesheet('explosion', 'assets/sprites/explosion.png', 128, 128);
+        game.load.image('hellfire', 'assets/sprites/hellfire.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
         
@@ -86,10 +88,10 @@ demo.state1.prototype = {
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('fireslash',[10,14,10]);
         mc.animations.add('bladeblitz',[10,12,10]);
         mc.animations.add('ignite',[13,10]);
-        mc.animations.add('hellfire',[10,12,10]);
+        mc.animations.add('hellfire',[14,10]);
         Ash.chSprite = mc;
         
         //bounds
@@ -1592,9 +1594,11 @@ function performBattleActions(){
                     BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
                     if (BattleActionStack[i][0].currentMPRatio != BattleActionStack[i][0].MPRatio()){
                         BattleActionStack[i][0].currentMPRatio = BattleActionStack[i][0].MPRatio();
-                        game.add.tween(BattleActionStack[i][0].mpBar.scale).to({x:0.6*BattleActionStack[i][0].currentMPRatio},500,null,true);
-                        BattleActionStack[i][0].mpDisplay.kill();
-                        BattleActionStack[i][0].mpDisplay = game.add.text(BattleActionStack[i][0].portrait.x+80,BattleActionStack[i][0].mpBar.y,"MP:"+BattleActionStack[i][0].Stats.MP+"/"+BattleActionStack[i][0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+                        if (currentMenu == "mainBM"){
+                            game.add.tween(BattleActionStack[i][0].mpBar.scale).to({x:0.6*BattleActionStack[i][0].currentMPRatio},500,null,true);
+                            BattleActionStack[i][0].mpDisplay.kill();
+                            BattleActionStack[i][0].mpDisplay = game.add.text(BattleActionStack[i][0].portrait.x+80,BattleActionStack[i][0].mpBar.y,"MP:"+BattleActionStack[i][0].Stats.MP+"/"+BattleActionStack[i][0].MaxStats.MP,{fontSize:12,fill:'#ffffff',stroke:'#000000',strokeThickness:2});
+                        }
                     }
                 }
                 //Use inventory item
@@ -1616,25 +1620,31 @@ function performBattleActions(){
             }
         }        
     }
-    BattleActionStack=[];
-    turn = 1;
-    currentMenu = "mainBM";
-    textOS.kill();
-    for (var i = 0; i < Allies.length; i++){
-        Allies[i].portrait.kill();
-        Allies[i].hpBar.kill();
-        Allies[i].mpBar.kill();
-        Allies[i].hpDisplay.kill();
-        Allies[i].mpDisplay.kill();
+    if (currentMenu != "BattleEnd"){
+        BattleActionStack=[];
+        turn = 1;
+        currentMenu = "mainBM";
+        textOS.kill();
+        for (var i = 0; i < Allies.length; i++){
+            Allies[i].portrait.kill();
+            Allies[i].hpBar.kill();
+            Allies[i].mpBar.kill();
+            Allies[i].hpDisplay.kill();
+            Allies[i].mpDisplay.kill();
+        }
+        createMenu();
     }
-    createMenu();
-    currentCpos = [textBox.x+85,textBox.y+31];
-    while (Allies[turn - 1].Stats.HP <= 0 && turn < Allies.length){
-        currentCpos[0] += 150;
-        turn += 1;
-    }
-    console.log(turn);
-    createCursor(currentCpos[0],currentCpos[1]);
+    game.time.events.add(Phaser.Timer.SECOND*1.5,function(){
+        if (currentMenu != "BattleEnd"){
+            currentCpos = [textBox.x+85,textBox.y+31];
+            while (Allies[turn - 1].Stats.HP <= 0 && turn < Allies.length){
+                currentCpos[0] += 150;
+                turn += 1;
+            }
+            console.log(turn);
+            createCursor(currentCpos[0],currentCpos[1]);
+        }
+    },this);
 }
 
 function sortStack(Stack){
@@ -1808,6 +1818,7 @@ function makeSkillDamage(character,skill,target){
                         Allies[i].XPObtained += BattleXP;
                     }
                     Inventory.Coins += BattleCoins;
+                    console.log("changing to to battle end");
                     currentMenu = "BattleEnd";
                     createMenu();
                 }
@@ -1981,7 +1992,12 @@ function moveToSkill (character,skill,skillSprite,target){
     
     if (Allies.indexOf(character) != -1){
         var targetx = character.chSprite.x + 300;
-        var targety = target.y;
+        if (skill.AreaOfEffect == "Single"){
+            var targety = target.chSprite.y;
+        }
+        else if (skill.AreaOfEffect == "All"){
+            var targety = skillSprite.y;
+        }
     }
     else{
         var targetx = character.x - 300;
@@ -1997,11 +2013,33 @@ function moveToSkill (character,skill,skillSprite,target){
     
     if (dx < 0){
         var moveTween = game.add.tween(skillSprite).to({x:targetx,y:targety},1000,null,true);
-        moveTween.onComplete.add(function() {skillSprite.kill();makeSkillDamage(character,skill,target);},this);
+        moveTween.onComplete.add(function() {
+            skillSprite.kill();
+            if (skill.AreaOfEffect == "Single"){
+                makeSkillDamage(character,skill,target);
+            }
+            else if (skill.AreaOfEffect == "All"){
+                console.log("fine here");
+                for (var i = 0; i < Allies.length; i++){
+                    makeSkillDamage(character,skill,Allies[i]);
+                }
+            }
+        },this);
     }
     else if (dx > 0){ 
         var moveTween = game.add.tween(skillSprite).to({x:targetx,y:targety},1000,null,true);
-        moveTween.onComplete.add(function() {skillSprite.kill();makeSkillDamage(character,skill,target);},this);
+        moveTween.onComplete.add(function() {
+            skillSprite.kill();
+            if (skill.AreaOfEffect == "Single"){
+                makeSkillDamage(character,skill,target);
+            }
+            else if (skill.AreaOfEffect == "All"){
+                console.log("fine here");
+                for (var i = 0; i < enemyInBattle.children.length; i++){
+                    makeSkillDamage(character,skill,enemyInBattle.children[i]);
+                }
+            }
+        },this);
     }   
 }
 

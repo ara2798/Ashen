@@ -2,7 +2,7 @@ var story2Completed = false, swampMiniBoss = false, bounds;
 demo.state2 = function(){};
 demo.state2.prototype = {
     preload: function(){
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.image('lake', 'assets/backgrounds/lake.png');
         game.load.spritesheet('swampboss', 'assets/spritesheets/swampbosssprites.png', 280, 160);
         game.load.spritesheet('swamplady', 'assets/spritesheets/swampladysprites.png', 100, 130);
@@ -43,7 +43,7 @@ demo.state2.prototype = {
             mc = game.add.sprite(100, 600, 'mc');
         }
         if (previousState == "overworldR"){
-            mc = game.add.sprite(1570, 470, 'mc');
+            mc = game.add.sprite(1560, 470, 'mc');
         }
         
         mc.anchor.setTo(0.5,0.5);
@@ -318,7 +318,7 @@ demo.state2.prototype = {
             previousState = "lakeL";
             changeState(null,'Overworld');
         }
-        else if (Ash.chSprite.x >= 1576){
+        else if (Ash.chSprite.x >= 1569){
             music.destroy();
             previousState = "lakeR";
             changeState(null,'Overworld');

@@ -2,7 +2,7 @@ var story3Completed = false, forestMiniBoss = false, bounds;
 demo.state5 = function(){};
 demo.state5.prototype = {
     preload: function(){
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castle', 'assets/backgrounds/castleinterior.png');
         game.load.spritesheet('jester', 'assets/spritesheets/jesterspritesheet.png', 128, 128);
