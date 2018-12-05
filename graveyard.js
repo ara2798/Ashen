@@ -91,7 +91,7 @@ demo.state1.prototype = {
         mc.animations.add('fireslash',[10,14,10]);
         mc.animations.add('bladeblitz',[10,12,10]);
         mc.animations.add('ignite',[13,10]);
-        mc.animations.add('hellfire',[14,10]);
+        mc.animations.add('hellfire',[13,15,10]);
         Ash.chSprite = mc;
         
         //bounds
@@ -344,7 +344,7 @@ function createSubmenu(){
                 text += " ";
             }
             text += Allies[allyPicked].SkillsLearned[j].Description;
-            var SpaceBetwn = 25 - Allies[allyPicked].Description.length;
+            var SpaceBetwn = 25 - Allies[allyPicked].SkillsLearned[j].Description.length;
             for (var k = 0; k < SpaceBetwn; k++){
                 text += " ";
             }

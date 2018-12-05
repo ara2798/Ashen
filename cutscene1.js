@@ -16,6 +16,8 @@ demo.state997.prototype = {
         
         //background music
         game.load.audio('cutscene1', ['assets/audio/cutscene1.wav']);
+        game.load.audio('scream', ['assets/audio/Sound Effects/final_scream.wav']);
+        game.load.audio('evillaugh', ['assets/audio/Sound Effects/final_evil_laugh.wav']);
         
     },
     create: function(){
@@ -88,7 +90,7 @@ demo.state997.prototype = {
 
         function fadeText2(){
             textfade = game.add.tween(text).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            textfade.onComplete.add(function(){text.kill();},this);
+            textfade.onComplete.add(function(){text.kill();evilLaugh=game.add.audio('evillaugh');evilLaugh.play('', 0, 1, false)},this);
             game.add.tween(darkBg).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
         }
         
@@ -117,6 +119,8 @@ demo.state997.prototype = {
         game.time.events.add(Phaser.Timer.SECOND * 28, createText4, this); 
         
         function createText4(){
+            scream = game.add.audio('scream');
+            scream.play('', 0, 1, false);
             textfade = game.add.tween(text).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
             textfade.onComplete.add(function(){text.kill();spellOut(100, 200, "The prince, Ash, decided to stay behind and seek\nrevenge for his sister’s death...")},this);
         }

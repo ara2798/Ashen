@@ -15,7 +15,7 @@ demo.state3.prototype = {
         game.load.image('koriportsigh','assets/sprites/koriportrait.png');
         game.load.image('heal','assets/sprites/heal.png');
         game.load.image('defensebuff','assets/sprites/koribuff.png');
-        game.load.spritesheet('arcticblast','assets/sprites/arcticblast.png',128, 128);
+        game.load.spritesheet('hailstorm','assets/sprites/hailstorm.png',128, 128);
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         game.load.spritesheet('weasel', 'assets/spritesheets/weaselspritesheet.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
@@ -358,7 +358,7 @@ demo.state3.prototype = {
             moveCamera.onComplete.add(function(){
                 music.pause();
                 koriMusic.play('', 0, 1, true);
-                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king, don't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared me. It's a\nbind I cannot break. I have to remain loyal to\nour new king.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","Move!!!","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king, don't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared me. It's a bind I\ncannot break. I have to remain loyal to our\nnew king.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","Move!!!","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
             
         }
         
