@@ -1992,7 +1992,7 @@ function moveToSkill (character,skill,skillSprite,target){
     if (Allies.indexOf(character) != -1){
         var targetx = character.chSprite.x + 300;
         if (skill.AreaOfEffect == "Single"){
-            var targety = target.chSprite.y;
+            var targety = target.y;
         }
         else if (skill.AreaOfEffect == "All"){
             var targety = skillSprite.y;

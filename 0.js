@@ -208,8 +208,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:5000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
-    MaxStats : {HP:200, PhysAttack:5000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     Element: "Fire",
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);

@@ -3,7 +3,7 @@ demo.state997 = function(){};
 demo.state997.prototype = {
     preload: function(){
         //game.load.script('webfont','//fonts.googleapis.com/css?family=Press+Start+2P')
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.spritesheet('sister', "assets/spritesheets/ash's_sister.png", 90, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.spritesheet('king', 'assets/spritesheets/king.png', 135, 135);
