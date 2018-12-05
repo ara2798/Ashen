@@ -2,7 +2,7 @@ var story3Completed = false, story4Completed = false, forestMiniBoss = false, bo
 demo.state3 = function(){};
 demo.state3.prototype = {
     preload: function(){
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.spritesheet('korienemy', 'assets/spritesheets/korienemysheet.png', 90, 90);
         game.load.image('forest', 'assets/backgrounds/forest.png');
@@ -13,6 +13,9 @@ demo.state3.prototype = {
         game.load.image('koriportsmile','assets/sprites/koriportrait.png');
         game.load.image('koriportfsmile','assets/sprites/koriportrait.png');
         game.load.image('koriportsigh','assets/sprites/koriportrait.png');
+        game.load.image('heal','assets/sprites/heal.png');
+        game.load.image('defensebuff','assets/sprites/koribuff.png');
+        game.load.spritesheet('arcticblast','assets/sprites/arcticblast.png',128, 128);
         game.load.spritesheet('harpie', 'assets/spritesheets/harpie.png', 128, 128);
         game.load.spritesheet('weasel', 'assets/spritesheets/weaselspritesheet.png', 128, 128);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');

@@ -19,8 +19,11 @@ var Ignite = {Name:"Ignite", Stats:{MP:15},Description:"Phys./Mag. Attack Buff",
                 var IgnMagAmnt = Math.round(target.MaxStats.MagAttack*0.1);
                 target.Stats.PhysAttack += IgnPhysAmnt;
                 target.Stats.MagAttack += IgnMagAmnt;
-                AtckDisplay = game.add.sprite(target.chSprite.x,target.chSprite.y - 40,"attackbuff");
-                AtckDisplay.lifespan = 1000;
+                AtckBuff = game.add.sprite(target.chSprite.x+5,target.chSprite.y-65,"attackbuff");
+                AtckBuff.scale.setTo(1.4);
+                AtckBuff.animations.add('act',[0,1,2,3]);
+                AtckBuff.animations.play('act',8,false);
+                AtckBuff.lifespan = 1000;
             }};
 var FireSlash = {Name:"Fireslash", Stats:{PhysAttack:20, MagAttack:0, MP:15},Description:"Fire Physical Attack", SkillType:"Attack", Element:"Fire", AreaOfEffect:"Single", AnimKey:"fireslash",
             SkillAnimation: function SkillAnimation(target){
@@ -42,9 +45,12 @@ var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:25},Des
                     makeSkillDamage(Ash,Explosion,enemyInBattle.children[i]);
                 }
             }};
-var Hellfire = {Name:"Hellfire",Stats:{PhysAttack:50, MagAttack:0, MP:35},Description:"Fire Physical AoE",SkillType:"Attack",Element:"None",AreaOfEffect:"All",AnimKey: "hellfire",
+var Hellfire = {Name:"Hellfire",Stats:{PhysAttack:50, MagAttack:0, MP:35},Description:"Fire Physical AoE",SkillType:"Attack",Element:"Fire",AreaOfEffect:"All",AnimKey: "hellfire",
             SkillAnimation: function SkillAnimation(target){
-                moveToAttack(Ash,Ash.chSprite.x+200,Ash.chSprite.y,target,Hellfire);
+                var hellfire = game.add.sprite(Ash.chSprite.x+30,Ash.chSprite.y - 40,"hellfire");
+                hellfire.scale.setTo(3);
+                Ash.chSprite.animations.play("hellfire",2,false);
+                moveToSkill(Ash,Hellfire,hellfire,target);
             }};
 //****Kori****
 var Ice = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10},Description:"Ice Magic Attack", SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
@@ -61,8 +67,7 @@ var Heal = {Name:"Heal", Stats:{MP:10},Description:"Heal 25% Max HP", SkillType:
                 if (target.Stats.HP > target.MaxStats.HP){
                     target.Stats.HP = target.MaxStats.HP;
                 }
-                healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.chSprite.x,target.chSprite.y - 20,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay = game.add.sprite(target.chSprite.x,target.chSprite.y-20,"heal");
                 healDisplay.lifespan = 1000;
             }};
 var GlacialBarrier = {Name:"Glacial Barrier", Stats:{MP:15},Description:"Phys./Mag. Def. Buff", SkillType:"Support", Element:"Ice", AreaOfEffect:"Single",
@@ -72,8 +77,9 @@ var GlacialBarrier = {Name:"Glacial Barrier", Stats:{MP:15},Description:"Phys./M
                 var GBMagAmnt = Math.round(target.MaxStats.MagDefense*0.1);
                 target.Stats.PhysDefense += GBPhysAmnt;
                 target.Stats.MagDefense += GBMagAmnt;
-                DefnsDisplay = game.add.sprite(target.chSprite.x,target.chSprite.y - 40,"defensebuff");
-                DefnsDisplay.lifespan = 1000;
+                DefnsBuff = game.add.sprite(target.chSprite.x+5,target.chSprite.y-65,"defensebuff");
+                DefnsBuff.scale.setTo(1.4);
+                DefnsBuff.lifespan = 1000;
             }};
 var Hailstorm = {Name:"Hailstorm", Stats:{PhysAttack:0, MagAttack:35, MP:25},Description:"Ice Magic AoE", SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
@@ -93,19 +99,21 @@ var Purify = {Name:"Purify", Stats:{MP:20},Description:"Heal Party 50% Max HP", 
                     if (Allies[i].Stats.HP > Allies[i].MaxStats.HP){
                         Allies[i].Stats.HP = Allies[i].MaxStats.HP;
                     }
-                    healDisplay = "+" + healAmount;
-                    healDisplay = game.add.text(Allies[i].chSprite.x,Allies[i].chSprite.y,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                    healDisplay = game.add.sprite(Allies[i].chSprite.x,Allies[i].chSprite.y-20,"heal");
                     healDisplay.lifespan = 1000;
                 }
             }};
 var ArcticBlast = {Name:"Arctic Blast", Stats:{PhysAttack:0, MagAttack:50, MP:35},Description:"Ice Magic AoE", SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
-                var ice3 = game.add.sprite(500,300,"ice3");
-                ice3.animations.add('act',[0]);
                 Kori.chSprite.animations.play("icespell",2,false);
-                for (var i = 0; i < enemyInBattle.children.length; i++){
-                    makeSkillDamage(Kori,Hailstorm,enemyInBattle.children[i]);
+                for (var i = 0; i < enemyInBattle.children.length; i++) {
+                    var arcticblast = game.add.sprite(enemyInBattle.children[i].x,enemyInBattle.children[i].y-30,"arcticblast");
+                    arcticblast.animations.add('act',[0,1,2,3]);
+                    arcticblast.animations.play('act',8,false)
+                    arcticblast.lifespan = 500;
+                    makeSkillDamage(Kori,ArcticBlast,enemyInBattle.children[i]);
                 }
+                
             }};
 //ENEMY SKILLS
 var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
@@ -242,7 +250,7 @@ var Ash = {
         return [Ash.leveledUp,Ash.learnedSkill];
     },
     SkillLvl : [5,8,11,15,17],
-    SkillsLearned : [Slash,Fireball/*,Ignite,BladeBlitz,Explosion*/],
+    SkillsLearned : [Slash,Fireball/*,Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
     SkillsToLearn : [Ignite,FireSlash,BladeBlitz,Explosion,Hellfire],
     Weapon : WoodSword
 }
@@ -291,9 +299,9 @@ var Kori = {
         }
         return [Kori.leveledUp,Kori.learnedSkill];
     },
-    SkillLvl: [50/*12,18,22,28*/],
-    SkillsLearned : [Ice,Heal],
-    SkillsToLearn : [/*IceBarrier,Hailstorm,Heal2,ArcticBlast*/],
+    SkillLvl: [10,13,16],
+    SkillsLearned : [Ice,Heal/*,IceBarrier,Purify,ArcticBlast*/],
+    SkillsToLearn : [IceBarrier,Purify,ArcticBlast],
     Weapon : WoodStaff
 }
 

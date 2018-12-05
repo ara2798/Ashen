@@ -2,7 +2,7 @@ var story5Completed = false, story6Completed = false,story7Completed = false, st
 demo.state6 = function(){};
 demo.state6.prototype = {
     preload: function(){
-        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 80, 90);
+        game.load.spritesheet('mc', 'assets/spritesheets/ashspritesheet.png', 90, 90);
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castlebossroom', 'assets/backgrounds/castlebossroom.png');
         game.load.spritesheet('knight', 'assets/spritesheets/knightspritesheet.png', 135, 135);
