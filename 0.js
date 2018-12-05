@@ -208,8 +208,8 @@ var Inventory = {
 var Ash = {
     Name : "Ash",
     PortraitKey : "ashportrait1",
-    Stats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
-    MaxStats : {HP:200, PhysAttack:50,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    Stats : {HP:200, PhysAttack:5000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
+    MaxStats : {HP:200, PhysAttack:5000,PhysDefense:30,MagAttack:10,MagDefense:15,Speed:20,MP:20},
     Element: "Fire",
     UpdtStats : function UpdtStats(){
         Ash.MaxStats.HP += Math.round(Math.random()*(105-100)+100);
@@ -253,7 +253,7 @@ var Ash = {
     SkillsLearned : [Slash,Fireball/*,Ignite,FireSlash,BladeBlitz,Explosion,Hellfire*/],
     SkillsToLearn : [Ignite,FireSlash,BladeBlitz,Explosion,Hellfire],
     Weapon : WoodSword
-}
+};
 
 var Kori = {
     Name : "Kori",
@@ -300,8 +300,8 @@ var Kori = {
         return [Kori.leveledUp,Kori.learnedSkill];
     },
     SkillLvl: [10,13,16],
-    SkillsLearned : [Ice,Heal/*,IceBarrier,Purify,ArcticBlast*/],
-    SkillsToLearn : [IceBarrier,Purify,ArcticBlast],
+    SkillsLearned : [Ice,Heal,GlacialBarrier,Purify,ArcticBlast],
+    SkillsToLearn : [GlacialBarrier,Purify,ArcticBlast],
     Weapon : WoodStaff
 }
 

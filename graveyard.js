@@ -1690,7 +1690,6 @@ function makeBscDamage(character,target){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
             if (target == kori){
-                kori = target;
                 Kori.chSprite = kori;
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
