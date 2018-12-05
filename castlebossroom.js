@@ -1,4 +1,4 @@
-var story5Completed = false, story6Completed = false, castleBoss = false, bounds;
+var story5Completed = false, story6Completed = false,story7Completed = false, story8Completed = false, castleBoss = false, bounds;
 demo.state6 = function(){};
 demo.state6.prototype = {
     preload: function(){
@@ -7,6 +7,7 @@ demo.state6.prototype = {
         game.load.image('castlebossroom', 'assets/backgrounds/castlebossroom.png');
         game.load.spritesheet('knight', 'assets/spritesheets/knightspritesheet.png', 135, 135);
         game.load.image('knightportrait1','assets/sprites/knightportrait.png');
+        game.load.spritesheet('dark_beam', 'assets/sprites/dark_beam.png', 400, 400);
         //game.load.image('icespikes', 'assets/sprites/icespikes.png');
         //game.load.image('shadowbeam', 'assets/sprites/beam.png');
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
@@ -17,6 +18,7 @@ demo.state6.prototype = {
         //background music
         game.load.audio('background_music', ['assets/audio/knight_dialogue1.wav']);   
         game.load.audio('knight',['assets/audio/battle_with_the_knight.wav']);
+        game.load.audio('white',['assets/audio/white-sound.wav'])
         
     },
     create: function(){
@@ -84,7 +86,7 @@ demo.state6.prototype = {
             mc.body.velocity.y = 0;
             mc.animations.stop();
             mc.frame = 4;
-            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy on you two."]);
+            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy on\nyou two."]);
         }
         
         if (story5Completed && !storyMode && !castleBoss){
@@ -122,13 +124,60 @@ demo.state6.prototype = {
             setFightStage();
             enemyInBattle = EnemyGroup1;
         }
-        
+        /*
         if (story5Completed && castleBoss && !story6Completed && !fighting){
             story6Completed = true;
             storyMode = true;
             moveTo(mc,game.camera.x+399,game.camera.y+230);
-            setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up. I don’t care. ","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child.","I’ll see to it that he rots in hell.","knightportrait1","Do it, kill m--","koriportrait1","...","What will you do now?", "ashportrait1","I’ll rebuild this kingdom... We’ll have peace\nin her honor."]);
+            setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up! I don’t care. ","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child!","I’ll see to it that he rots in hell!","knightportrait1","Do it, kill m--","koriportrait1","...","What will you do now?", "ashportrait1","I’ll rebuild this kingdom... We’ll have peace\nin her honor."]);
         }
+        if (story6Completed && !story7Completed && !storyMode){
+            story7Completed = true;
+            game.camera.fade(0x000000,1500);
+            game.camera.onFadeComplete.add(function(){music.destroy();});
+            game.time.events.add(Phaser.Timer.SECOND * 1.75, function(){
+                changeState(null,"Credits")
+            }, this);
+        }
+        */
+        ///*
+        if (story5Completed && castleBoss && !story6Completed && !fighting){
+            story6Completed = true;
+            storyMode = true;
+            moveTo(mc,game.camera.x+399,game.camera.y+230);
+            setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up! I don’t care.","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child!","I’ll see to it that he rots in hell!"]);
+        }
+        
+        if (story6Completed && !story7Completed && !storyMode){
+            story7Completed = true;
+            storyMode = true;
+            game.camera.shake(0.02,1000,true,6);
+            white = game.add.audio('white');
+            white.play('', 0, 1, true);
+            var knightRevive = game.add.tween(knight.children[1].scale).to({x:knight.barXScale},1000,null,true);
+            knightRevive.onComplete.add(function(){
+                setStory(["knightportrait1","Hahahaha...","Fool! Did you really think I'd let you\nin here without a plan?","I only needed to delay you...","The gates to the underworld are now open!","I can feel it's power flowing through me.","Now... you shall atone for your crimes!"]);
+            },this);
+        }
+        
+        if (story7Completed && !story8Completed && !storyMode){
+            story8Completed = true;
+            beam = game.add.sprite(400,200,'dark_beam');
+            beam.anchor.setTo(0.5);
+            beam.animations.add('act',[0,1,2,3,4,5,3,4,5,3,4,5,2,1]);
+            beam.animations.play('act',8,false,true);
+            game.time.events.add(Phaser.Timer.SECOND * 0.5, function(){
+                mc.kill();
+            }, this);
+            game.time.events.add(Phaser.Timer.SECOND * 1.75, function(){
+                beam.kill();
+                game.camera.fade(0x000000,1500);
+                game.camera.onFadeComplete.add(function(){music.destroy();white.destroy();});
+            }, this);
+            game.time.events.add(Phaser.Timer.SECOND * 4.5, function(){
+                changeState(null,"Credits")
+            }, this);
+        }//*/
         
         //Progress through the story
         continueStory();
