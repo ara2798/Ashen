@@ -47,7 +47,7 @@ demo.state3.prototype = {
             mc = game.add.sprite(100, 580, 'mc');
         }
         if (previousState == "cave"){
-            mc = game.add.sprite(1570, 915, 'mc');
+            mc = game.add.sprite(1550, 915, 'mc');
         }
         
         mc.anchor.setTo(0.5,0.5);
@@ -392,12 +392,12 @@ demo.state3.prototype = {
             moveToAndKill(Kori.chSprite,mc.x,mc.y);
         }
         
-        if (Ash.chSprite.x <= 44){
+        if (Ash.chSprite.x <= 55){
             music.destroy();
             previousState = "forest";
             changeState(null,'Overworld');
         }
-        else if (Ash.chSprite.x >= 1576 && Ash.chSprite.y > 725){
+        else if (Ash.chSprite.x >= 1568 && Ash.chSprite.y > 800){
             music.destroy();
             previousState = "forest";
             changeState(null,'cave');

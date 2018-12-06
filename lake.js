@@ -313,7 +313,7 @@ demo.state2.prototype = {
             },this);
         }
         
-        if (Ash.chSprite.x <= 44){
+        if (Ash.chSprite.x <= 55){
             music.destroy();
             previousState = "lakeL";
             changeState(null,'Overworld');

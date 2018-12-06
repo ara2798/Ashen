@@ -184,7 +184,7 @@ var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, Skil
 //ITEM OBJECTS
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None"};
 var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None"};
-var Potion = {Name:"Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"item",
+var Potion = {Name:"Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP",
              Use: function Use(character){
                  Potion.Quantity -= 1;
                  character.Stats.HP += Math.round(character.MaxStats.HP/4);
@@ -303,7 +303,7 @@ var Kori = {
         return [Kori.leveledUp,Kori.learnedSkill];
     },
     SkillLvl: [10,13,16],
-    SkillsLearned : [Ice,Heal,GlacialBarrier,Hailstorm,Purify,ArcticBlast],
+    SkillsLearned : [Ice,Heal/*,GlacialBarrier,Hailstorm,Purify,ArcticBlast*/],
     SkillsToLearn : [GlacialBarrier,Hailstorm,Purify,ArcticBlast],
     Weapon : WoodStaff
 }
@@ -320,8 +320,8 @@ function Ghoul(enemyObject,level) {
 }
 
 function Swamplady(enemyObject,level) {
-    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
-    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+6*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
+    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+15*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+3*level, PhysDefense:1+2*level, MagAttack:1+15*level, MagDefense:1+5*level, Speed:1+5*level, MP:3+15*level};
     enemyObject.Level = level;
     enemyObject.XP = level*8;
     enemyObject.Coins = level*15;
@@ -330,8 +330,8 @@ function Swamplady(enemyObject,level) {
 }
 
 function Flasher(enemyObject,level) {
-    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
-    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+1*level, MagAttack:1+15*level, MagDefense:1+4*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.Stats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+40*level, MagAttack:1+15*level, MagDefense:1+2*level, Speed:1+15*level, MP:3+15*level};
+    enemyObject.MaxStats = {HP:10+15*level, PhysAttack:3+1*level, PhysDefense:1+40*level, MagAttack:1+15*level, MagDefense:1+2*level, Speed:1+15*level, MP:3+15*level};
     enemyObject.Level = level;
     enemyObject.XP = level*10;
     enemyObject.Coins = level*15;
@@ -340,8 +340,8 @@ function Flasher(enemyObject,level) {
 }
 
 function Swampboss(enemyObject,level) {
-    enemyObject.Stats = {HP:10+40*level, PhysAttack:3+14*level, PhysDefense:1+5*level, MagAttack:1+12*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
-    enemyObject.MaxStats = {HP:10+40*level, PhysAttack:3+12*level, PhysDefense:1+3*level, MagAttack:1+10*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
+    enemyObject.Stats = {HP:10+40*level, PhysAttack:3+20*level, PhysDefense:1+5*level, MagAttack:1+20*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
+    enemyObject.MaxStats = {HP:10+40*level, PhysAttack:3+20*level, PhysDefense:1+3*level, MagAttack:1+20*level, MagDefense:1+6*level, Speed:1+5*level, MP:3+20*level};
     enemyObject.Level = level;
     enemyObject.XP = level*30;
     enemyObject.Coins = level*30;

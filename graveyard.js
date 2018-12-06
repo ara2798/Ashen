@@ -29,6 +29,7 @@ demo.state1.prototype = {
         game.load.spritesheet('attackbuff', 'assets/sprites/ashbuff.png', 90, 90);
         game.load.spritesheet('explosion', 'assets/sprites/explosion.png', 128, 128);
         game.load.image('hellfire', 'assets/sprites/hellfire.png');
+        game.load.image('smallHP', 'assets/sprites/small_pot_HP.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
         
@@ -157,7 +158,7 @@ demo.state1.prototype = {
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
             game.camera.unfollow();
-            moveCamera = game.add.tween(game.camera).to({x:492,y:164},500,null,true);
+            moveCamera = game.add.tween(game.camera).to({x:362,y:164},500,null,true);
             moveCamera.onComplete.add(function(){
                 music.pause();
                 battleMusic.play('', 0, 1, true);
@@ -642,7 +643,7 @@ function selectPauseMActions(){
             if (Inventory.Items.length > 0){
                 if (Inventory.Items[itemPicked].Quantity > 0){
                     for (var i = 0; i < textOS.length; i++){
-                    textOS[i].kill();
+                        textOS[i].kill();
                     }
                     for (var i = 0; i < Allies.length; i++){
                         Allies[i].portrait.kill();

@@ -38,7 +38,7 @@ demo.state4.prototype = {
             mc = game.add.sprite(100, 580, 'mc');
         }
         if (previousState == "overworld"){
-            mc = game.add.sprite(1570, 915, 'mc');
+            mc = game.add.sprite(1500, 1100, 'mc');
         }
         
         mc.anchor.setTo(0.5,0.5);
@@ -248,11 +248,11 @@ demo.state4.prototype = {
             },this);
         }
         
-        if (Ash.chSprite.x <= 44){
+        if (Ash.chSprite.x <= 55){
             previousState = "cave";
             changeState(null,'forest');
         }
-        else if (Ash.chSprite.x >= 1575 || Ash.chSprite.y >= 1200){
+        else if (Ash.chSprite.x >= 1565 || Ash.chSprite.y >= 1200){
             previousState = "cave";
             changeState(null,'Overworld');
         }

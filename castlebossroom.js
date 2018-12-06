@@ -119,7 +119,7 @@ demo.state6.prototype = {
                 moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+150+200*i);
             }
             for (var i = 0; i < EnemyGroup1.children.length; i++){
-                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+200+200*i);
+                moveTo(EnemyGroup1.children[i],game.camera.x+650,game.camera.y+250+200*i);
             }
             setFightStage();
             enemyInBattle = EnemyGroup1;

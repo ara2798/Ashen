@@ -24,13 +24,13 @@ demo.state998.prototype = {
             mc = game.add.sprite(200, 230, 'mc');
         }
         else if (previousState == "lakeL"){
-            mc = game.add.sprite(270, 265, 'mc');
+            mc = game.add.sprite(260, 265, 'mc');
         }
         else if (previousState == "lakeR"){
             mc = game.add.sprite(570, 360, 'mc');
         }
         else if (previousState == "forest"){
-            mc = game.add.sprite(700, 376, 'mc');
+            mc = game.add.sprite(690, 376, 'mc');
         }
         else if (previousState == "cave"){
             mc = game.add.sprite(1238, 576, 'mc');
