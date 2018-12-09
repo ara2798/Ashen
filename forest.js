@@ -80,6 +80,7 @@ demo.state3.prototype = {
         weasel.addChild(game.make.sprite(37,139,'hpBar'));
         weasel.children[1].scale.setTo(0.3,0.3);
         weasel.barXScale = 0.3;
+        weasel.originalPos = [530, 490];
         Weasel(weasel,10);
         
         EnemyGroup2 = game.add.group();
@@ -96,6 +97,7 @@ demo.state3.prototype = {
         harpie.addChild(game.make.sprite(37,139,'hpBar'));
         harpie.children[1].scale.setTo(0.3,0.3);
         harpie.barXScale = 0.3;
+        harpie.originalPos = [1030, 315];
         Harpie(harpie,8);
         var weasel = EnemyGroup2.create(1290, 425,'weasel');
         weasel.scale.setTo(0.9);
@@ -107,6 +109,7 @@ demo.state3.prototype = {
         weasel.addChild(game.make.sprite(37,139,'hpBar'));
         weasel.children[1].scale.setTo(0.3,0.3);
         weasel.barXScale = 0.3;
+        weasel.originalPos = [1290, 425];
         Weasel(weasel,8);
         
         if (!story3Completed){

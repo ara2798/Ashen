@@ -77,6 +77,7 @@ demo.state2.prototype = {
         swamplady.addChild(game.make.sprite(32,139,'hpBar'));
         swamplady.children[1].scale.setTo(0.3,0.3);
         swamplady.barXScale = 0.3;
+        swamplady.originalPos = [223,373];
         Swamplady(swamplady,5);
         var swamplady = EnemyGroup1.create(416, 466,'swamplady');
         swamplady.scale.setTo(0.9);
@@ -89,6 +90,7 @@ demo.state2.prototype = {
         swamplady.addChild(game.make.sprite(32,139,'hpBar'));
         swamplady.children[1].scale.setTo(0.3,0.3);
         swamplady.barXScale = 0.3;
+        swamplady.originalPos = [416,466];
         Swamplady(swamplady,5);
         
         EnemyGroup2 = game.add.group();
@@ -105,6 +107,7 @@ demo.state2.prototype = {
         flasher.addChild(game.make.sprite(52,139,'hpBar'));
         flasher.children[1].scale.setTo(0.3,0.3);
         flasher.barXScale = 0.3;
+        flasher.originalPos = [320, 1110];
         Flasher(flasher,5);
         
         EnemyGroup3 = game.add.group();
@@ -287,7 +290,7 @@ demo.state2.prototype = {
         
         if (story2Completed && !storyMode && !swampMiniBoss){
             swampMiniBoss = true;
-            var swampboss = EnemyGroup3.create(1400, 400,'swampboss');
+            swampboss = EnemyGroup3.create(1400, 400,'swampboss');
             swampboss.scale.setTo(1.8);
             swampboss.animations.add('walkleft',[0,1,2,3]);
             swampboss.animations.add('walkright',[4,5,6,7]);

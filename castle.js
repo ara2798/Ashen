@@ -72,6 +72,7 @@ demo.state5.prototype = {
         jester.addChild(game.make.sprite(20,139,'hpBar'));
         jester.children[1].scale.setTo(0.3,0.3);
         jester.barXScale = 0.3;
+        jester.originalPos = [760, 1600];
         Jester(jester,15);
         
         EnemyGroup2 = game.add.group();
@@ -88,6 +89,7 @@ demo.state5.prototype = {
         skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
+        skeleton.originalPos = [1190, 1610];
         Skeleton(skeleton,13);
         var skeleton = EnemyGroup2.create(1210, 1961,'skeleton');
         skeleton.scale.setTo(1);
@@ -100,6 +102,7 @@ demo.state5.prototype = {
         skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
+        skeleton.originalPos = [1210, 1961];
         Skeleton(skeleton,13);
 
         EnemyGroup3 = game.add.group();
@@ -116,6 +119,7 @@ demo.state5.prototype = {
         skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
+        skeleton.originalPos = [360, 1290];
         Skeleton(skeleton,13);
         var skeleton = EnemyGroup3.create(780, 843,'skeleton');
         skeleton.scale.setTo(1);
@@ -128,6 +132,7 @@ demo.state5.prototype = {
         skeleton.addChild(game.make.sprite(20,139,'hpBar'));
         skeleton.children[1].scale.setTo(0.3,0.3);
         skeleton.barXScale = 0.3;
+        skeleton.originalPos = [780, 843];
         Skeleton(skeleton,13);
         
         game.camera.follow(mc);

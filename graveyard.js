@@ -90,10 +90,10 @@ demo.state1.prototype = {
         mc.scale.setTo(1.1, 1.1);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
-        mc.animations.add('walkleft', [6,7,8]);
-        mc.animations.add('walkright', [9,10,11]);
-        mc.animations.add('walkdown', [0,1,2]);
-        mc.animations.add('walkup', [3,4,5]);
+        mc.animations.add('walkleft', [6,7,8,7]);
+        mc.animations.add('walkright', [9,10,11,10]);
+        mc.animations.add('walkdown', [0,1,2,1]);
+        mc.animations.add('walkup', [3,4,5,4]);
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
@@ -123,6 +123,7 @@ demo.state1.prototype = {
             ghoul.addChild(game.make.sprite(17,54,'hpBar'));
             ghoul.children[1].scale.setTo(0.3,0.3);
             ghoul.barXScale = 0.3;
+            ghoul.originalPos = [212,232];
             Ghoul(ghoul,5);
             
             var ghoul = EnemyGroup1.create(1100, 375,'ghoul');
@@ -135,6 +136,7 @@ demo.state1.prototype = {
             ghoul.addChild(game.make.sprite(17,54,'hpBar'));
             ghoul.children[1].scale.setTo(0.3,0.3);
             ghoul.barXScale = 0.3;
+            ghoul.originalPos = [1100,375];
             Ghoul(ghoul,5);
             //ghoul.addChild(game.add.text(20,50,'HP: '+ghoul.Stats.HP+'/'+ghoul.MaxStats.HP,{fontSize:10,fill:'#ffffff',stroke:'#000000',strokeThickness:2}));
         }
@@ -832,15 +834,15 @@ function selectPauseMActions(){
 function moveMC(){
     if (!fighting && !storyMode && !pause && !inTransition){   
         if(cursors.right.isDown && mc.body.velocity.y == 0 && cursors.left.isUp){
-            mc.body.velocity.x = 350;
-            mc.animations.play('walkright', 14, true);
+            mc.body.velocity.x = 250;
+            mc.animations.play('walkright', 7, true);
             /*if(mc.x >= 1547.5){
                 changeState(null,"0");
             }*/
         }
         else if(cursors.left.isDown && mc.body.velocity.y == 0 && cursors.right.isUp){
-            mc.body.velocity.x = -350;
-            mc.animations.play('walkleft', 14, true);
+            mc.body.velocity.x = -250;
+            mc.animations.play('walkleft', 7, true);
         }
         /*else{
             mc.animations.stop('walkright');
@@ -848,12 +850,12 @@ function moveMC(){
             mc.body.velocity.x = 0;
         }*/
         else if(cursors.up.isDown && mc.body.velocity.x == 0 && cursors.down.isUp){
-            mc.body.velocity.y = -250;
-            mc.animations.play('walkup', 14, true);
+            mc.body.velocity.y = -200;
+            mc.animations.play('walkup', 7, true);
         }
         else if(cursors.down.isDown && mc.body.velocity.x == 0 && cursors.up.isUp){
-            mc.body.velocity.y = 250;
-            mc.animations.play('walkdown', 14, true);
+            mc.body.velocity.y = 200;
+            mc.animations.play('walkdown', 7, true);
         }
         else{
             mc.animations.stop();
@@ -1276,7 +1278,7 @@ function selectBattleActions() {
                 if (enemyInBattle.children[i].Stats.HP > 0 && Allies[turn - 1].Stats.Speed < enemyInBattle.children[i].Stats.Speed){
                     escapedBattle = false;
                 }
-                else if (enemyInBattle.children[0] == kori || enemyInBattle.children[0] == knight){
+                else if (enemyInBattle.children[0] == kori || enemyInBattle.children[0] == knight || enemyInBattle.children[0] == swampboss){
                     escapedBattle = false;
                 }
             }
@@ -1294,6 +1296,16 @@ function selectBattleActions() {
                 if (Allies.length > 1){
                     for (var i = 1; i < Allies.length; i++){
                         moveToAndKill(Allies[i].chSprite,mc.x,mc.y);
+                    }
+                }
+                for (var j = 0; j < Allies.length; j++){
+                    for (var k in Allies[j].MaxStats){
+                        Allies[j].Stats[k] = Allies[j].MaxStats[k];
+                    }
+                }
+                for (var i = 0; i < enemyInBattle.length; i++){
+                    if (enemyInBattle.children[i].Stats.HP > 0){
+                        moveTo(enemyInBattle.children[i],enemyInBattle.children[i].originalPos[0],enemyInBattle.children[i].originalPos[1]);
                     }
                 }
                 moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
@@ -1428,6 +1440,11 @@ function selectBattleActions() {
                 if (Allies.length > 1){
                     for (var i = 1; i < Allies.length; i++){
                         moveToAndKill(Allies[i].chSprite,mc.x,mc.y);
+                    }
+                }
+                for (var j = 0; j < Allies.length; j++){
+                    for (var k in Allies[j].MaxStats){
+                        Allies[j].Stats[k] = Allies[j].MaxStats[k];
                     }
                 }
                 if (enemyInBattle.children[0] != kori){
@@ -1698,7 +1715,10 @@ function makeBscDamage(character,target){
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + character.Weapon.Stats.MagAttack) - target.Stats.MagDefense);
         }
-        if (Damage > 0){
+        if (Damage > 0 && character.Stats.HP > 0){
+            if (target.Stats.HP <= 0){
+                var alreadyDead = true;
+            }
             target.Stats.HP -= Damage;
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.x,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1716,7 +1736,7 @@ function makeBscDamage(character,target){
             damageText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
-        if (target.Stats.HP <= 0){
+        if (target.Stats.HP <= 0 && !alreadyDead){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
             dropGenerator();
@@ -1762,7 +1782,7 @@ function makeBscDamage(character,target){
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack) - target.Stats.MagDefense);
         }
-        if (Damage > 0){
+        if (Damage > 0 && character.Stats.HP > 0){
             target.Stats.HP -= Damage;
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80 - enemyInBattle.children.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1806,7 +1826,10 @@ function makeSkillDamage(character,skill,target){
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + character.Weapon.Stats.MagAttack + skill.Stats.MagAttack) - target.Stats.MagDefense);
         }
-        if (Damage > 0){
+        if (Damage > 0 && character.Stats.HP > 0){
+            if (target.Stats.HP <= 0){
+                var alreadyDead = true;
+            }
             target.Stats.HP -= Damage;
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.x+target._frame.centerX,target.y - 20 - Allies.indexOf(character)*20,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
@@ -1824,7 +1847,7 @@ function makeSkillDamage(character,skill,target){
             damageText = game.add.text(target.x + (target.width / 2),target.y - 20 - Allies.indexOf(character)*20,"0",{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             damageText.lifespan = 1000;
         }
-        if (target.Stats.HP <= 0){
+        if (target.Stats.HP <= 0 && !alreadyDead){
             BattleXP += target.XP;
             BattleCoins += target.Coins;          
             if (target == kori){
@@ -1869,7 +1892,7 @@ function makeSkillDamage(character,skill,target){
         else {
             Damage = Math.round(DamageMultiplier*(character.Stats.MagAttack + skill.Stats.MagAttack) - target.Stats.MagDefense);
         }
-        if (Damage > 0){
+        if (Damage > 0 && character.Stats.HP > 0){
             target.Stats.HP -= Damage;
             //damageText = "-" + Damage;
             //damageText = game.add.text(target.chSprite.x-30,target.chSprite.y - 80,damageText,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});

@@ -73,6 +73,7 @@ demo.state4.prototype = {
         snek.addChild(game.make.sprite(37,139,'hpBar'));
         snek.children[1].scale.setTo(0.4,0.3);
         snek.barXScale = 0.4;
+        snek.originalPos = [500, 465];
         Snek(snek,13);
         
         EnemyGroup2 = game.add.group();
@@ -90,6 +91,7 @@ demo.state4.prototype = {
         snek.addChild(game.make.sprite(37,139,'hpBar'));
         snek.children[1].scale.setTo(0.4,0.3);
         snek.barXScale = 0.4;
+        snek.originalPos = [1050, 500];
         Snek(snek,11);
         var snek = EnemyGroup2.create(1350, 675,'snek');
         snek.scale.setTo(0.9);
@@ -103,6 +105,7 @@ demo.state4.prototype = {
         snek.addChild(game.make.sprite(37,139,'hpBar'));
         snek.children[1].scale.setTo(0.4,0.3);
         snek.barXScale = 0.4;
+        snek.originalPos = [1350, 675];
         Snek(snek,11);
         var snek = EnemyGroup2.create(1050, 820,'snek');
         snek.scale.setTo(0.9);
@@ -116,6 +119,7 @@ demo.state4.prototype = {
         snek.addChild(game.make.sprite(37,139,'hpBar'));
         snek.children[1].scale.setTo(0.4,0.3);
         snek.barXScale = 0.4;
+        snek.originalPos = [1050, 820];
         Snek(snek,11);
         
         game.camera.follow(mc);
