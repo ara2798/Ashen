@@ -381,6 +381,7 @@ demo.state3.prototype = {
             setStory(["ashportthink","...","koriportmad","What are you waiting for!? Do it!!!","ashportmad","No! We can defeat the knight together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now...", "That's what your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
             Kori.LvlUp();
             Allies.push(Kori);
+            Inventory.Weapons.push(WoodStaff);
         }
         
         if (story4Completed && !storyMode && !joinParty){

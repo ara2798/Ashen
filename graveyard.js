@@ -29,7 +29,15 @@ demo.state1.prototype = {
         game.load.spritesheet('attackbuff', 'assets/sprites/ashbuff.png', 90, 90);
         game.load.spritesheet('explosion', 'assets/sprites/explosion.png', 128, 128);
         game.load.image('hellfire', 'assets/sprites/hellfire.png');
-        game.load.image('smallHP', 'assets/sprites/small_pot_HP.png');
+        game.load.image('smallHP', 'assets/sprites/small_pot_hp.png');
+        game.load.image('mediumHP', 'assets/sprites/mid_pot_hp.png');
+        game.load.image('largeHP', 'assets/sprites/large_pot_hp.png');
+        game.load.image('smallMP', 'assets/sprites/small_pot_mana.png');
+        game.load.image('mediumMP', 'assets/sprites/mid_pot_mana.png');
+        game.load.image('largeMP', 'assets/sprites/large_pot_mana.png');
+        game.load.image('smallRevitalizer', 'assets/sprites/small_pot_revitalizer.png');
+        game.load.image('mediumRevitalzer', 'assets/sprites/mid_pot_revitalizer.png');
+        game.load.image('largeRevitalizer', 'assets/sprites/large_pot_revitalizer.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
         
@@ -357,16 +365,16 @@ function createSubmenu(){
     }
     else if (currentSubmenu == "Items"){
         text = "";
-        text += "Name            Price       Quantity\n";
+        text += "Name                              Price          Quantity\n";
         for (var i = 0; i < Inventory.Items.length; i++){
             if (Inventory.Items[i].Quantity > 0){
                 text += Inventory.Items[i].Name;
-                var SpaceBetwn = 16 - Inventory.Items[i].Name.length;
+                var SpaceBetwn = 30 - Inventory.Items[i].Name.length;
                 for (var j = 0; j < SpaceBetwn; j++){
                     text += " ";
                 }
                 text += Inventory.Items[i].Price;
-                var SpaceBetwn = 14 - Inventory.Items[i].Price.toString().length;
+                var SpaceBetwn = 17 - Inventory.Items[i].Price.toString().length;
                 for (var j = 0; j < SpaceBetwn; j++){
                     text += " ";
                 }
@@ -655,7 +663,8 @@ function selectPauseMActions(){
                     currentMenu = "useItem";
                     createSubmenu();
                     createCursor(game.camera.x+380,game.camera.y+118);
-                    itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+                    itemImage = game.add.sprite(game.camera.x+60,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+                    itemImage.scale.setTo(0.8);
                     itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                     itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
                     textOS.push(itemImage);
@@ -785,7 +794,8 @@ function selectPauseMActions(){
             currentMenu = "useItem";
             createSubmenu();
             createCursor(game.camera.x+380,game.camera.y+118);
-            itemImage = game.add.sprite(game.camera.x+50,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+            itemImage = game.add.sprite(game.camera.x+60,game.camera.y+50,Inventory.Items[itemPicked].imageKey);
+            itemImage.scale.setTo(0.8);
             itemDescr = game.add.text(game.camera.x+150,game.camera.y+55,Inventory.Items[itemPicked].Description,{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             itemUse = game.add.text(game.camera.x+420,game.camera.y+120,"Use",{fontSize:17,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
             textOS.push(itemImage);
@@ -1362,14 +1372,32 @@ function selectBattleActions() {
         }
         else if (currentMenu == "pickAlly"){
             if (Allies[allyPicked].Stats.HP > 0){
-                actionBuilder.push(Allies[allyPicked]);
-                currentMenu = "None";
-                addBattleAction(actionBuilder);
+                if ([Revitalizer,MediumRevitalizer,LargeRevitalizer].indexOf(actionBuilder[1]) == -1){
+                    actionBuilder.push(Allies[allyPicked]);
+                    currentMenu = "None";
+                    addBattleAction(actionBuilder);
+                }
+                else {
+                    HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
+                    HUD.scale.setTo(1.015,0.5);
+                    HUD.lifespan = 1000;
+                    text = game.add.text(HUD.x+35,HUD.y+20,"Can't use this on the selected ally",{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                    text.lifespan = 1000;
+                }
             }
-            else if ([Revive].indexOf(actionBuilder[1]) != -1){
-                actionBuilder.push(Allies[allyPicked]);
-                currentMenu = "None";
-                addBattleAction(actionBuilder);
+            else {
+                if ([Revitalizer,MediumRevitalizer,LargeRevitalizer].indexOf(actionBuilder[1]) != -1){
+                    actionBuilder.push(Allies[allyPicked]);
+                    currentMenu = "None";
+                    addBattleAction(actionBuilder);
+                }
+                else {
+                    HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
+                    HUD.scale.setTo(1.015,0.5);
+                    HUD.lifespan = 1000;
+                    text = game.add.text(HUD.x+35,HUD.y+20,"Can't use this on the selected ally",{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                    text.lifespan = 1000;
+                }
             }
         }
         else if (currentMenu == "BattleEnd"){
@@ -1383,6 +1411,7 @@ function selectBattleActions() {
                 BattleResults = [];
                 BattleCoins = 0;
                 BattleXP = 0;
+                droppedItems = [0,0,0,0,0,0,0,0,0];
                 currentMenu = "";
                 turn = 1;
                 textOS.kill();
@@ -1690,6 +1719,7 @@ function makeBscDamage(character,target){
         if (target.Stats.HP <= 0){
             BattleXP += target.XP;
             BattleCoins += target.Coins;
+            dropGenerator();
             if (target == kori){
                 Kori.chSprite = kori;
                 for (var i = 0; i < Allies.length; i++){
@@ -1704,8 +1734,10 @@ function makeBscDamage(character,target){
                     Allies[i].XPObtained += BattleXP;
                 }
                 Inventory.Coins += BattleCoins;
-                currentMenu = "BattleEnd";
-                createMenu();
+                if (currentMenu != "BattleEnd"){
+                    currentMenu = "BattleEnd";
+                    createMenu();
+                }
             }
             else {
                 target.kill();
@@ -1714,8 +1746,10 @@ function makeBscDamage(character,target){
                         Allies[i].XPObtained += BattleXP;
                     }
                     Inventory.Coins += BattleCoins;
-                    currentMenu = "BattleEnd";
-                    createMenu();
+                    if (currentMenu != "BattleEnd"){
+                        currentMenu = "BattleEnd";
+                        createMenu();
+                    }
                 }
             } 
         }
@@ -1808,8 +1842,10 @@ function makeSkillDamage(character,skill,target){
                     Allies[i].XPObtained += BattleXP;
                 }
                 Inventory.Coins += BattleCoins;
-                currentMenu = "BattleEnd";
-                createMenu();
+                if (currentMenu != "BattleEnd"){
+                    currentMenu = "BattleEnd";
+                    createMenu();
+                }
             }
             else {
                 target.kill();
@@ -1818,9 +1854,10 @@ function makeSkillDamage(character,skill,target){
                         Allies[i].XPObtained += BattleXP;
                     }
                     Inventory.Coins += BattleCoins;
-                    console.log("changing to to battle end");
-                    currentMenu = "BattleEnd";
-                    createMenu();
+                    if (currentMenu != "BattleEnd"){
+                        currentMenu = "BattleEnd";
+                        createMenu();
+                    }
                 }
             } 
         }
@@ -2063,6 +2100,37 @@ function moveToAndKill(character,xpos,ypos){
     }   
 }
 
+function dropGenerator (){
+    var dropNumber = Math.round(Math.random()*100);
+    if (dropNumber <= 20){
+        droppedItems[0] += 1;
+    }
+    else if (dropNumber <= 40){
+        droppedItems[1] += 1;
+    }
+    else if (dropNumber <= 50){
+        droppedItems[2] += 1;
+    }
+    else if (dropNumber <= 62){
+        droppedItems[3] += 1;
+    }
+    else if (dropNumber <= 74){
+        droppedItems[4] += 1;
+    }
+    else if (dropNumber <= 80){
+        droppedItems[5] += 1;
+    }
+    else if (dropNumber <= 88){
+        droppedItems[6] += 1;
+    }
+    else if (dropNumber <= 96){
+        droppedItems[7] += 1;
+    }
+    else {
+        droppedItems[8] += 1;
+    }
+}
+
 function createMenu(){
     
     text = "";
@@ -2147,6 +2215,17 @@ function createMenu(){
         text = [];
         text.push("Obtained " + BattleCoins + " Coins");
         text.push("Obtained " + BattleXP + " XP");
+        for (var i = 0; i < droppedItems.length; i++){
+            if (droppedItems[i] != 0){
+                itemList[i].Add(droppedItems[i]);
+                if (droppedItems[i] == 1){
+                    text.push("Obtained a " + itemList[i].Name);
+                }
+                else {
+                    text.push("Obtained " + droppedItems[i] + " " + itemList[i].Name + "s");
+                }
+            }
+        }
         for (var i = 0; i < BattleResults.length; i++){
             if (BattleResults[i][0]){
                 text.push(Allies[i].Name + " leveled up to Lvl. " + Allies[i].Lvl);

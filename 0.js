@@ -118,7 +118,7 @@ var ArcticBlast = {Name:"Arctic Blast", Stats:{PhysAttack:0, MagAttack:50, MP:35
                 }
                 
             }};
-//ENEMY SKILLS
+//****ENEMY SKILLS****
 var IceSpikes = {Name:"Ice Spikes", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(character,target){
                 var icespikes1 = game.add.sprite(character.x-30,character.y,"icespikes");
@@ -184,7 +184,13 @@ var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, Skil
 //ITEM OBJECTS
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None"};
 var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None"};
-var Potion = {Name:"Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP",
+var ScorchingSword = {Name:"Scorching Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Fire"};
+var FlameStaff = {Name:"Flame Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Fire"};
+var FrozenSword = {Name:"Frozen Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Ice"};
+var SnowStaff = {Name:"Snow Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Ice"};
+var ThunderousSword = {Name:"Thunderous Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm"};
+var TornadoStaff = {Name:"Tornado Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Storm"};
+var Potion = {Name:"Small Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP",
              Use: function Use(character){
                  Potion.Quantity -= 1;
                  character.Stats.HP += Math.round(character.MaxStats.HP/4);
@@ -201,12 +207,155 @@ var Potion = {Name:"Potion",Description:"Restores 25% HP", Quantity: 2, Price: 1
                  }
                  Potion.Quantity += num;
              }};
+var MediumPotion = {Name:"Medium Potion",Description:"Restores 50% HP", Quantity: 0, Price: 30, imageKey:"mediumHP",
+             Use: function Use(character){
+                 MediumPotion.Quantity -= 1;
+                 character.Stats.HP += Math.round(character.MaxStats.HP/2);
+                 if (character.MaxStats.HP < character.Stats.HP){
+                     character.Stats.HP = character.MaxStats.HP;
+                 }
+                 if (MediumPotion.Quantity == 0){
+                     Inventory.Items.splice(Inventory.Items.indexOf(MediumPotion),1);
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(MediumPotion) == -1){
+                     Inventory.Items.push(MediumPotion);
+                 }
+                 MediumPotion.Quantity += num;
+             }};
+var LargePotion = {Name:"Large Potion",Description:"Restores 100% HP", Quantity: 0, Price: 50, imageKey:"largeHP",
+             Use: function Use(character){
+                 LargePotion.Quantity -= 1;
+                 character.Stats.HP += character.MaxStats.HP;
+                 if (character.MaxStats.HP < character.Stats.HP){
+                     character.Stats.HP = character.MaxStats.HP;
+                 }
+                 if (LargePotion.Quantity == 0){
+                     Inventory.Items.splice(Inventory.Items.indexOf(LargePotion),1);
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(LargePotion) == -1){
+                     Inventory.Items.push(LargePotion);
+                 }
+                 LargePotion.Quantity += num;
+             }};
+var Ether = {Name:"Small Ether",Description:"Restores 25% MP", Quantity: 0, Price: 10, imageKey:"smallMP",
+             Use: function Use(character){
+                 Ether.Quantity -= 1;
+                 character.Stats.MP += Math.round(character.MaxStats.MP/4);
+                 if (character.MaxStats.MP < character.Stats.MP){
+                     character.Stats.MP = character.MaxStats.MP;
+                 }
+                 if (Ether.Quantity == 0){
+                     Inventory.Items.splice(Inventory.Items.indexOf(Ether),1);
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(Ether) == -1){
+                     Inventory.Items.push(Ether);
+                 }
+                 Ether.Quantity += num;
+             }};
+var MediumEther = {Name:"Medium Ether",Description:"Restores 50% MP", Quantity: 0, Price: 30, imageKey:"mediumMP",
+             Use: function Use(character){
+                 MediumEther.Quantity -= 1;
+                 character.Stats.MP += Math.round(character.MaxStats.MP/2);
+                 if (character.MaxStats.MP < character.Stats.MP){
+                     character.Stats.MP = character.MaxStats.MP;
+                 }
+                 if (MediumEther.Quantity == 0){
+                     Inventory.Items.splice(Inventory.Items.indexOf(MediumEther),1);
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(MediumEther) == -1){
+                     Inventory.Items.push(MediumEther);
+                 }
+                 MediumEther.Quantity += num;
+             }};
+var LargeEther = {Name:"Large Ether",Description:"Restores 100% MP", Quantity: 0, Price: 50, imageKey:"largeMP",
+             Use: function Use(character){
+                 LargeEther.Quantity -= 1;
+                 character.Stats.MP += character.MaxStats.MP;
+                 if (character.MaxStats.MP < character.Stats.MP){
+                     character.Stats.MP = character.MaxStats.MP;
+                 }
+                 if (LargeEther.Quantity == 0){
+                     Inventory.Items.splice(Inventory.Items.indexOf(LargeEther),1);
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(LargeEther) == -1){
+                     Inventory.Items.push(LargeEther);
+                 }
+                 LargeEther.Quantity += num;
+             }};
+var Revitalizer = {Name:"Revitalizer",Description:"Revive with 25% HP", Quantity: 0, Price: 30, imageKey:"smallRevitalizer",
+             Use: function Use(character){
+                 if (character.Stats.HP <= 0){
+                     Revitalizer.Quantity -= 1;
+                     character.Stats.HP += Math.round(character.MaxStats.HP/4);
+                     if (character.MaxStats.HP < character.Stats.HP){
+                         character.Stats.HP = character.MaxStats.HP;
+                     }
+                     if (Revitalizer.Quantity == 0){
+                         Inventory.Items.splice(Inventory.Items.indexOf(Revitalizer),1);
+                     }
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(Revitalizer) == -1){
+                     Inventory.Items.push(Revitalizer);
+                 }
+                 Revitalizer.Quantity += num;
+             }};
+var MediumRevitalizer = {Name:"Medium Revitalizer",Description:"Revive with 50% HP", Quantity: 0, Price: 50, imageKey:"mediumRevitalizer",
+             Use: function Use(character){
+                 if (character.Stats.HP <= 0){
+                     MediumRevitalizer.Quantity -= 1;
+                     character.Stats.HP += Math.round(character.MaxStats.HP/2);
+                     if (character.MaxStats.HP < character.Stats.HP){
+                         character.Stats.HP = character.MaxStats.HP;
+                     }
+                     if (MediumRevitalizer.Quantity == 0){
+                         Inventory.Items.splice(Inventory.Items.indexOf(MediumRevitalizer),1);
+                     }
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(MediumRevitalizer) == -1){
+                     Inventory.Items.push(MediumRevitalizer);
+                 }
+                 MediumRevitalizer.Quantity += num;
+             }};
+var LargeRevitalizer = {Name:"Large Revitalizer",Description:"Revive with 100% HP", Quantity: 0, Price: 100, imageKey:"largeRevitalizer",
+             Use: function Use(character){
+                 if (character.Stats.HP <= 0){
+                     LargeRevitalizer.Quantity -= 1;
+                     character.Stats.HP += character.MaxStats.HP;
+                     if (character.MaxStats.HP < character.Stats.HP){
+                         character.Stats.HP = character.MaxStats.HP;
+                     }
+                     if (LargeRevitalizer.Quantity == 0){
+                         Inventory.Items.splice(Inventory.Items.indexOf(LargeRevitalizer),1);
+                     }
+                 }
+             },
+             Add: function Add(num){
+                 if (Inventory.Items.indexOf(LargeRevitalizer) == -1){
+                     Inventory.Items.push(LargeRevitalizer);
+                 }
+                 LargeRevitalizer.Quantity += num;
+             }};
+var itemList = [Potion,Ether,Revitalizer,MediumPotion,MediumEther,MediumRevitalizer,LargePotion,LargeEther,LargeRevitalizer];
+var droppedItems = [0,0,0,0,0,0,0,0,0];
 var Inventory = {
     Weapons : [WoodSword],
     Items : [Potion],
     Coins : 0
 }
-
 //CHARACTER OBJECTS
 var Ash = {
     Name : "Ash",
