@@ -8,9 +8,9 @@ demo.state6.prototype = {
         game.load.spritesheet('knight', 'assets/spritesheets/knightspritesheet.png', 135, 135);
         game.load.image('knightportrait1','assets/sprites/knightportrait.png');
         game.load.spritesheet('dark_beam', 'assets/sprites/dark_beam.png', 400, 400);
-        //game.load.image('icespikes', 'assets/sprites/icespikes.png');
-        //game.load.image('shadowbeam', 'assets/sprites/beam.png');
-        //game.load.image('tidalwave', 'assets/sprites/wave.png');
+        game.load.spritesheet('knightfire', 'assets/sprites/knightfire.png', 150, 100);
+        game.load.spritesheet('knightice', 'assets/sprites/knightice.png', 150, 100);
+        game.load.spritesheet('knightstorm', 'assets/sprites/knightstorm.png', 100, 150);
         
         //image for boundries
         game.load.image('square', 'assets/sprites/square.png');
@@ -38,17 +38,17 @@ demo.state6.prototype = {
         mc.scale.setTo(1.3);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
-        mc.animations.add('walkleft', [6,7,8]);
-        mc.animations.add('walkright', [9,10,11]);
-        mc.animations.add('walkdown', [0,1,2]);
-        mc.animations.add('walkup', [3,4,5]);
+        mc.animations.add('walkleft', [6,7,8,7]);
+        mc.animations.add('walkright', [9,10,11,10]);
+        mc.animations.add('walkdown', [0,1,2,1]);
+        mc.animations.add('walkup', [3,4,5,4]);
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('fireslash',[10,14,10]);
         mc.animations.add('bladeblitz',[10,12,10]);
         mc.animations.add('ignite',[13,10]);
-        mc.animations.add('hellfire',[10,12,10]);
+        mc.animations.add('hellfire',[13,15,10]);
         Ash.chSprite = mc;
         
         

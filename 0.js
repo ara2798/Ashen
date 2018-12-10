@@ -144,53 +144,62 @@ var IceEnmy = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:20, MP:10}, SkillType:
                 character.animations.play("icespell",2,false);
                 moveToSkill(character,IceEnmy,ice1,target);
             }};
-var HealEnmy = {Name:"Heal", Stats:{MP:10}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
+var HealEnmy = {Name:"Heal", Stats:{MP:15}, SkillType:"Support", Element:"None", AreaOfEffect:"Single",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("heal",2,false);
-                var healAmount = Math.round(target.MaxStats.HP/4);
+                console.log("healing");
+                console.log(target);
+                var healAmount = Math.round(target.MaxStats.HP/8);
                 target.Stats.HP += healAmount;
                 if (target.Stats.HP > target.MaxStats.HP){
                     target.Stats.HP = target.MaxStats.HP;
                 }
-                healDisplay = "+" + healAmount;
-                healDisplay = game.add.text(target.x,target.y - 20,healDisplay,{fontSize:20,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                healDisplay = game.add.sprite(target.x-50,target.y-60,"heal");
                 healDisplay.lifespan = 1000;
             }};
 var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("firespell",8,false);
-                var explosion = game.add.sprite(game.camera.x+100,game.camera.y+75,"explosion");
-                explosion.scale.setTo(2.5,3);
-                explosion.animations.add('act',[0,1,2]);
-                explosion.animations.play('act',5,true);
-                explosion.lifespan = 2000;
-                for (var i = 0; i < Allies.length; i++){
-                    makeSkillDamage(character,KnightFire,Allies[i]);
-                }
+                var knightfire = game.add.sprite(character.x,character.y-150,"knightfire");
+                knightfire.anchor.setTo(1,0);
+                knightfire.scale.setTo(2.5,2.5);
+                knightfire.animations.add('act',[0,1,2,3,4]);
+                knightfire.animations.play('act',5,false);
+                moveToSkill(character,KnightFire,knightfire,target);
             }};
 var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
-                var ice1 = game.add.sprite(character.x-30,character.y,"icespikes");
                 character.animations.play("icespell",8,false);
-                moveToSkill(character,KnightIce,ice1,target);
+                var knightice = game.add.sprite(character.x-470,character.y-120,"knightice");
+                knightice.scale.setTo(2.5,2.5);
+                knightice.animations.add('act',[0,1,2,3]);
+                knightice.animations.play('act',4,false);
+                knightice.lifespan = 1200;
+                for (var i = 0; i < Allies.length; i++){
+                    makeSkillDamage(character,KnightIce,Allies[i]);
+                }
             }};
 var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
-                var storm1 = game.add.sprite(character.x-30,character.y,"storm");
                 character.animations.play("stormspell",8,false);
-                moveToSkill(character,KnightStorm,storm1,target);
+                var knightstorm = game.add.sprite(character.x,character.y-170,"knightstorm");
+                knightstorm.anchor.setTo(1,0);
+                knightstorm.scale.setTo(2.5,2.5);
+                knightstorm.animations.add('act',[0,1,2,3]);
+                knightstorm.animations.play('act',8,true);
+                moveToSkill(character,KnightStorm,knightstorm,target);
             }};
 
 //ITEM OBJECTS
-var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None"};
-var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None"};
-var ScorchingSword = {Name:"Scorching Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Fire"};
-var FlameStaff = {Name:"Flame Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Fire"};
-var FrozenSword = {Name:"Frozen Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Ice"};
-var SnowStaff = {Name:"Snow Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Ice"};
-var ThunderousSword = {Name:"Thunderous Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm"};
-var TornadoStaff = {Name:"Tornado Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Storm"};
-var Potion = {Name:"Small Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP",
+var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None", Category:"Weapon"};
+var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None", Category:"Weapon"};
+var ScorchingSword = {Name:"Scorching Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Fire", Category:"Weapon"};
+var FlameStaff = {Name:"Flame Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Fire", Category:"Weapon"};
+var FrozenSword = {Name:"Frozen Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Ice", Category:"Weapon"};
+var SnowStaff = {Name:"Snow Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Ice", Category:"Weapon"};
+var ThunderousSword = {Name:"Thunderous Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm", Category:"Weapon"};
+var TornadoStaff = {Name:"Tornado Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Storm", Category:"Weapon"};
+var Potion = {Name:"Small Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP", Category:"Item",
              Use: function Use(character){
                  Potion.Quantity -= 1;
                  character.Stats.HP += Math.round(character.MaxStats.HP/4);
@@ -207,7 +216,7 @@ var Potion = {Name:"Small Potion",Description:"Restores 25% HP", Quantity: 2, Pr
                  }
                  Potion.Quantity += num;
              }};
-var MediumPotion = {Name:"Medium Potion",Description:"Restores 50% HP", Quantity: 0, Price: 30, imageKey:"mediumHP",
+var MediumPotion = {Name:"Medium Potion",Description:"Restores 50% HP", Quantity: 0, Price: 30, imageKey:"mediumHP", Category:"Item",
              Use: function Use(character){
                  MediumPotion.Quantity -= 1;
                  character.Stats.HP += Math.round(character.MaxStats.HP/2);
@@ -224,7 +233,7 @@ var MediumPotion = {Name:"Medium Potion",Description:"Restores 50% HP", Quantity
                  }
                  MediumPotion.Quantity += num;
              }};
-var LargePotion = {Name:"Large Potion",Description:"Restores 100% HP", Quantity: 0, Price: 50, imageKey:"largeHP",
+var LargePotion = {Name:"Large Potion",Description:"Restores 100% HP", Quantity: 0, Price: 50, imageKey:"largeHP", Category:"Item",
              Use: function Use(character){
                  LargePotion.Quantity -= 1;
                  character.Stats.HP += character.MaxStats.HP;
@@ -241,7 +250,7 @@ var LargePotion = {Name:"Large Potion",Description:"Restores 100% HP", Quantity:
                  }
                  LargePotion.Quantity += num;
              }};
-var Ether = {Name:"Small Ether",Description:"Restores 25% MP", Quantity: 0, Price: 10, imageKey:"smallMP",
+var Ether = {Name:"Small Ether",Description:"Restores 25% MP", Quantity: 0, Price: 10, imageKey:"smallMP", Category:"Item",
              Use: function Use(character){
                  Ether.Quantity -= 1;
                  character.Stats.MP += Math.round(character.MaxStats.MP/4);
@@ -258,7 +267,7 @@ var Ether = {Name:"Small Ether",Description:"Restores 25% MP", Quantity: 0, Pric
                  }
                  Ether.Quantity += num;
              }};
-var MediumEther = {Name:"Medium Ether",Description:"Restores 50% MP", Quantity: 0, Price: 30, imageKey:"mediumMP",
+var MediumEther = {Name:"Medium Ether",Description:"Restores 50% MP", Quantity: 0, Price: 30, imageKey:"mediumMP", Category:"Item",
              Use: function Use(character){
                  MediumEther.Quantity -= 1;
                  character.Stats.MP += Math.round(character.MaxStats.MP/2);
@@ -275,7 +284,7 @@ var MediumEther = {Name:"Medium Ether",Description:"Restores 50% MP", Quantity: 
                  }
                  MediumEther.Quantity += num;
              }};
-var LargeEther = {Name:"Large Ether",Description:"Restores 100% MP", Quantity: 0, Price: 50, imageKey:"largeMP",
+var LargeEther = {Name:"Large Ether",Description:"Restores 100% MP", Quantity: 0, Price: 50, imageKey:"largeMP", Category:"Item",
              Use: function Use(character){
                  LargeEther.Quantity -= 1;
                  character.Stats.MP += character.MaxStats.MP;
@@ -292,7 +301,7 @@ var LargeEther = {Name:"Large Ether",Description:"Restores 100% MP", Quantity: 0
                  }
                  LargeEther.Quantity += num;
              }};
-var Revitalizer = {Name:"Revitalizer",Description:"Revive with 25% HP", Quantity: 0, Price: 30, imageKey:"smallRevitalizer",
+var Revitalizer = {Name:"Revitalizer",Description:"Revive with 25% HP", Quantity: 0, Price: 30, imageKey:"smallRevitalizer", Category:"Item",
              Use: function Use(character){
                  if (character.Stats.HP <= 0){
                      Revitalizer.Quantity -= 1;
@@ -311,7 +320,7 @@ var Revitalizer = {Name:"Revitalizer",Description:"Revive with 25% HP", Quantity
                  }
                  Revitalizer.Quantity += num;
              }};
-var MediumRevitalizer = {Name:"Medium Revitalizer",Description:"Revive with 50% HP", Quantity: 0, Price: 50, imageKey:"mediumRevitalizer",
+var MediumRevitalizer = {Name:"Medium Revitalizer",Description:"Revive with 50% HP", Quantity: 0, Price: 50, imageKey:"mediumRevitalizer", Category:"Item",
              Use: function Use(character){
                  if (character.Stats.HP <= 0){
                      MediumRevitalizer.Quantity -= 1;
@@ -330,7 +339,7 @@ var MediumRevitalizer = {Name:"Medium Revitalizer",Description:"Revive with 50% 
                  }
                  MediumRevitalizer.Quantity += num;
              }};
-var LargeRevitalizer = {Name:"Large Revitalizer",Description:"Revive with 100% HP", Quantity: 0, Price: 100, imageKey:"largeRevitalizer",
+var LargeRevitalizer = {Name:"Large Revitalizer",Description:"Revive with 100% HP", Quantity: 0, Price: 100, imageKey:"largeRevitalizer", Category:"Item",
              Use: function Use(character){
                  if (character.Stats.HP <= 0){
                      LargeRevitalizer.Quantity -= 1;
@@ -519,13 +528,13 @@ function Harpie(enemyObject,level) {
 }
 
 function Koriboss(enemyObject,level) {
-    enemyObject.Stats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+12*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+25*level};
-    enemyObject.MaxStats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+12*level,MagDefense:30+5*level,Speed:25+5*level,MP:100+25*level};
+    enemyObject.Stats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+12*level,MagDefense:30+5*level,Speed:25+5*level,MP:10+20*level};
+    enemyObject.MaxStats = {HP:150+80*level, PhysAttack:5+2*level,PhysDefense:15+3*level,MagAttack:50+12*level,MagDefense:30+5*level,Speed:25+5*level,MP:10+20*level};
     enemyObject.Level = level;
     enemyObject.XP = level*40;
     enemyObject.Coins = level*40;
     enemyObject.Element = "Ice";
-    enemyObject.SkillsLearned = [IceEnmy/*,HealEnmy*/];
+    enemyObject.SkillsLearned = [IceEnmy,HealEnmy];
 }
 
 function Snek(enemyObject,level) {
@@ -565,7 +574,7 @@ function Knight(enemyObject,level) {
     enemyObject.XP = level*80;
     enemyObject.Coins = level*80;
     enemyObject.Element = "None";
-    enemyObject.SkillsLearned = [KnightFire/*,KnightIce,KnightStorm*/];
+    enemyObject.SkillsLearned = [KnightFire,KnightIce,KnightStorm];
 }
 /*WebFontConfig= {
     google: {families: ['Press Start 2P']}

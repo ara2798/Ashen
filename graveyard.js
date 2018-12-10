@@ -2,6 +2,12 @@ var previousState = "intro", pause = false, storyMode=false, story1Completed=fal
 
 var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1"];
 
+var graveyardTreasure1 = {
+    items: [ThunderousSword],
+    opened: false
+}
+var displayingTreasure = false;
+
 demo.state1 = function(){};
 demo.state1.prototype = {
     preload: function(){
@@ -40,6 +46,7 @@ demo.state1.prototype = {
         game.load.image('largeRevitalizer', 'assets/sprites/large_pot_revitalizer.png');
         game.load.image('sword1', 'assets/sprites/skillsword1.png');
         game.load.image('item', 'assets/sprites/item.png');
+        game.load.spritesheet('treasure', 'assets/sprites/treasure.png',64,64);
         
         //image for boundries
         game.load.image('square', 'assets/sprites/square.png');
@@ -79,6 +86,14 @@ demo.state1.prototype = {
         var ledge = platforms.create(600,700, 'road');
         ledge.scale.setTo(0.3,0.5);
         ledge.body.immovable = true;*/
+        
+        graveyardTreasure1.sprite = game.add.sprite(188,214,'treasure');
+        game.physics.enable(graveyardTreasure1.sprite);
+        graveyardTreasure1.sprite.body.immovable = true;
+        graveyardTreasure1.sprite.body.moves = false;
+        if (graveyardTreasure1.opened){
+            graveyardTreasure1.sprite.frame = 1;
+        }
         
         if(previousState == "intro"){
             mc = game.add.sprite(622, 914, 'mc');
@@ -160,6 +175,7 @@ demo.state1.prototype = {
         
         game.physics.arcade.collide(mc, square);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
+        var touchingTreasure1 = game.physics.arcade.overlap(mc, graveyardTreasure1.sprite, null, null, this);
         
         if (EnemyGroup1.countLiving() == 0){
             unlockGYExit = true;
@@ -179,6 +195,42 @@ demo.state1.prototype = {
                 setFightStage();
                 enemyInBattle = EnemyGroup1;
             },this);
+        }
+        
+        if (touchingTreasure1){
+            if (cursors.z.isDown && !press[4] && !graveyardTreasure1.opened){
+                press[4] = true;
+                graveyardTreasure1.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < graveyardTreasure1.items.length; i++){
+                    if (graveyardTreasure1.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(graveyardTreasure1.items[i]);
+                        itemText += graveyardTreasure1.items[i].Name
+                    }
+                    else if (graveyardTreasure1.items[i].Category == "Item"){
+                        graveyardTreasure1.items[i].Add(1);
+                        itemText += graveyardTreasure1.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                graveyardTreasure1.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }
+            
+        }
+        
+        if (displayingTreasure && cursors.z.isDown && !press[4]){
+            displayingTreasure = false;
+            treasureDisplay.kill();
+            itemText.kill();
         }
         
         if (Ash.chSprite.x >= 1370 && Ash.chSprite.y >= 1210 && unlockGYExit){
@@ -832,7 +884,7 @@ function selectPauseMActions(){
 }
 
 function moveMC(){
-    if (!fighting && !storyMode && !pause && !inTransition){   
+    if (!fighting && !storyMode && !pause && !inTransition && !displayingTreasure){   
         if(cursors.right.isDown && mc.body.velocity.y == 0 && cursors.left.isUp){
             mc.body.velocity.x = 250;
             mc.animations.play('walkright', 7, true);
@@ -1533,8 +1585,8 @@ function addBattleAction(action) {
         for (var i = 0; i < enemyInBattle.children.length; i++){
             if (enemyInBattle.children[i].alive){
                 actionBuilder.push(enemyInBattle.children[i]);
-                var AtkOrSkill = Math.round(Math.random());
-                if (AtkOrSkill == 1 && enemyInBattle.children[i].SkillsLearned[0] != undefined){
+                var AtkOrSkill = Math.round(Math.random()*10);
+                if (AtkOrSkill <= 7 && enemyInBattle.children[i].SkillsLearned[0] != undefined){
                     if (enemyInBattle.children[i].Stats.MP >= enemyInBattle.children[i].SkillsLearned[0].Stats.MP){
                         var pickSkill = Math.round(Math.random()*(enemyInBattle.children[i].SkillsLearned.length - 1));
                         while (enemyInBattle.children[i].SkillsLearned[pickSkill].Stats.MP > enemyInBattle.children[i].Stats.MP){
@@ -1549,14 +1601,36 @@ function addBattleAction(action) {
                 else{
                     actionBuilder.push(0);
                 }
-                var pickTarget = Math.round(Math.random()*(Allies.length-1));
-                while (Allies[pickTarget].Stats.HP <= 0){
-                    pickTarget += 1;
-                    if (pickTarget >= Allies.length){
-                        pickTarget = 0;
+                if (actionBuilder[1] == 0){
+                    var pickTarget = Math.round(Math.random()*(Allies.length-1));
+                    while (Allies[pickTarget].Stats.HP <= 0){
+                        pickTarget += 1;
+                        if (pickTarget >= Allies.length){
+                            pickTarget = 0;
+                        }
                     }
+                    actionBuilder.push(Allies[pickTarget]);
                 }
-                actionBuilder.push(Allies[pickTarget]);
+                else if (actionBuilder[1].SkillType == "Attack"){
+                    var pickTarget = Math.round(Math.random()*(Allies.length-1));
+                    while (Allies[pickTarget].Stats.HP <= 0){
+                        pickTarget += 1;
+                        if (pickTarget >= Allies.length){
+                            pickTarget = 0;
+                        }
+                    }
+                    actionBuilder.push(Allies[pickTarget]);
+                }
+                else {
+                    var pickTarget = Math.round(Math.random()*(enemyInBattle.children.length-1));
+                    while (enemyInBattle.children[pickTarget].Stats.HP <= 0){
+                        pickTarget += 1;
+                        if (pickTarget >= enemyInBattle.children.length){
+                            pickTarget = 0;
+                        }
+                    }
+                    actionBuilder.push(enemyInBattle.children[pickTarget]);
+                }
                 BattleActionStack.push(actionBuilder);
                 actionBuilder = [];
             }
@@ -1655,12 +1729,12 @@ function performBattleActions(){
             }
             //handle enemy actions
             else{
-                console.log("enemy atks");
+                //Enemy uses basic attack
                 if (BattleActionStack[i][1] == 0){
                     moveToAttack(BattleActionStack[i][0],BattleActionStack[i][0].x-200,BattleActionStack[i][0].y,BattleActionStack[i][2],0); 
                 }
-                //in progress
-                else if (Allies.indexOf(BattleActionStack[i][2]) != -1){
+                //Enemy uses skills
+                else {
                     BattleActionStack[i][1].SkillAnimation(BattleActionStack[i][0],BattleActionStack[i][2]);
                     BattleActionStack[i][0].Stats.MP -= BattleActionStack[i][1].Stats.MP;
                 }

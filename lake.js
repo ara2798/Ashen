@@ -50,17 +50,17 @@ demo.state2.prototype = {
         mc.scale.setTo(1.1, 1.1);
         game.physics.enable(mc);
         mc.body.collideWorldBounds = true;
-        mc.animations.add('walkleft', [6,7,8]);
-        mc.animations.add('walkright', [9,10,11]);
-        mc.animations.add('walkdown', [0,1,2]);
-        mc.animations.add('walkup', [3,4,5]);
+        mc.animations.add('walkleft', [6,7,8,7]);
+        mc.animations.add('walkright', [9,10,11,10]);
+        mc.animations.add('walkdown', [0,1,2,1]);
+        mc.animations.add('walkup', [3,4,5,4]);
         mc.animations.add('attack', [10,12,10]);
         mc.animations.add('firespell', [13,10]);
         mc.animations.add('slash',[10,12,10]);
-        mc.animations.add('fireslash',[10,12,10]);
+        mc.animations.add('fireslash',[10,14,10]);
         mc.animations.add('bladeblitz',[10,12,10]);
         mc.animations.add('ignite',[13,10]);
-        mc.animations.add('hellfire',[10,12,10]);
+        mc.animations.add('hellfire',[13,15,10]);
         Ash.chSprite = mc;
         
         EnemyGroup1 = game.add.group();
