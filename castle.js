@@ -1,4 +1,8 @@
 var story3Completed = false, forestMiniBoss = false, bounds;
+var graveyardTreasure1 = {
+    items: [ThunderousSword],
+    opened: false
+}
 demo.state5 = function(){};
 demo.state5.prototype = {
     preload: function(){
@@ -37,6 +41,14 @@ demo.state5.prototype = {
         game.world.setBounds(0, 0, 1620, 2220);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'castle');
+        
+        graveyardTreasure1.sprite = game.add.sprite(188,214,'treasure');
+        game.physics.enable(graveyardTreasure1.sprite);
+        graveyardTreasure1.sprite.body.immovable = true;
+        graveyardTreasure1.sprite.body.moves = false;
+        if (graveyardTreasure1.opened){
+            graveyardTreasure1.sprite.frame = 1;
+        }
         
         mc = game.add.sprite(805, 2080, 'mc');
         mc.anchor.setTo(0.5,0.5);
@@ -146,7 +158,7 @@ demo.state5.prototype = {
         square.scale.setTo(6.9,9);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(945,0,'square');
+        var square = bounds.create(980,0,'square');
         square.scale.setTo(7.1,9);
         square.body.immovable = true;
         square.body.moves = false;
@@ -175,6 +187,7 @@ demo.state5.prototype = {
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var touchingTreasure1 = game.physics.arcade.overlap(mc, graveyardTreasure1.sprite, null, null, this);
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
@@ -297,6 +310,41 @@ demo.state5.prototype = {
             moveCamera = game.add.tween(game.camera).to({x:mc.x-150,y:mc.y-300},500,null,true);
             moveCamera.onComplete.add(function(){game.camera.shake(0.02,1000,true,6);moveTo(EnemyGroup3.children[0],game.camera.x+400,420);setFightStage();enemyInBattle = EnemyGroup3;},this);
         }*/
+        
+        if (touchingTreasure1){
+            if (cursors.z.isDown && !press[4] && !graveyardTreasure1.opened){
+                press[4] = true;
+                graveyardTreasure1.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < graveyardTreasure1.items.length; i++){
+                    if (graveyardTreasure1.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(graveyardTreasure1.items[i]);
+                        itemText += graveyardTreasure1.items[i].Name
+                    }
+                    else if (graveyardTreasure1.items[i].Category == "Item"){
+                        graveyardTreasure1.items[i].Add(1);
+                        itemText += graveyardTreasure1.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                graveyardTreasure1.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }  
+        }
+        
+        if (displayingTreasure && cursors.z.isDown && !press[4]){
+            displayingTreasure = false;
+            treasureDisplay.kill();
+            itemText.kill();
+        }
         
         if (Ash.chSprite.y < 90){
             music.destroy();

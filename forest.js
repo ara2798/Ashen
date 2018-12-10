@@ -1,4 +1,12 @@
 var story3Completed = false, story4Completed = false, forestMiniBoss = false, bounds, joinParty = false;
+var forestTreasure1 = {
+    items: [ScorchingSword],
+    opened: false
+}
+var forestTreasure2 = {
+    items: [FlameStaff],
+    opened: false
+}
 demo.state3 = function(){};
 demo.state3.prototype = {
     preload: function(){
@@ -42,6 +50,22 @@ demo.state3.prototype = {
         game.world.setBounds(0, 0, 1620, 1260);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'forest');
+        
+        forestTreasure1.sprite = game.add.sprite(575,1065,'treasure');
+        game.physics.enable(forestTreasure1.sprite);
+        forestTreasure1.sprite.body.immovable = true;
+        forestTreasure1.sprite.body.moves = false;
+        if (forestTreasure1.opened){
+            forestTreasure1.sprite.frame = 1;
+        }
+        
+        forestTreasure2.sprite = game.add.sprite(1290,90,'treasure');
+        game.physics.enable(forestTreasure2.sprite);
+        forestTreasure2.sprite.body.immovable = true;
+        forestTreasure2.sprite.body.moves = false;
+        if (forestTreasure2.opened){
+            forestTreasure2.sprite.frame = 1;
+        }
         
         if (previousState == "overworld"){
             mc = game.add.sprite(100, 580, 'mc');
@@ -280,6 +304,8 @@ demo.state3.prototype = {
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var touchingTreasure1 = game.physics.arcade.overlap(mc, forestTreasure1.sprite, null, null, this);
+        var touchingTreasure2 = game.physics.arcade.overlap(mc, forestTreasure2.sprite, null, null, this);
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
@@ -394,6 +420,70 @@ demo.state3.prototype = {
             moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);},this);
             joinParty = true;
             moveToAndKill(Kori.chSprite,mc.x,mc.y);
+        }
+        
+        if (touchingTreasure1){
+            if (cursors.z.isDown && !press[4] && !forestTreasure1.opened){
+                press[4] = true;
+                forestTreasure1.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < forestTreasure1.items.length; i++){
+                    if (forestTreasure1.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(forestTreasure1.items[i]);
+                        itemText += forestTreasure1.items[i].Name
+                    }
+                    else if (forestTreasure1.items[i].Category == "Item"){
+                        forestTreasure1.items[i].Add(1);
+                        itemText += forestTreasure1.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                forestTreasure1.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }  
+        }
+        
+        if (touchingTreasure2){
+            if (cursors.z.isDown && !press[4] && !forestTreasure2.opened){
+                press[4] = true;
+                forestTreasure2.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < forestTreasure2.items.length; i++){
+                    if (forestTreasure2.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(forestTreasure2.items[i]);
+                        itemText += forestTreasure2.items[i].Name
+                    }
+                    else if (forestTreasure2.items[i].Category == "Item"){
+                        forestTreasure2.items[i].Add(1);
+                        itemText += forestTreasure2.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                forestTreasure2.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }  
+        }
+        
+        if (displayingTreasure && cursors.z.isDown && !press[4]){
+            displayingTreasure = false;
+            treasureDisplay.kill();
+            itemText.kill();
         }
         
         if (Ash.chSprite.x <= 55){

@@ -1,4 +1,8 @@
 var story2Completed = false, swampMiniBoss = false, bounds;
+var lakeTreasure1 = {
+    items: [FrozenSword],
+    opened: false
+}
 demo.state2 = function(){};
 demo.state2.prototype = {
     preload: function(){
@@ -30,15 +34,14 @@ demo.state2.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'lake');
         
-        /*
-        immovableObjs = game.add.group();
-        immovableObjs.enableBody = true;
-        var immovbl = immovableObjs.create(0,0,'immovbl1');
-        immovbl.body.immovable = true;
-        immovbl.body.moves = false;
-        var immovbl = immovableObjs.create(0,0,'immovbl2');
-        immovbl.body.immovable = true;
-        immovbl.body.moves = false;*/
+        lakeTreasure1.sprite = game.add.sprite(680,1140,'treasure');
+        game.physics.enable(lakeTreasure1.sprite);
+        lakeTreasure1.sprite.body.immovable = true;
+        lakeTreasure1.sprite.body.moves = false;
+        if (lakeTreasure1.opened){
+            lakeTreasure1.sprite.frame = 1;
+        }
+        
         if (previousState == "overworldL"){
             mc = game.add.sprite(100, 600, 'mc');
         }
@@ -122,40 +125,59 @@ demo.state2.prototype = {
 
         //bottom lake
         var square = bounds.create(620, 700,'square');
-        square.scale.setTo(6.8,4.38);
+        square.scale.setTo(6.8,4);
         square.body.immovable = true;
         square.body.moves = false;
-        
         var square = bounds.create(1340, 825,'square');
         square.scale.setTo(7,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(467, 850,'square');
+        square.scale.setTo(1,2.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(390, 940,'square');
+        square.scale.setTo(1,1.6);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(240, 1000,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(940, 1100,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1300, 650,'square');
+        square.scale.setTo(1,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(687, 675,'square');
+        square.scale.setTo(3.2,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(970, 655,'square');
+        square.scale.setTo(2,1.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1110, 625,'square');
+        square.scale.setTo(2.7,1.5);
         square.body.immovable = true;
         square.body.moves = false;
 
         //top lake
         var square = bounds.create(670, 0,'square');
-        square.scale.setTo(6.1,4.3);
+        square.scale.setTo(6.6,4.3);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(627, 416,'square');
         square.scale.setTo(1,0.5);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(760, 429,'square');
+        var square = bounds.create(760, 410,'square');
         square.scale.setTo(1.7,.5);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(467, 850,'square');
-        square.scale.setTo(1,3.3);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(390, 940,'square');
-        square.scale.setTo(1,2);
-        square.body.immovable = true;
-        square.body.moves = false;
-        var square = bounds.create(240, 1000,'square');
-        square.scale.setTo(1,1);
-        square.body.immovable = true;
-        square.body.moves = false;    
         
         var square = bounds.create(366, 0,'square');
         square.scale.setTo(5,.8);
@@ -167,7 +189,7 @@ demo.state2.prototype = {
         square.body.immovable = true;
         square.body.moves = false;
         
-        var square = bounds.create(1306, 239,'square');
+        var square = bounds.create(1306, 250,'square');
         square.scale.setTo(5,.1);
         square.body.immovable = true;
         square.body.moves = false; 
@@ -205,6 +227,7 @@ demo.state2.prototype = {
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var touchingTreasure1 = game.physics.arcade.overlap(mc, lakeTreasure1.sprite, null, null, this);
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
@@ -314,6 +337,41 @@ demo.state2.prototype = {
                 setFightStage();
                 enemyInBattle = EnemyGroup3;
             },this);
+        }
+        
+        if (touchingTreasure1){
+            if (cursors.z.isDown && !press[4] && !lakeTreasure1.opened){
+                press[4] = true;
+                lakeTreasure1.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < lakeTreasure1.items.length; i++){
+                    if (lakeTreasure1.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(lakeTreasure1.items[i]);
+                        itemText += lakeTreasure1.items[i].Name
+                    }
+                    else if (lakeTreasure1.items[i].Category == "Item"){
+                        lakeTreasure1.items[i].Add(1);
+                        itemText += lakeTreasure1.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                lakeTreasure1.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }  
+        }
+        
+        if (displayingTreasure && cursors.z.isDown && !press[4]){
+            displayingTreasure = false;
+            treasureDisplay.kill();
+            itemText.kill();
         }
         
         if (Ash.chSprite.x <= 55){

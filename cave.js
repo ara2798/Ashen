@@ -1,4 +1,10 @@
 var story3Completed = false, forestMiniBoss = false, bounds;
+
+var caveTreasure1 = {
+    items: [FrostStaff,CycloneStaff],
+    opened: false
+}
+
 demo.state4 = function(){};
 demo.state4.prototype = {
     preload: function(){
@@ -33,6 +39,14 @@ demo.state4.prototype = {
         //darken = game.add.sprite(0,0,'dark');
         //darken.scale.setTo(16.2,12.6);
         //darken.alpha = 0.5;
+        
+        caveTreasure1.sprite = game.add.sprite(1015,425,'treasure');
+        game.physics.enable(caveTreasure1.sprite);
+        caveTreasure1.sprite.body.immovable = true;
+        caveTreasure1.sprite.body.moves = false;
+        if (caveTreasure1.opened){
+            caveTreasure1.sprite.frame = 1;
+        }
         
         if (previousState == "forest"){
             mc = game.add.sprite(100, 580, 'mc');
@@ -79,7 +93,7 @@ demo.state4.prototype = {
         EnemyGroup2 = game.add.group();
         EnemyGroup2.enableBody = true;     
         
-        var snek = EnemyGroup2.create(1050, 500,'snek');
+        var snek = EnemyGroup2.create(1000, 490,'snek');
         snek.scale.setTo(0.9);
         snek.frame = 0;
         snek.animations.add('walkleft',[1,2]);
@@ -181,6 +195,7 @@ demo.state4.prototype = {
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var touchingTreasure1 = game.physics.arcade.overlap(mc, caveTreasure1.sprite, null, null, this);
 
         if (encounter1 && !inTransition && !fighting){
             fighting = true;
@@ -250,6 +265,41 @@ demo.state4.prototype = {
                 setFightStage();
                 enemyInBattle = EnemyGroup2;
             },this);
+        }
+        
+        if (touchingTreasure1){
+            if (cursors.z.isDown && !press[4] && !caveTreasure1.opened){
+                press[4] = true;
+                caveTreasure1.opened = true;
+                mc.body.velocity.x = 0;
+                mc.body.velocity.y = 0;
+                itemText = "Obtained:\n"
+                for (var i = 0; i < caveTreasure1.items.length; i++){
+                    if (caveTreasure1.items[i].Category == "Weapon"){
+                        Inventory.Weapons.push(caveTreasure1.items[i]);
+                        itemText += caveTreasure1.items[i].Name
+                    }
+                    else if (caveTreasure1.items[i].Category == "Item"){
+                        caveTreasure1.items[i].Add(1);
+                        itemText += caveTreasure1.items[i].Name + " x1"
+                    }
+                    itemText += "\n"
+                }
+                caveTreasure1.sprite.frame = 1;
+                treasureDisplay = game.add.sprite(game.camera.x+200,game.camera.y+100,'hud');
+                treasureDisplay.scale.setTo(0.5,3.33);
+                itemText = game.add.text(treasureDisplay.x+60,treasureDisplay.y+100,itemText,{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+                displayingTreasure = true;
+            }
+            else if (cursors.z.isUp){
+                press[4] = false;
+            }  
+        }
+        
+        if (displayingTreasure && cursors.z.isDown && !press[4]){
+            displayingTreasure = false;
+            treasureDisplay.kill();
+            itemText.kill();
         }
         
         if (Ash.chSprite.x <= 55){
