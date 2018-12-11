@@ -162,7 +162,12 @@ demo.state4.prototype = {
         var square = bounds.create(1499, 489,'square');
         square.scale.setTo(2,.5);
         square.body.immovable = true;
-        square.body.moves = false;      
+        square.body.moves = false;
+        
+        var square = bounds.create(870, 350,'square');
+        square.scale.setTo(2,.5);
+        square.body.immovable = true;
+        square.body.moves = false;  
         
         //bottom cave
         var square = bounds.create(0, 1030,'square');

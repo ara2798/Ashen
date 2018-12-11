@@ -170,23 +170,65 @@ demo.state1.prototype = {
         bounds = game.add.group();
         bounds.enableBody = true;     
 
+        //top fence
+        var square = bounds.create(0, 0,'square');
+        square.scale.setTo(7,0.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(0, 20,'square');
+        square.scale.setTo(3,0.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         //bottom fence
         var square = bounds.create(8, 815,'square');
         square.scale.setTo(1.5,3.5);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(698, 1026,'square');
+        var square = bounds.create(1220, 880,'square');
+        square.scale.setTo(1,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(920, 930,'square');
+        square.scale.setTo(3.8,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(820, 940,'square');
+        square.scale.setTo(4.8,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(760, 960,'square');
+        square.scale.setTo(5.4,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(730, 980,'square');
+        square.scale.setTo(5.7,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(698, 1000,'square');
         square.scale.setTo(6,1);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(1032, 421,'square');
-        square.scale.setTo(3,1);
+        var square = bounds.create(606, 1010,'square');
+        square.scale.setTo(7,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(380, 1140,'square');
+        square.scale.setTo(2,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(606, 1037,'square');
+        square.scale.setTo(1.5,3.5);
         square.body.immovable = true;
         square.body.moves = false;
     
         //right fence
-        var square = bounds.create(606, 1037,'square');
-        square.scale.setTo(7,5);
+        var square = bounds.create(1398, 361,'square');
+        square.scale.setTo(7,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1323, 261,'square');
+        square.scale.setTo(7,3.5);
         square.body.immovable = true;
         square.body.moves = false;
         var square = bounds.create(1228, 60,'square');
@@ -196,26 +238,22 @@ demo.state1.prototype = {
         var square = bounds.create(1153, 41,'square');
         square.scale.setTo(7,2);
         square.body.immovable = true;
-        square.body.moves = false; 
-        var square = bounds.create(606, 1037,'square');
-        square.scale.setTo(1.5,3.5);
-        square.body.immovable = true;
         square.body.moves = false;
         
         //left fence
-        var square = bounds.create(0, 276,'square');
+        var square = bounds.create(0, 0,'square');
         square.scale.setTo(1,7);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(105, 530,'square');
+        var square = bounds.create(100, 430,'square');
         square.scale.setTo(1,7);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(190, 750,'square');
+        var square = bounds.create(190, 650,'square');
         square.scale.setTo(1,2);
         square.body.immovable = true;
         square.body.moves = false;
-        var square = bounds.create(280, 960,'square');
+        var square = bounds.create(280, 860,'square');
         square.scale.setTo(1,3);
         square.body.immovable = true;
         square.body.moves = false;

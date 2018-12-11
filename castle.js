@@ -200,7 +200,7 @@ demo.state5.prototype = {
                 music.pause();
                 music2.pause();
                 jesterMusic.play('', 0, 1, true);
-                setStory(["jesterportrait1","What do you want kid? Can’t you see I’m busy here...","ashportrait1","Doesn’t seem to me like you are doing much.","jesterportrait1","Well, what would you know? You are just a kid...","Now -- scram!"]);},this);
+                setStory(["jesterportrait1","What do you want kid? Can’t you see I’m busy\nhere...","ashportrait1","Doesn’t seem to me like you are doing much.","jesterportrait1","Well, what would you know? You are just a kid...","Now -- scram!"]);},this);
         }
         
         if (!storyMode && !fighting && !music2.isPlaying && !music.isPlaying){

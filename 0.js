@@ -442,7 +442,7 @@ var Kori = {
     currentMPRatio : 1,
     HPRatio: function(){return Kori.Stats.HP/Kori.MaxStats.HP},
     MPRatio: function(){return Kori.Stats.MP/Kori.MaxStats.MP},
-    XPObtained : 3283,
+    XPObtained : 1210,
     XPNeeded : 0,
     XPCurve : function XPCurve(){
         Kori.XPNeeded = Math.round(1.1*Math.exp(Kori.Lvl)+4);
@@ -463,9 +463,9 @@ var Kori = {
         }
         return [Kori.leveledUp,Kori.learnedSkill];
     },
-    SkillLvl: [10,13,16],
+    SkillLvl: [8,10,13/*,16*/],
     SkillsLearned : [Ice,Heal/*,GlacialBarrier,Hailstorm,Purify,ArcticBlast*/],
-    SkillsToLearn : [GlacialBarrier,Hailstorm,Purify,ArcticBlast],
+    SkillsToLearn : [GlacialBarrier,Hailstorm,Purify/*,ArcticBlast*/],
     Weapon : WoodStaff
 }
 
