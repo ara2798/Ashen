@@ -95,11 +95,61 @@ demo.state1.prototype = {
         Ash.chSprite = mc;
         
         //bounds
-        square = game.add.sprite(5,815,'square');
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+
+        //bottom fence
+        var square = bounds.create(8, 815,'square');
         square.scale.setTo(1.5,3.5);
-        game.physics.enable(square);
         square.body.immovable = true;
         square.body.moves = false;
+        var square = bounds.create(698, 1026,'square');
+        square.scale.setTo(6,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1032, 421,'square');
+        square.scale.setTo(3,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+    
+        //right fence
+        var square = bounds.create(606, 1037,'square');
+        square.scale.setTo(7,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1228, 60,'square');
+        square.scale.setTo(7,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1153, 41,'square');
+        square.scale.setTo(7,2);
+        square.body.immovable = true;
+        square.body.moves = false; 
+        var square = bounds.create(606, 1037,'square');
+        square.scale.setTo(1.5,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        //left fence
+        var square = bounds.create(0, 276,'square');
+        square.scale.setTo(1,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(105, 530,'square');
+        square.scale.setTo(1,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(190, 750,'square');
+        square.scale.setTo(1,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(280, 960,'square');
+        square.scale.setTo(1,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+
+        
         
         EnemyGroup1 = game.add.group();
         EnemyGroup1.enableBody = true;  
@@ -147,7 +197,7 @@ demo.state1.prototype = {
     },
     update: function(){
         
-        game.physics.arcade.collide(mc, square);
+        game.physics.arcade.collide(Ash.chSprite, bounds);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         
         if (EnemyGroup1.countLiving() == 0){
