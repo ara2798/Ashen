@@ -189,6 +189,7 @@ demo.state5.prototype = {
         
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var encounter2 = game.physics.arcade.overlap(mc, EnemyGroup2, null, null, this);
+        var encounter3 = game.physics.arcade.overlap(mc, EnemyGroup3, null, null, this);
         var touchingTreasure1 = game.physics.arcade.overlap(mc, castleTreasure1.sprite, null, null, this);
         
         if (encounter1 && !inTransition && !fighting && !castleStory1Completed){
@@ -361,6 +362,42 @@ demo.state5.prototype = {
                 }
                 setFightStage();
                 enemyInBattle = EnemyGroup2;
+            },this);
+        }
+        
+        if (encounter3 && !inTransition && !fighting){
+            fighting = true;
+            game.camera.unfollow();
+            if (Allies.length > 1){
+                if (Allies.indexOf(Kori) != -1){
+                    kori = game.add.sprite(mc.x,mc.y,'kori');
+                    kori.anchor.setTo(0.5,0.5);
+                    kori.scale.setTo(1.1, 1.1);
+                    game.physics.enable(kori);
+                    kori.body.collideWorldBounds = true;
+                    kori.animations.add('walkleft', [6,7,8]);
+                    kori.animations.add('walkright', [9,10,11]);
+                    kori.animations.add('walkdown', [0,1,2]);
+                    kori.animations.add('walkup', [3,4,5]);
+                    kori.animations.add('attack', [10,12,10]);
+                    kori.animations.add('icespell', [13,10]);
+                    kori.animations.add('heal',[13,10]);
+                    Kori.chSprite = kori;
+                }
+            }
+            moveCamera = game.add.tween(game.camera).to({x:260,y:900},500,null,true);
+            moveCamera.onComplete.add(function(){
+                music.pause();
+                music2.pause();
+                battleMusic.play('', 0, 1, true);
+                for (var i = 0; i < Allies.length; i++){
+                    moveTo(Allies[i].chSprite,game.camera.x+150,game.camera.y+120+200*i);
+                }
+                for (var i = 0; i < EnemyGroup3.children.length; i++){
+                    moveTo(EnemyGroup3.children[i],game.camera.x+650,game.camera.y+30+200*i);
+                }
+                setFightStage();
+                enemyInBattle = EnemyGroup3;
             },this);
         }
         
