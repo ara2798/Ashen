@@ -1,4 +1,4 @@
-var story3Completed = false, forestMiniBoss = false, bounds;
+var bounds;
 
 var caveTreasure1 = {
     items: [FrostStaff,CycloneStaff],

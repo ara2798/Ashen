@@ -156,6 +156,7 @@ var HealEnmy = {Name:"Heal", Stats:{MP:15}, SkillType:"Support", Element:"None",
                 }
                 healDisplay = game.add.sprite(target.x-50,target.y-60,"heal");
                 healDisplay.lifespan = 1000;
+                game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
             }};
 var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
@@ -199,6 +200,8 @@ var FrozenSword = {Name:"Frozen Sword", Stats:{PhysAttack:20, MagAttack:0}, Weap
 var FrostStaff = {Name:"Frost Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Ice", Category:"Weapon"};
 var ThunderousSword = {Name:"Thunderous Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm", Category:"Weapon"};
 var CycloneStaff = {Name:"Cyclone Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Storm", Category:"Weapon"};
+var Excalibur = {Name:"Excalibur", Stats:{PhysAttack:60, MagAttack:0}, WeapType:"Sword", Element:"None", Category:"Weapon"};
+var AncientStaff = {Name:"Ancient Staff", Stats:{PhysAttack:0, MagAttack:60}, WeapType:"Staff",Element:"None", Category:"Weapon"};
 var Potion = {Name:"Small Potion",Description:"Restores 25% HP", Quantity: 2, Price: 10, imageKey:"smallHP", Category:"Item",
              Use: function Use(character){
                  Potion.Quantity -= 1;
@@ -548,12 +551,12 @@ function Snek(enemyObject,level) {
 }
 
 function Jester(enemyObject,level) {
-    enemyObject.Stats = {HP:10+35*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
-    enemyObject.MaxStats = {HP:10+25*level, PhysAttack:3+15*level, PhysDefense:1+3*level, MagAttack:3+15*level, MagDefense:1+3*level, Speed:1+20*level, MP:3+30*level};
+    enemyObject.Stats = {HP:100+35*level, PhysAttack:50+15*level, PhysDefense:1+3*level, MagAttack:50+15*level, MagDefense:1+3*level, Speed:1+10*level, MP:3+30*level};
+    enemyObject.MaxStats = {HP:100+35*level, PhysAttack:50+15*level, PhysDefense:1+3*level, MagAttack:50+15*level, MagDefense:1+3*level, Speed:1+10*level, MP:3+30*level};
     enemyObject.Level = level;
     enemyObject.XP = level*40;
     enemyObject.Coins = level*35;
-    enemyObject.Element = "None";
+    enemyObject.Element = "Fire";
     enemyObject.SkillsLearned = [];
 }
 

@@ -32,14 +32,6 @@ demo.state6.prototype = {
         game.world.setBounds(0, 0, 800, 600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.sprite(0, 0, 'castlebossroom');
-        
-        graveyardTreasure1.sprite = game.add.sprite(188,214,'treasure');
-        game.physics.enable(graveyardTreasure1.sprite);
-        graveyardTreasure1.sprite.body.immovable = true;
-        graveyardTreasure1.sprite.body.moves = false;
-        if (graveyardTreasure1.opened){
-            graveyardTreasure1.sprite.frame = 1;
-        }
 
         mc = game.add.sprite(400, 480, 'mc');
         mc.anchor.setTo(0.5,0.5);
@@ -148,7 +140,7 @@ demo.state6.prototype = {
             }, this);
         }
         */
-        ///*
+
         if (story5Completed && castleBoss && !story6Completed && !fighting){
             story6Completed = true;
             storyMode = true;
@@ -185,7 +177,7 @@ demo.state6.prototype = {
             game.time.events.add(Phaser.Timer.SECOND * 4.5, function(){
                 changeState(null,"Credits")
             }, this);
-        }//*/
+        }
         
         //Progress through the story
         continueStory();

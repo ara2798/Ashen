@@ -1,6 +1,8 @@
 var previousState = "intro", pause = false, storyMode=false, story1Completed=false, story, storyElement, unlockGYExit = false, fighting=false, inTransition = false, escapedBattle = false, enemyInBattle, firstEnemy = 0, lastEnemy = 5, enemyPicked = 0, skillPicked = 0, itemPicked = 0, allyPicked = 0, weaponPicked, currentCpos = [], press = [true,true,true,true,true,true,true],/*[right,left,up,down,z,x,p]*/ cursors, currentMenu, currentSubmenu, turn = 1, actionBuilder = [], BattleActionStack = [], DamageMultiplier = 1, Damage, LostBattle = false, WonBattle = false, BattleXP = 0, BattleCoins = 0, BattleResults = [], ResultDisplayed = 0, Allies=[Ash], currentHPRatio = [], currentMPRatio = [];
 
-var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1"];
+var bounds
+
+var portraitL=["ashportrait1","ashportmad","ashportsad","ashportthink","ashportsmile","ashportsmug","koriportrait1","koriportmad","koriportsad","koriportthink","koriportsmile","koriportfsmile","koriportsigh","knightportrait1","jesterportrait1"];
 
 var graveyardTreasure1 = {
     items: [ThunderousSword],
@@ -164,6 +166,60 @@ demo.state1.prototype = {
         //move3.repeatAll(-1);
         //move3.start();
         
+        //bounds
+        bounds = game.add.group();
+        bounds.enableBody = true;     
+
+        //bottom fence
+        var square = bounds.create(8, 815,'square');
+        square.scale.setTo(1.5,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(698, 1026,'square');
+        square.scale.setTo(6,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1032, 421,'square');
+        square.scale.setTo(3,1);
+        square.body.immovable = true;
+        square.body.moves = false;
+    
+        //right fence
+        var square = bounds.create(606, 1037,'square');
+        square.scale.setTo(7,5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1228, 60,'square');
+        square.scale.setTo(7,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(1153, 41,'square');
+        square.scale.setTo(7,2);
+        square.body.immovable = true;
+        square.body.moves = false; 
+        var square = bounds.create(606, 1037,'square');
+        square.scale.setTo(1.5,3.5);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
+        //left fence
+        var square = bounds.create(0, 276,'square');
+        square.scale.setTo(1,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(105, 530,'square');
+        square.scale.setTo(1,7);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(190, 750,'square');
+        square.scale.setTo(1,2);
+        square.body.immovable = true;
+        square.body.moves = false;
+        var square = bounds.create(280, 960,'square');
+        square.scale.setTo(1,3);
+        square.body.immovable = true;
+        square.body.moves = false;
+        
         game.camera.follow(mc);
         game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);
         
@@ -173,7 +229,7 @@ demo.state1.prototype = {
     },
     update: function(){
         
-        game.physics.arcade.collide(mc, square);
+        game.physics.arcade.collide(mc, bounds);
         var encounter1 = game.physics.arcade.overlap(mc, EnemyGroup1, null, null, this);
         var touchingTreasure1 = game.physics.arcade.overlap(mc, graveyardTreasure1.sprite, null, null, this);
         
@@ -1359,8 +1415,16 @@ function selectBattleActions() {
                         moveTo(enemyInBattle.children[i],enemyInBattle.children[i].originalPos[0],enemyInBattle.children[i].originalPos[1]);
                     }
                 }
-                moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
-                moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                
+                if (enemyInBattle.children[0] == jester){
+                    storyMode = true;
+                    moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
+                    moveCamera.onComplete.add(function(){game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;setStory(["jesterportrait1","See? I told you you were too weak.","Now... where was I?"]);},this);
+                }
+                else{
+                    moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
+                    moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
+                }
             }
             else{
                 HUD = game.add.sprite(game.camera.x,game.camera.y,'hud');
@@ -1498,7 +1562,7 @@ function selectBattleActions() {
                         Allies[j].Stats[k] = Allies[j].MaxStats[k];
                     }
                 }
-                if (enemyInBattle.children[0] != kori){
+                if (enemyInBattle.children[0] != kori && enemyInBattle.children[0] != jester){
                     moveCamera = game.add.tween(game.camera).to({x:mc.x-400,y:mc.y-300},500,null,true);
                     moveCamera.onComplete.add(function(){battleMusic.pause();music.resume();game.camera.follow(mc);game.camera.deadzone = new Phaser.Rectangle(250, 250, 300, 100);fighting = false;},this);
                 }
@@ -1822,7 +1886,7 @@ function makeBscDamage(character,target){
                 currentMenu = "BattleEnd";
                 createMenu();
             }
-            else if (target == knight){
+            else if (target == knight || target == jester){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
                 }
@@ -1933,7 +1997,7 @@ function makeSkillDamage(character,skill,target){
                 currentMenu = "BattleEnd";
                 createMenu();
             }
-            else if (target == knight){
+            else if (target == knight || target == jester){
                 for (var i = 0; i < Allies.length; i++){
                     Allies[i].XPObtained += BattleXP;
                 }
