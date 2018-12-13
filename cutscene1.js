@@ -33,7 +33,7 @@ demo.state997.prototype = {
         ash.anchor.setTo(0.5,0.5);
         ash.scale.setTo(1.5, 1.5);
         ash.animations.add('walkleft', [6,7,8]);
-        ash.animations.play('walkleft',18,true);
+        ash.animations.play('walkleft',12,true);
         sister = game.add.sprite(390, 310, 'sister');
         sister.anchor.setTo(0.5,0.5);
         sister.scale.setTo(1.2, 0.8);
@@ -66,7 +66,7 @@ demo.state997.prototype = {
         var darkBg = game.add.sprite(0,0,'square');
         darkBg.scale.setTo(8,6);
         
-        spellOut(100,200,"A long time ago, there was peace in the kingdom...");
+        spellOut(50,200,"A long time ago, there was peace in the\nkingdom...");
         
         game.time.events.add(Phaser.Timer.SECOND * 3, fadeText1, this);    
 
@@ -82,7 +82,7 @@ demo.state997.prototype = {
 
         function createText1(){
             darken = game.add.tween(darkBg).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            darken.onComplete.add(function(){spellOut(100, 200, "But then, a mysterious knight appeared, and with his\narmy from the underworld, he brought destruction and\nwrath upon the kingdom...");throneroom.kill();ash1.kill();sister1.kill();kori1.kill();king1.kill();}, this);                  
+            darken.onComplete.add(function(){spellOut(50, 200, "But then, a mysterious knight appeared, and\nwith his army from the underworld, he brought\ndestruction and wrath upon the kingdom...");throneroom.kill();ash1.kill();sister1.kill();kori1.kill();king1.kill();}, this);                  
             //changeState(null,'graveyard');
         }
         
@@ -98,7 +98,7 @@ demo.state997.prototype = {
 
         function createText2(){
             darken = game.add.tween(darkBg).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            darken.onComplete.add(function(){spellOut(100, 200, "He took the throne and the prince tried to escape\nwith the princess...");castleinterior.kill();knight2.kill();skeleton21.kill();skeleton22.kill();skeleton23.kill();}, this);
+            darken.onComplete.add(function(){spellOut(50, 200, "He took the throne and the prince tried to\nescape with the princess...");castleinterior.kill();knight2.kill();skeleton21.kill();skeleton22.kill();skeleton23.kill();}, this);
         }
         
         game.time.events.add(Phaser.Timer.SECOND * 21.5, fadeText3, this);    
@@ -113,7 +113,7 @@ demo.state997.prototype = {
         
         function createText3(){
             darken = game.add.tween(darkBg).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            darken.onComplete.add(function(){spellOut(100, 200, "But in the mayhem, the princess was brutally killed...");ash.kill();sister.kill();}, this);
+            darken.onComplete.add(function(){spellOut(50, 200, "But in the mayhem, the princess was brutally\nkilled...");ash.kill();sister.kill();}, this);
         }
         
         game.time.events.add(Phaser.Timer.SECOND * 28, createText4, this); 
@@ -122,7 +122,7 @@ demo.state997.prototype = {
             scream = game.add.audio('scream');
             scream.play('', 0, 1, false);
             textfade = game.add.tween(text).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            textfade.onComplete.add(function(){text.kill();spellOut(100, 200, "The prince, Ash, decided to stay behind and seek\nrevenge for his sister’s death...")},this);
+            textfade.onComplete.add(function(){text.kill();spellOut(50, 200, "The prince, Ash, decided to stay behind and\nseek revenge for his sister’s death...")},this);
         }
         
         game.time.events.add(Phaser.Timer.SECOND * 34, fadeText4, this);    
@@ -140,7 +140,7 @@ demo.state997.prototype = {
 };
 
 function spellOut(x,y,lines){
-    text = game.add.text(x,y,'',{fontSize:23,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+    text = game.add.text(x,y,'',{fontSize:15,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
     var loop = game.time.events.loop(40,addChar);
     var index = 0;
     

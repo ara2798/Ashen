@@ -17,7 +17,7 @@ demo.state1000.prototype = {
         dialogueBox.scale.setTo(1,1.5);
         portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,'ashportrait1');
         portrait.scale.setTo(0.5);
-        text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'Huh... where am I?',{fontSize:25,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+        text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'Huh... where am I?',{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
         
         game.time.events.add(Phaser.Timer.SECOND * 2, function(){
             dialogueBoxFade = game.add.tween(dialogueBox).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
@@ -31,7 +31,7 @@ demo.state1000.prototype = {
             text.kill();
             music = game.add.audio('background_music');
             music.play('', 0, 1, true);
-            game.add.text(100,50,"Producer\nPaul Toprac\n\nMain Programmer\nAngel Argandona\n\nMain Artist\nJessica Hairston\n\nMain Sound Artist\nEmrose Bhalesha",{fontSize:30,fill:"#ffffff"});
+            game.add.text(60,70,"Producer\nPaul Toprac\n\nMain Programmer\nAngel Argandona\n\nMain Artist\nJessica Hairston\n\nMain Sound Artist\nEmrose Bhalesha",{fontSize:25,fill:"#ffffff",font:'Press Start 2P'});
         }, this);
         
         

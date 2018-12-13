@@ -15,7 +15,7 @@ demo.state999.prototype = {
         music = game.add.audio('background_music');
         music.play('', 0, 1, true);
         
-        game.add.text(centerX,centerY,"GAME OVER",{fontSize:30,fill:"#ffffff"});
+        game.add.text(centerX,centerY,"YOU DIED",{fontSize:25,fill:"#ffffff",font:'Press Start 2P'});
     },
     update: function(){
         

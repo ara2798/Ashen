@@ -10,4 +10,4 @@ game.state.add('cutscene1', demo.state997);
 game.state.add('Overworld', demo.state998);
 game.state.add('GameOver', demo.state999);
 game.state.add('Credits', demo.state1000);
-game.state.start('castle');
+game.state.start('0');

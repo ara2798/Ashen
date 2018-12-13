@@ -86,7 +86,7 @@ demo.state6.prototype = {
             mc.body.velocity.y = 0;
             mc.animations.stop();
             mc.frame = 4;
-            setStory(["knightportrait1","So... the prince is finally back. Are you here to\ntake back your throne?","Can’t you see? There’s nothing left for you to\ntake back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you are here with him.","This will be more fun. I will have no mercy on\nyou two."]);
+            setStory(["knightportrait1","So... the prince is finally back.\nAre you here to take back your\nthrone?","Can’t you see? There’s nothing\nleft for you to take back.","koriportrait1","...","knightportrait1","And you... I’m not surprised you\nare here with him.","This will be more fun. I will have\nno mercy on you two."]);
         }
         
         if (story5Completed && !storyMode && !castleBoss){
@@ -145,7 +145,7 @@ demo.state6.prototype = {
             story6Completed = true;
             storyMode = true;
             moveTo(mc,game.camera.x+399,game.camera.y+230);
-            setStory(["knightportrait1","I’m going to make sure you pay for your sins,\neven until my last breath...","Your family took everything from me, it was only\nfair that I returned the favor.","My home, my village... Everything--","ashportmad","Shut up! I don’t care.","koriportrait1","Ash, perhaps you should show him mercy--","ashportmad","There was no mercy for my sister, and she was\njust a child!","I’ll see to it that he rots in hell!"]);
+            setStory(["knightportrait1","I’m going to make sure you pay for\nyour sins, even until my last\nbreath...","Your family took everything from\nme, it was only fair that I\nreturned the favor.","My home, my village...\nEverything--","ashportmad","Shut up! I don’t care.","koriportrait1","Ash, perhaps you should show him\nmercy--","ashportmad","There was no mercy for my sister,\nand she was just a child!","I’ll see to it that he rots in\nhell!"]);
         }
         
         if (story6Completed && !story7Completed && !storyMode){
@@ -156,7 +156,7 @@ demo.state6.prototype = {
             white.play('', 0, 1, true);
             var knightRevive = game.add.tween(knight.children[1].scale).to({x:knight.barXScale},1000,null,true);
             knightRevive.onComplete.add(function(){
-                setStory(["knightportrait1","Hahahaha...","Fool! Did you really think I'd let you\nin here without a plan?","I only needed to delay you...","The gates to the underworld are now open!","I can feel it's power flowing through me.","Now... you shall atone for your crimes!"]);
+                setStory(["knightportrait1","Hahahaha...","Fool! Did you really think I'd\nlet you in here without a plan?","I only needed to delay you...","The gates to the underworld are\nnow open!","I can feel it's power flowing\nthrough me.","Now... you shall atone for your\ncrimes!"]);
             },this);
         }
         

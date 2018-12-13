@@ -387,7 +387,7 @@ demo.state3.prototype = {
             moveCamera.onComplete.add(function(){
                 music.pause();
                 koriMusic.play('', 0, 1, true);
-                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king, don't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared me. It's a bind I\ncannot break. I have to remain loyal to our\nnew king.","koriportrait1","Moreover... You are not strong enough to defeat\nhim.","koriportsad","I don't want you to die too.","ashportmad","Move!!!","koriportmad","Fine. If you think you are strong enough, then\nprove it.","Kill me if you can!"]);},this);
+                setStory(["ashportrait1","Kori??","koriportrait1","My liege...","ashportsad","I- I thought you died too.","koriportthink","...","koriportfsmile","You intend to kill the new king,\ndon't you?","ashportrait1","...","koriportthink","I owe him a life debt... he spared\nme. It's a bind I cannot break. I\nhave to remain loyal to our new\nking.","koriportrait1","Moreover... You are not strong\nenough to defeat him.","koriportsad","I don't want you to die too.","ashportmad","Move!!!","koriportmad","Fine. If you think you are strong\nenough, then prove it.","Kill me if you can!"]);},this);
             
         }
         
@@ -407,7 +407,7 @@ demo.state3.prototype = {
             storyMode = true;
             kori.children[0].kill();
             kori.children[1].kill();
-            setStory(["ashportthink","...","koriportmad","What are you waiting for!? Do it!!!","ashportmad","No! We can defeat the knight together.","ashportsmug","After all, you owe me your life now.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow nostalgic. I\nsuppose I have to accompany you now...", "That's what your sister would have wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
+            setStory(["ashportthink","...","koriportmad","What are you waiting for!? Do it!","ashportmad","No! We can defeat the knight\ntogether.","ashportsmug","After all, you owe me your life\nnow.","koriportthink","...","koriportsigh","Fine...","koriportsmile","Being with you again is somehow\nnostalgic. I suppose I have to\naccompany you now...", "That's what your sister would\nhave wanted.","ashportthink","...","ashportrait1","Good. Let's go."]);
             Kori.LvlUp();
             Allies.push(Kori);
             Inventory.Weapons.push(WoodStaff);

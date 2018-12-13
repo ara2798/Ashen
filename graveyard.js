@@ -334,7 +334,7 @@ demo.state1.prototype = {
         else if (Ash.chSprite.x >= 1370 && Ash.chSprite.y >= 1210 && !unlockGYExit && !storyMode){
             storyMode = true;
             moveTo(mc,1438,998);
-            setStory(["ashportrait1","I should kill all the monsters nearby.", "I don't want them anywhere near my sister's\ngrave."]);
+            setStory(["ashportrait1","I should kill all the monsters\nnearby.", "I don't want them anywhere near\nmy sister's grave."]);
         }
         
         //Intro to story
@@ -342,7 +342,7 @@ demo.state1.prototype = {
             story1Completed = true;
             storyMode = true;
             mc.frame = 4;
-            setStory(["ashportsad","Rest in peace, my beloved sister. I brought your \nfavorite flowers...","I’m sorry... I should’ve been able to save you. \nIt’s all my fault...","All I have left of you is your old teddy bear -- it\nkeeps me warm...","Almost like you’re still here.","...","I know you wouldn’t approve, but I have to make \nthis right.","...I’ll do whatever it takes."]);
+            setStory(["ashportsad","Rest in peace, my beloved sister.\nI brought your favorite flowers...","I’m sorry... I should’ve been able\nto save you. It’s all my fault...","All I have left of you is your old\nteddy bear -- it keeps me warm...","Almost like you’re still here.","...","I know you wouldn’t approve, but\nI have to make this right.","...I’ll do whatever it takes."]);
         }
         
         //Progress through the story
@@ -388,7 +388,7 @@ function setStory(storyL){
     dialogueBox.scale.setTo(1,1.5);
     portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,storyL[0]);
     portrait.scale.setTo(0.5);
-    text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,storyL[1],{fontSize:25,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+    text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,storyL[1],{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
     story = storyL;
     storyElement = 2;
 }
@@ -404,7 +404,7 @@ function continueStory(){
                 storyElement += 1;
             }
             text.kill();
-            text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,story[storyElement],{fontSize:25,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+            text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,story[storyElement],{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
             storyElement += 1;
         }
         else if(cursors.z.isDown && !press[4]){

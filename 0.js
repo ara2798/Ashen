@@ -579,9 +579,9 @@ function Knight(enemyObject,level) {
     enemyObject.Element = "None";
     enemyObject.SkillsLearned = [KnightFire,KnightIce,KnightStorm];
 }
-/*WebFontConfig= {
+WebFontConfig= {
     google: {families: ['Press Start 2P']}
-};*/
+};
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
