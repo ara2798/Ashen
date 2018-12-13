@@ -1,6 +1,6 @@
 var story3Completed = false, story4Completed = false, forestMiniBoss = false, bounds, joinParty = false;
 var forestTreasure1 = {
-    items: [ScorchingSword],
+    items: [BlazeSword],
     opened: false
 }
 var forestTreasure2 = {

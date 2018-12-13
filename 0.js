@@ -36,10 +36,10 @@ var BladeBlitz = {Name:"Bladeblitz",Stats:{PhysAttack:15, MagAttack:0, MP:20},De
 var Explosion = {Name:"Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:25},Description:"Fire Magic AoE", SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(target){
                 var explosion = game.add.sprite(game.camera.x+400,game.camera.y+75,"explosion");
-                explosion.scale.setTo(2.5,3);
-                explosion.animations.add('act',[0,1,2]);
-                explosion.animations.play('act',5,true);
-                explosion.lifespan = 2000;
+                explosion.scale.setTo(2.3,3);
+                explosion.animations.add('act',[0,1,2,3,4,3,2,1,0]);
+                explosion.animations.play('act',12,false);
+                explosion.lifespan = 750;
                 Ash.chSprite.animations.play("firespell",2,false);
                 for (var i = 0; i < enemyInBattle.children.length; i++){
                     makeSkillDamage(Ash,Explosion,enemyInBattle.children[i]);
@@ -158,7 +158,26 @@ var HealEnmy = {Name:"Heal", Stats:{MP:15}, SkillType:"Support", Element:"None",
                 healDisplay.lifespan = 1000;
                 game.add.tween(target.children[1].scale).to({x:target.barXScale*target.Stats.HP/target.MaxStats.HP},500,null,true);
             }};
-var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+var JesterExplosion = {Name:"Jester Explosion", Stats:{PhysAttack:0, MagAttack:50, MP:25},SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
+            SkillAnimation: function SkillAnimation(character,target){
+                var throwball =character.animations.play("explosion",10,false);
+                throwball.onComplete.add(function(){
+                    var ball = game.add.sprite(game.camera.x+650,game.camera.y+220,"ball");
+                    var moveTween = game.add.tween(ball).to({x:game.camera.x+190,y:game.camera.y+210},500,null,true);
+                    moveTween.onComplete.add(function() {
+                        ball.kill();
+                        var explosion = game.add.sprite(game.camera.x+40,game.camera.y+50,"explosion");
+                        explosion.scale.setTo(2.5,3);
+                        explosion.animations.add('act',[0,1,2,3,4,3,2,1,0]);
+                        explosion.animations.play('act',12,false);
+                        explosion.lifespan = 750;
+                    },this);
+                },this);
+                for (var i = 0; i < Allies.length; i++){
+                    makeSkillDamage(character,JesterExplosion,Allies[i]);
+                }
+            }};
+var KnightFire = {Name:"Knight Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Fire", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("firespell",8,false);
                 var knightfire = game.add.sprite(character.x,character.y-150,"knightfire");
@@ -168,7 +187,7 @@ var KnightFire = {Name:"Fire", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillT
                 knightfire.animations.play('act',5,false);
                 moveToSkill(character,KnightFire,knightfire,target);
             }};
-var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
+var KnightIce = {Name:"Knight Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("icespell",8,false);
                 var knightice = game.add.sprite(character.x-470,character.y-120,"knightice");
@@ -180,7 +199,7 @@ var KnightIce = {Name:"Ice", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillTyp
                     makeSkillDamage(character,KnightIce,Allies[i]);
                 }
             }};
-var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
+var KnightStorm = {Name:"Knight Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, SkillType:"Attack", Element:"Ice", AreaOfEffect:"All",
             SkillAnimation: function SkillAnimation(character,target){
                 character.animations.play("stormspell",8,false);
                 var knightstorm = game.add.sprite(character.x,character.y-170,"knightstorm");
@@ -194,11 +213,11 @@ var KnightStorm = {Name:"Storm", Stats:{PhysAttack:0, MagAttack:40, MP:10}, Skil
 //ITEM OBJECTS
 var WoodSword = {Name:"Wood Sword", Stats:{PhysAttack:10, MagAttack:0}, WeapType:"Sword", Element:"None", Category:"Weapon"};
 var WoodStaff = {Name:"Wood Staff", Stats:{PhysAttack:0, MagAttack:10}, WeapType:"Staff",Element:"None", Category:"Weapon"};
-var ScorchingSword = {Name:"Scorching Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Fire", Category:"Weapon"};
+var BlazeSword = {Name:"Blaze Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Fire", Category:"Weapon"};
 var FlameStaff = {Name:"Flame Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Fire", Category:"Weapon"};
 var FrozenSword = {Name:"Frozen Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Ice", Category:"Weapon"};
 var FrostStaff = {Name:"Frost Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Ice", Category:"Weapon"};
-var ThunderousSword = {Name:"Thunderous Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm", Category:"Weapon"};
+var WindSword = {Name:"Wind Sword", Stats:{PhysAttack:20, MagAttack:0}, WeapType:"Sword", Element:"Storm", Category:"Weapon"};
 var CycloneStaff = {Name:"Cyclone Staff", Stats:{PhysAttack:0, MagAttack:20}, WeapType:"Staff",Element:"Storm", Category:"Weapon"};
 var Excalibur = {Name:"Excalibur", Stats:{PhysAttack:60, MagAttack:0}, WeapType:"Sword", Element:"None", Category:"Weapon"};
 var AncientStaff = {Name:"Ancient Staff", Stats:{PhysAttack:0, MagAttack:60}, WeapType:"Staff",Element:"None", Category:"Weapon"};
@@ -557,7 +576,7 @@ function Jester(enemyObject,level) {
     enemyObject.XP = level*40;
     enemyObject.Coins = level*35;
     enemyObject.Element = "Fire";
-    enemyObject.SkillsLearned = [];
+    enemyObject.SkillsLearned = [JesterExplosion];
 }
 
 function Skeleton(enemyObject,level) {

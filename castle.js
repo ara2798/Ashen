@@ -10,13 +10,13 @@ demo.state5.prototype = {
         game.load.spritesheet('kori', 'assets/spritesheets/korispritesheet.png', 90, 90);
         game.load.image('castle', 'assets/backgrounds/castleinterior.png');
         game.load.spritesheet('jester', 'assets/spritesheets/jesterspritesheet.png', 128, 128);
-        game.load.spritesheet('skeleton', 'assets/spritesheets/skeleton.png', 128, 128);
+        game.load.spritesheet('skeleton', 'assets/spritesheets/skeletonspritesheet.png', 128, 128);
         game.load.image('null_element','assets/sprites/null_element.png');
         game.load.image('hpBar','assets/sprites/hp.png');
         game.load.spritesheet('treasure', 'assets/sprites/treasure.png',64,64);
         game.load.image('jesterportrait1','assets/sprites/jesterportrait.png');
-        //game.load.image('icespikes', 'assets/sprites/icespikes.png');
-        //game.load.image('shadowbeam', 'assets/sprites/beam.png');
+        game.load.image('ball', 'assets/sprites/ball.png');
+        game.load.spritesheet('explosion', 'assets/sprites/explosion.png',150,150);
         //game.load.image('tidalwave', 'assets/sprites/wave.png');
         
         //image for boundries
@@ -79,8 +79,8 @@ demo.state5.prototype = {
         jester.animations.add('walkleft',[0,1,2,1]);
         jester.animations.add('walkright',[3,4,5,4]);
         jester.animations.add('attack',[0]);
+        jester.animations.add('explosion',[6,7,8,9,0]);
         jester.animations.play('stand',2,true);
-        //jester.animations.add('icespikes',[0]);
         jester.addChild(game.make.sprite(0,135,'fire_element'));
         jester.children[0].scale.setTo(0.3);
         jester.addChild(game.make.sprite(20,139,'hpBar'));
@@ -96,7 +96,7 @@ demo.state5.prototype = {
         skeleton.scale.setTo(1);
         skeleton.animations.add('walkleft',[0]);
         skeleton.animations.add('walkright',[0]);
-        skeleton.animations.add('attack',[0]);
+        skeleton.animations.add('attack',[0,3,0]);
         //skeleton.animations.add('icespikes',[0]);
         skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
@@ -109,7 +109,7 @@ demo.state5.prototype = {
         skeleton.scale.setTo(1);
         skeleton.animations.add('walkleft',[0]);
         skeleton.animations.add('walkright',[0]);
-        skeleton.animations.add('attack',[0]);
+        skeleton.animations.add('attack',[0,3,0]);
         //skeleton.animations.add('icespikes',[0]);
         skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
@@ -126,7 +126,7 @@ demo.state5.prototype = {
         skeleton.scale.setTo(1);
         skeleton.animations.add('walkleft',[0]);
         skeleton.animations.add('walkright',[0]);
-        skeleton.animations.add('attack',[0]);
+        skeleton.animations.add('attack',[0,3,0]);
         //skeleton.animations.add('icespikes',[0]);
         skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
@@ -139,7 +139,7 @@ demo.state5.prototype = {
         skeleton.scale.setTo(1);
         skeleton.animations.add('walkleft',[0]);
         skeleton.animations.add('walkright',[0]);
-        skeleton.animations.add('attack',[0]);
+        skeleton.animations.add('attack',[0,3,0]);
         //skeleton.animations.add('icespikes',[0]);
         skeleton.addChild(game.make.sprite(0,135,'null_element'));
         skeleton.children[0].scale.setTo(0.3);
@@ -259,7 +259,7 @@ demo.state5.prototype = {
                 portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,'jesterportrait1');
                 portrait.scale.setTo(0.5);
                 portrait.lifespan = 2000;
-                text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'Ok, that’s it. If you insist,\nthen let’s play!',{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'Ok, that’s it. If you insist,\nthen let’s play!',{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
                 text.lifespan = 2000;
             },this);
         }
@@ -304,7 +304,7 @@ demo.state5.prototype = {
                 portrait = game.add.sprite(dialogueBox.x+30,dialogueBox.y+40,'jesterportrait1');
                 portrait.scale.setTo(0.5);
                 portrait.lifespan = 2000;
-                text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'No fair, you took a break. Well,\ntwo can play the same game...',{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4});
+                text = game.add.text(dialogueBox.x+150,dialogueBox.y+40,'No fair, you took a break. Well,\ntwo can play the same game...',{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'});
                 text.lifespan = 2000;
             },this);
         }
