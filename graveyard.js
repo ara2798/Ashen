@@ -867,18 +867,18 @@ function selectPauseMActions(){
             if (Inventory.Weapons[weaponPicked].WeapType == "Sword"){
                 Ash.portrait = game.add.sprite(game.camera.x+80,game.camera.y+50,Ash.PortraitKey);
                 Ash.portrait.scale.setTo(0.4);
-                text = "Current weapon: " + Ash.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
+                text = "Current weapon: " + Ash.Weapon.Name + "\n    Assign " + Inventory.Weapons[weaponPicked].Name;
             }
             else if (Inventory.Weapons[weaponPicked].WeapType == "Staff"){
                 Kori.portrait = game.add.sprite(game.camera.x+80,game.camera.y+50,Kori.PortraitKey);
                 Kori.portrait.scale.setTo(0.4);
-                text = "Current weapon: " + Kori.Weapon.Name + "\n       Assign " + Inventory.Weapons[weaponPicked].Name;
+                text = "Current weapon: " + Kori.Weapon.Name + "\n    Assign " + Inventory.Weapons[weaponPicked].Name;
             }
-            text = game.add.text(game.camera.x+180, game.camera.y+70,text,{fontSize:18,fill:'#ffffff',stroke:'#000000',strokeThickness:4})
+            text = game.add.text(game.camera.x+180, game.camera.y+70,text,{fontSize:10,fill:'#ffffff',stroke:'#000000',strokeThickness:4,font:'Press Start 2P'})
             textOS.push(text);
             cursor.kill();
             currentMenu = "assignWeapon";
-            createCursor(game.camera.x+180, game.camera.y+98);
+            createCursor(game.camera.x+180, game.camera.y+85);
         }
         else if (currentSubmenu == "Weapons" && currentMenu == "assignWeapon"){
             if (Inventory.Weapons[weaponPicked].WeapType == "Sword"){
@@ -900,7 +900,7 @@ function selectPauseMActions(){
             currentMenu = "pickWeapon";
             weaponPicked = 0;
             createSubmenu();
-            currentCpos = [game.camera.x+45,game.camera.y+178];
+            currentCpos = [game.camera.x+45,game.camera.y+168];
             createCursor(currentCpos[0],currentCpos[1]);
         }
     }
